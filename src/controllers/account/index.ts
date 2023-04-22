@@ -28,6 +28,7 @@ const accountController = {
                 await disconnect();
             } catch (error: any) {
                 resClientData(res, 403, undefined, error.message);
+                await disconnect();
             }
         })
     },
@@ -49,6 +50,7 @@ const accountController = {
                 await disconnect();
             } catch (error: any) {
                 resClientData(res, 403, undefined, error.message)
+                await disconnect();
             }
         })
     },
@@ -68,6 +70,7 @@ const accountController = {
                 await disconnect();
             } catch (error: any) {
                 resClientData(res, 403, undefined, error.message);
+                await disconnect();
             }
         })
     }

@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { Collections } from "../../database";
 import { ROLE } from "../../global/enum";
 
-const accountchema = new mongoose.Schema({
+const accountSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true
@@ -23,5 +23,5 @@ const accountchema = new mongoose.Schema({
     salt: String
 })
 
-const AccountModel = mongoose.model(Collections.ACCOUNT, accountchema);
+const AccountModel = mongoose.model(Collections.ACCOUNT, accountSchema);
 export default AccountModel;
