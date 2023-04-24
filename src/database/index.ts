@@ -3,7 +3,8 @@ export enum Collections {
     COURSE = 'courses',
     COURSELEVEL = 'courselevels',
     TIMESCHEDULE = 'timeschedules',
-    CLASS = 'classes'
+    CLASS = 'classes',
+    LOCATION = 'locations'
 }
 const getUri = () => {
     const { MONGO_CLIENT, MONGO_USERNAME, MONGO_PASSWORD, MONGO_HOST, MONGO_PORT, DB_NAME } = process.env;
