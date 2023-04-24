@@ -12,3 +12,8 @@ export enum WEEKDAY {
     T7 = 'T7',
     CN = 'CN',
 }
+export enum STATUS_CLASS {
+    RUNNING = 'RUNNING',
+    PREOPEN = 'PREOPEN',
+    DROP = 'DROP'
+}
