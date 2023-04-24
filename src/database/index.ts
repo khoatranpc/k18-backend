@@ -4,7 +4,8 @@ export enum Collections {
     COURSELEVEL = 'courselevels',
     TIMESCHEDULE = 'timeschedules',
     CLASS = 'classes',
-    LOCATION = 'locations'
+    LOCATION = 'locations',
+    BOOKTEACHER = 'bookteachers',
 }
 const getUri = () => {
     const { MONGO_CLIENT, MONGO_USERNAME, MONGO_PASSWORD, MONGO_HOST, MONGO_PORT, DB_NAME } = process.env;
