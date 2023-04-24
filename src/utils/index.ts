@@ -9,11 +9,14 @@ const genRandomId = () => {
 };
 
 const getProjection = (...fields: Array<string>) => {
-    const filedsProjection: Obj = {};
-    fields.forEach((item) => {
-        filedsProjection[item] = 1
-    });
-    return filedsProjection
+    if (fields !== undefined) {
+        const filedsProjection: Obj = {};
+        fields.forEach((item) => {
+            filedsProjection[item] = 1
+        });
+        return filedsProjection
+    }
+    return {}
 }
 function resClientData(res: Response, statusCode: number, data: any, message?: string) {
     res.status(statusCode).send({
