@@ -10,4 +10,6 @@ AccountRouter.post('', validate(loginSchemaValidate, 403), accountController.log
 AccountRouter.post('/create/test', validate(createAccount, 403), accountController.createForTest);
 AccountRouter.get('', middlewares.verifyJWT, middlewares.isTE, accountController.getAllAccount);
 
+AccountRouter.get('/personal-info', middlewares.verifyJWT, accountController.getInfo);
+
 export default AccountRouter;

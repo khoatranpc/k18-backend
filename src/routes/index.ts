@@ -10,6 +10,7 @@ import BookTeacherRouter from './bookTeacher';
 const RootRouter = express.Router();
 
 RootRouter.use('/account', AccountRouter);
+RootRouter.use('/auth', AccountRouter);
 RootRouter.use('/course', CourseRouter);
 RootRouter.use('/course/level', CourseLevelRouter);
 RootRouter.use('/time-schedule', TimeScheduleRouter);

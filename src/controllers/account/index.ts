@@ -73,6 +73,18 @@ const accountController = {
                 await disconnect();
             }
         })
+    },
+    getInfo: (req: RequestMid, res: Response) => {
+        getDB(async (disconnect) => {
+            try {
+                const crrAccount = req.acc;
+                resClientData(res, 201, crrAccount, 'Thành công');
+            } catch (error: any) {
+                resClientData(res, 403, undefined, error.message)
+                await disconnect();
+            }
+            await disconnect();
+        })
     }
 };
 export default accountController;

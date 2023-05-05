@@ -30,3 +30,8 @@ export enum STATUS_CLASS {
     PREOPEN = 'PREOPEN',
     DROP = 'DROP'
 }
+export enum ROLE_TEACHER {
+    SP = 'SP',
+    MT = 'MT',
+    ST = 'ST'
+}

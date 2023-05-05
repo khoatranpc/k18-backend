@@ -1,12 +1,13 @@
 import mongoose from "mongoose";
 import { Schema } from "mongoose";
 import { Collections } from "../../database";
-import { GENDER, STATUS } from "../../global/enum";
+import { GENDER, ROLE_TEACHER, STATUS } from "../../global/enum";
 
 const preTeacherSchema = new mongoose.Schema(
     {
         status: {
             type: String,
+            enum: STATUS,
             default: STATUS.PD
         },
         email: {
@@ -44,7 +45,7 @@ const preTeacherSchema = new mongoose.Schema(
         },
         permanentAddress: {
             type: String,
-            required: true
+            required: false
         },
         taxCode: {
             type: String,
@@ -91,25 +92,26 @@ const preTeacherSchema = new mongoose.Schema(
             required: true
         },
         role: {
-            type: String,
+            type: [ROLE_TEACHER],
             required: true,
         },
-        courseRegister: {
+        dateStartWork: {
+            type: Date,
+            required: true
+        },
+        coursesRegister: {
             type: [{
                 idCourse: {
                     type: Schema.Types.ObjectId,
-                    // missing ref
+                    ref: Collections.COURSE
                 },
                 levelHandle: [
-                            Schema.Types.ObjectId
-                            // missing ref
+                    {
+                        type: Schema.Types.ObjectId,
+                        ref: Collections.COURSELEVEL
+                    }
                 ]
-            }
-            ],
-            required: true
-        },
-        levelHandler: {
-            type: String,
+            }],
             required: true
         },
     },
