@@ -92,7 +92,7 @@ const preTeacherSchema = new mongoose.Schema(
             required: true
         },
         role: {
-            type: [ROLE_TEACHER],
+            type: [String],
             required: true,
         },
         dateStartWork: {
@@ -119,5 +119,5 @@ const preTeacherSchema = new mongoose.Schema(
         timestamps: true,
     }
 );
-const preTeacherModel = mongoose.model(Collections.PRETEACHER, preTeacherSchema);
-export default preTeacherModel;
+const PreTeacherModel = mongoose.model(Collections.PRETEACHER, preTeacherSchema);
+export default PreTeacherModel;
