@@ -39,5 +39,14 @@ const middlewares = {
             resClientData(res, 403, undefined, error.message);
         }
     },
+    delete_IdFromBody: (req: RequestMid, res: Response, next: NextFunction) => {
+        try {
+            const { _id } = req.body;
+            if (_id) throw new Error('Bạn không được phép gửi _id trong request!');
+            next();
+        } catch (error: any) {
+            resClientData(res, 500, undefined, error.message);
+        }
+    }
 }
 export default middlewares;

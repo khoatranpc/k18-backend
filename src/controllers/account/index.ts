@@ -4,6 +4,7 @@ import AccountModel from "../../models/account";
 import { encryptPassword, generateJWT, resClientData, verifyPassword } from "../../utils";
 import { RequestMid } from "../../middlewares";
 import { getDB } from "../../database/config";
+import TeacherModel from "../../models/teacher";
 
 const accountController = {
     login: (req: Request, res: Response) => {
@@ -78,7 +79,13 @@ const accountController = {
         getDB(async (disconnect) => {
             try {
                 const crrAccount = req.acc;
-                resClientData(res, 201, crrAccount, 'Thành công');
+                const findInfor = await TeacherModel.findOne({ idAccount: crrAccount?.id });
+                resClientData(res, 201, {
+                    roleAccount: crrAccount?.role,
+                    token: crrAccount?.token,
+                    ...findInfor ? ((findInfor as unknown as Obj)._doc as Obj) : {}
+                }, 'Thành công!');
+
             } catch (error: any) {
                 resClientData(res, 403, undefined, error.message)
                 await disconnect();

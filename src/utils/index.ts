@@ -21,7 +21,7 @@ const getProjection = (...fields: Array<string>) => {
 function resClientData(res: Response, statusCode: number, data: any, message?: string) {
     res.status(statusCode).send({
         data,
-        message,
+        message: message ? message : (!!data ? 'Thành công!' : 'Thất bại!'),
         status: data ? true : false
     })
 }

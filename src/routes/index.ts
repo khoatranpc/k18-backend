@@ -7,6 +7,7 @@ import ClassRouter from './class';
 import LocationRouter from './location';
 import BookTeacherRouter from './bookTeacher';
 import PreTeacherRouter from './preTeacher';
+import TeacherRouter from './teacher';
 
 const RootRouter = express.Router();
 
@@ -19,5 +20,6 @@ RootRouter.use('/class', ClassRouter);
 RootRouter.use('/location', LocationRouter);
 RootRouter.use('/book-teacher', BookTeacherRouter);
 RootRouter.use('/pre-teacher', PreTeacherRouter);
+RootRouter.use('/teacher', TeacherRouter);
 
 export default RootRouter;

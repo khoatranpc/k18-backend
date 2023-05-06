@@ -1,14 +1,17 @@
 import mongoose from "mongoose";
 import { Schema } from "mongoose";
 import { Collections } from "../../database";
-import { GENDER, STATUS } from "../../global/enum";
+import { GENDER } from "../../global/enum";
 
-const preTeacherSchema = new mongoose.Schema(
+const teacherSchema = new mongoose.Schema(
     {
-        status: {
-            type: String,
-            enum: STATUS,
-            default: STATUS.PD
+        idAccount: {
+            type: Schema.Types.ObjectId,
+            ref: Collections.ACCOUNT
+        },
+        isOffical: {
+            type: Boolean,
+            default: false
         },
         email: {
             type: String,
@@ -99,25 +102,10 @@ const preTeacherSchema = new mongoose.Schema(
             type: Date,
             required: true
         },
-        coursesRegister: {
-            type: [{
-                idCourse: {
-                    type: Schema.Types.ObjectId,
-                    ref: Collections.COURSE
-                },
-                levelHandle: [
-                    {
-                        type: Schema.Types.ObjectId,
-                        ref: Collections.COURSELEVEL
-                    }
-                ]
-            }],
-            required: true
-        },
     },
     {
         timestamps: true,
     }
 );
-const PreTeacherModel = mongoose.model(Collections.PRETEACHER, preTeacherSchema);
-export default PreTeacherModel;
+const TeacherModel = mongoose.model(Collections.TEACHER, teacherSchema);
+export default TeacherModel;
