@@ -42,7 +42,7 @@ const timeScheduleController = {
                     start,
                     end,
                     weekday
-                });
+                }, { new: true });
                 resClientData(res, 201, {}, 'Thành công!');
                 await disconnect();
             } catch (error: any) {

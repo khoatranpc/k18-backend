@@ -1,5 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import { Collections } from "../../database";
+import { ROLE_TEACHER } from "../../global/enum";
 
 const bookTeacherSchema = new mongoose.Schema({
     classId: {
@@ -11,8 +12,21 @@ const bookTeacherSchema = new mongoose.Schema({
         ref: Collections.LOCATION
     },
     teacherRegister: {
-        // pending teacher collection
-        type: [],
+        type: [{
+            idTeacher: {
+                type: Schema.Types.ObjectId,
+                ref: Collections.TEACHER,
+                required: true
+            },
+            roleRegister: {
+                type: String,
+                enum: ROLE_TEACHER
+            },
+            accept: {
+                type: Boolean,
+                default: false
+            }
+        }],
         default: []
     }
 });

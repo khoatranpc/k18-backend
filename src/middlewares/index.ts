@@ -39,6 +39,15 @@ const middlewares = {
             resClientData(res, 403, undefined, error.message);
         }
     },
+    isTeacher: (req: RequestMid, res: Response, next: NextFunction) => {
+        try {
+            const crrRole = req.acc;
+            if (crrRole?.role !== ROLE.TEACHER) throw new Error('Bạn không thể thực hiện hành động!');
+            next();
+        } catch (error: any) {
+            resClientData(res, 403, undefined, error.message);
+        }
+    },
     delete_IdFromBody: (req: RequestMid, res: Response, next: NextFunction) => {
         try {
             const { _id } = req.body;
