@@ -15,6 +15,10 @@ const courseLevelSchema = new mongoose.Schema({
         type: Schema.Types.ObjectId,
         ref: Collections.COURSE,
         required: true
+    },
+    levelNumber: {
+        type: Number,
+        required: true
     }
 });
 

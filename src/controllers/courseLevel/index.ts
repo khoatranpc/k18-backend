@@ -8,13 +8,17 @@ const courseLevelController = {
     create: (req: Request, res: Response) => {
         getDB(async (disconnect) => {
             try {
-                const { courseId, levelName, levelCode, syllabus } = req.body;
+                const { courseId, levelName, levelCode, syllabus, levelNumber } = req.body;
+                const findExistedLevel = await CourseLevelModel.findOne({ levelNumber });
+                if (findExistedLevel) throw new Error(`Level ${levelNumber} đã tồn tại! Vui lòng thay đổi hoặc cập nhật level trước đó!`);
                 const createLevel = await CourseLevelModel.create({
                     courseId,
                     levelName,
                     levelCode,
-                    syllabus
+                    syllabus,
+                    levelNumber
                 });
+
                 await CourseModel.findByIdAndUpdate(courseId, {
                     $push: {
                         courseLevel: createLevel._id
