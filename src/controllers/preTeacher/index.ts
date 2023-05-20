@@ -1,12 +1,14 @@
 import { Request, Response } from "express";
 import { getDB } from "../../database/config";
-import { encryptPassword, resClientData } from "../../utils";
+import { encryptPassword, getProjection, resClientData } from "../../utils";
 import PreTeacherModel from "../../models/preTeacher";
 import TeacherModel from "../../models/teacher";
 import TeacherRegisterCourseModel from "../../models/teacherRegisterCourse";
 import { ObjectId } from "mongodb";
 import AccountModel from "../../models/account";
-import { STATUS } from "../../global/enum";
+import { ROLE_TEACHER, STATUS } from "../../global/enum";
+import { RequestMid } from "../../middlewares";
+import { Obj } from "../../global/interface";
 
 const preTeacherController = {
     register: (req: Request, res: Response) => {
@@ -43,6 +45,16 @@ const preTeacherController = {
                 if (findExistedEmail) throw new Error('Email đã tồn tại!');
                 const createAccout = await AccountModel.create(newAccount);
                 if (createAccout) {
+                    const mapRole = {
+                        roleIsST: false,
+                        roleIsMT: false,
+                        roleIsSP: false
+                    };
+                    (findRequest.role as Array<ROLE_TEACHER>).forEach((item) => {
+                        if (item === ROLE_TEACHER.ST) mapRole.roleIsST = true;
+                        if (item === ROLE_TEACHER.MT) mapRole.roleIsMT = true;
+                        if (item === ROLE_TEACHER.SP) mapRole.roleIsSP = true;
+                    })
                     const newInfoTeacher = {
                         _id: new ObjectId(),
                         idAccount: newAccount._id,
@@ -66,7 +78,7 @@ const preTeacherController = {
                         bankName: findRequest.bankName,
                         bankNumber: findRequest.bankNumber,
                         bankHolderName: findRequest.bankHolderName,
-                        role: findRequest.role,
+                        ...mapRole,
                         dateStartWork: findRequest.dateStartWork,
                     };
                     const createTeacherInfo = await TeacherModel.create(newInfoTeacher);
@@ -81,6 +93,19 @@ const preTeacherController = {
                     }
                 }
                 resClientData(res, 201, {}, 'Thành công!');
+            } catch (error: any) {
+                resClientData(res, 403, undefined, error.message);
+            }
+            await disconnect();
+        });
+    },
+    getAll: (req: RequestMid, res: Response) => {
+        getDB(async (disconnect) => {
+            try {
+                const { fields } = req.query;
+
+                const getAll = await PreTeacherModel.find({}, { ...fields && getProjection(...fields as Array<string>) });
+                resClientData(res, 200, getAll, 'Thành công!');
             } catch (error: any) {
                 resClientData(res, 403, undefined, error.message);
             }

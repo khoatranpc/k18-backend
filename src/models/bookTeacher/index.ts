@@ -11,6 +11,10 @@ const bookTeacherSchema = new mongoose.Schema({
         type: Schema.Types.ObjectId,
         ref: Collections.LOCATION
     },
+    groupNumber: {
+        type: Number,
+        required: true
+    },
     teacherRegister: {
         type: [{
             idTeacher: {

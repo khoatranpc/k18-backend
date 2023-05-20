@@ -105,6 +105,17 @@ const bookTeacherController = {
                                 resClientData(res, 201, {});
                             }
                             break;
+                        case 'UPDATE':
+                            if (findExistedRegister >= 0) {
+                                crrRequest.teacherRegister[findExistedRegister] = {
+                                    idTeacher: crrRequest.teacherRegister[findExistedRegister].idTeacher,
+                                    accept: true,
+                                    roleRegister: role ? role as ROLE_TEACHER : ROLE_TEACHER.MT
+                                }
+                                await crrRequest.save();
+                                resClientData(res, 201, {});
+                            }
+                            break;
                         case 'REMOVE':
                             if (findExistedRegister >= 0) {
                                 crrRequest.teacherRegister.splice(findExistedRegister, 1);
@@ -113,7 +124,7 @@ const bookTeacherController = {
                             } else throw new Error('Giáo viên này chưa đăng ký!');
                             break;
                         default:
-                            resClientData(res, 500, undefined, 'options truyền chỉ hợp lệ ADD hoặc REMOVE');
+                            resClientData(res, 500, undefined, 'options truyền chỉ hợp lệ ADD hoặc REMOVE hoặc UPDATE');
                             break;
                     }
                 } else throw new Error('Bạn không thể thực hiện yêu cầu!');
@@ -123,6 +134,7 @@ const bookTeacherController = {
             await disconnect();
         })
     },
+
 };
 
 export default bookTeacherController;

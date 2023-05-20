@@ -9,6 +9,8 @@ export enum Collections {
     PRETEACHER = 'preteachers',
     TEACHER = 'teachers',
     TEACHERREGISTERCOURSE = 'teacherregistercourses',
+    TEACHERSCHEDULE = 'teacherschedules',
+    CLASSSESSION = 'classsessions'
 }
 const getUri = () => {
     const { MONGO_CLIENT, MONGO_USERNAME, MONGO_PASSWORD, MONGO_HOST, MONGO_PORT, DB_NAME } = process.env;

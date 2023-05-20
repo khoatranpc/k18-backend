@@ -94,8 +94,16 @@ const teacherSchema = new mongoose.Schema(
             type: String,
             required: true
         },
-        role: {
-            type: [String],
+        roleIsST: {
+            type: Boolean,
+            required: true,
+        },
+        roleIsMT: {
+            type: Boolean,
+            required: true,
+        },
+        roleIsSP: {
+            type: Boolean,
             required: true,
         },
         dateStartWork: {

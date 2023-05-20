@@ -3,6 +3,7 @@ import crypto from 'crypto';
 import { v4 as uuidv4 } from 'uuid';
 import jwt from 'jsonwebtoken';
 import { JwtVerify, Obj } from '../global/interface';
+import { WEEKDAY } from '../global/enum';
 
 const genRandomId = () => {
     return uuidv4()
@@ -63,11 +64,65 @@ const verifyPassword = (password: string, acc: Obj) => {
         .toString("hex");
     return hashedPassword === acc.password;
 }
+
+const getDateOfWeekday = (date: Date, countDay: number) => {
+    const newDate = date;
+    newDate.setDate(newDate.getDate() + countDay);
+    return newDate;
+}
+
+const getWeekDay = (dayNumber: number | undefined, toNumber?: boolean, crrWeekday?: WEEKDAY) => {
+    if (!toNumber) {
+        switch (dayNumber) {
+            case 0:
+                return WEEKDAY.T2;
+            case 1:
+                return WEEKDAY.T3;
+            case 2:
+                return WEEKDAY.T4;
+            case 3:
+                return WEEKDAY.T5;
+            case 4:
+                return WEEKDAY.T6;
+            case 5:
+                return WEEKDAY.T7;
+            case 6:
+                return WEEKDAY.T6;
+            default:
+                return -1
+        }
+    } else {
+        switch (crrWeekday) {
+            case WEEKDAY.T2:
+                return 0;
+            case WEEKDAY.T3:
+                return 1;
+            case WEEKDAY.T4:
+                return 2;
+            case WEEKDAY.T5:
+                return 3;
+            case WEEKDAY.T6:
+                return 4;
+            case WEEKDAY.T7:
+                return 5;
+            case WEEKDAY.CN:
+                return 6;
+            default:
+                return -1;
+        }
+    }
+}
+const formatDateToString = (date: Date) => {
+    return date.toLocaleDateString("en-US");
+}
 export {
     genRandomId,
     getProjection,
     resClientData,
     generateJWT,
     verifyJWT,
-    verifyPassword
+    verifyPassword,
+    getDateOfWeekday,
+    getWeekDay,
+    formatDateToString
 };
