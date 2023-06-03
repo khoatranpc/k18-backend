@@ -28,6 +28,10 @@ const classSessionSchema = new mongoose.Schema({
         required: true,
         type: Schema.Types.ObjectId,
         ref: Collections.TIMESCHEDULE
+    },
+    isOH: {
+        type: Boolean,
+        default: false
     }
 });
 
