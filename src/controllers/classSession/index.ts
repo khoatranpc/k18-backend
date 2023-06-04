@@ -104,14 +104,27 @@ const classSessionController = {
                         }
                         break;
                     case 'DELETE':
-                        const { classSessionId } = req.body;
+                        const { classSessionId, ssN } = req.body;
                         // delete class session
-                        await ClassSessionModel.findByIdAndDelete(classSessionId);
+                        await ClassSessionModel.deleteMany({
+                            sessionNumber: ssN,
+                        });
                         // delete for teacher schedule
                         await TeacherScheduleModel.deleteMany({
                             classSessionId
                         });
                         resClientData(res, 201, {});
+                        break;
+                    case 'UPDATE':
+                        const { ssNumber, dateSs, document, weekdayTimeId } = req.body;
+                        await ClassSessionModel.updateMany({
+                            sessionNumber: {}
+                        }, {
+                            ssNumber,
+                            dateSs,
+                            document,
+                            weekdayTimeId
+                        })
                         break;
                     default:
                         throw new Error('Không thuộc trong các options cung cấp!')
