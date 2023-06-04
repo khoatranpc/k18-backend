@@ -105,7 +105,12 @@ const classSessionController = {
                         break;
                     case 'DELETE':
                         const { classSessionId } = req.body;
+                        // delete class session
                         await ClassSessionModel.findByIdAndDelete(classSessionId);
+                        // delete for teacher schedule
+                        await TeacherScheduleModel.deleteMany({
+                            classSessionId
+                        });
                         resClientData(res, 201, {});
                         break;
                     default:
