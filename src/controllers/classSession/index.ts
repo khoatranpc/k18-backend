@@ -120,8 +120,8 @@ const classSessionController = {
                         await ClassSessionModel.updateMany({
                             sessionNumber: {}
                         }, {
-                            ssNumber,
-                            dateSs,
+                            sessionNumber: ssNumber,
+                            date: dateSs,
                             document,
                             weekdayTimeId
                         })
