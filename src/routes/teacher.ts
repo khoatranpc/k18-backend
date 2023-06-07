@@ -3,7 +3,7 @@ import teacherController from "../controllers/teacher";
 import middlewares from "../middlewares";
 
 const TeacherRouter = Router();
-TeacherRouter.get('', teacherController.getAll);
-TeacherRouter.get('/:id', teacherController.getOne);
-TeacherRouter.put('/:id', middlewares.verifyJWT, teacherController.findByIdAndUpdate);
+TeacherRouter.get('', middlewares.verifyJWT, middlewares.isTE, teacherController.getAll);
+TeacherRouter.get('/:id', middlewares.verifyJWT, middlewares.isTE, teacherController.getOne);
+TeacherRouter.put('/:id', middlewares.verifyJWT, middlewares.isTE, teacherController.findByIdAndUpdate);
 export default TeacherRouter;
