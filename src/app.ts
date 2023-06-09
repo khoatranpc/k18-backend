@@ -1,11 +1,13 @@
+import mongoose from 'mongoose';
 import express, { json, urlencoded } from 'express';
 import cors from 'cors';
 import middlewares from './middlewares';
 import RootRouter from './routes';
+import getUri from './database';
 
 function App(port: number) {
     const app = express();
-
+    mongoose.connect(getUri());
     app.use(cors({
         origin: [process.env.CLIENT_DOMAIN as string, process.env.CLIENT_DOMAIN_HOST as string]
     }))
