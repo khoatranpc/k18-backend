@@ -22,7 +22,14 @@ const teacherScheduleSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
-    active: Boolean
+    checked: {
+        type: Boolean,
+        default: false,
+    },
+    isOff: {
+        type: Boolean,
+        default: false,
+    }
 });
 
 const TeacherScheduleModel = mongoose.model(Collections.TEACHERSCHEDULE, teacherScheduleSchema);

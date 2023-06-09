@@ -32,6 +32,10 @@ const classSessionSchema = new mongoose.Schema({
     isOH: {
         type: Boolean,
         default: false
+    },
+    ran: {
+        type: Boolean,
+        default: false
     }
 });
 

@@ -155,7 +155,7 @@ const classController = {
                                         classSessionId: newSession._id,
                                         teacherId: recordTeacher.idTeacher,
                                         role: recordTeacher.roleRegister,
-                                        active: false
+                                        checked: false
                                     });
                                 })
                             });

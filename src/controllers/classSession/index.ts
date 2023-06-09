@@ -8,6 +8,8 @@ import TimeScheduleModel from "../../models/timeSchedule";
 import { Obj } from "../../global/interface";
 import BookTeacherModel from "../../models/bookTeacher";
 import { ObjectId } from "mongodb";
+import TeacherModel from "../../models/teacher";
+import { ROLE_TEACHER } from "../../global/enum";
 
 const classSessionController = {
     getClassSessionByClassId: (req: Request, res: Response) => {
@@ -124,11 +126,94 @@ const classSessionController = {
                             date: dateSs,
                             document,
                             weekdayTimeId
-                        })
+                        }, {
+                            new: true
+                        });
+                        resClientData(res, 201, {});
+                        break;
+                    case 'RAN':
+                        const { ssNumberRan, sessionId } = req.body;
+                        if (!ssNumberRan) throw new Error('Thiếu buổi học số (ssNumberRan)!');
+                        if (!sessionId) throw new Error('Thiếu id  buổi học (sessionId)!');
+                        if (!Array.isArray(sessionId)) throw new Error('sessionId phải là 1 mảng!');
+                        await ClassSessionModel.updateMany({
+                            sessionNumber: ssNumberRan,
+                        }, {
+                            ran: true
+                        }, {
+                            new: true
+                        });
+                        const checkedAllTeacherInSession = await TeacherScheduleModel.updateMany({
+                            'classSessionId': {
+                                $in: [sessionId]
+                            }
+                        }, {
+                            checked: true
+                        }, {
+                            new: true
+                        });
+                        resClientData(res, 201, checkedAllTeacherInSession);
                         break;
                     default:
                         throw new Error('Không thuộc trong các options cung cấp!')
                 }
+            } catch (error: any) {
+                resClientData(res, 403, undefined, error.message);
+            }
+            await disconnect();
+        })
+    },
+    handleTeacherOnLeave: (req: Request, res: Response) => {
+        getDB(async (disconnect) => {
+            try {
+                const { classId, classSessionId, onLeave, currentTeacherId, replaceTeacherId } = req.body;
+                const crrClassSession = await ClassSessionModel.findOne({
+                    classId,
+                    _id: classSessionId
+                });
+                if (!crrClassSession) throw new Error('Không tìm thấy bản ghi buổi học này!');
+
+                const getRecordScheduleCrrTeacher = await TeacherScheduleModel.findOne({
+                    classSessionId,
+                    teacherId: currentTeacherId
+                });
+                if (!getRecordScheduleCrrTeacher) throw new Error('Giáo viên này không có lịch tại buổi học này!');
+
+                const teacherReplace = await TeacherModel.findById(replaceTeacherId);
+                if (!teacherReplace) throw new Error('Không tìm được giáo viên này!');
+                switch (onLeave) {
+                    case "OFF":
+                        getRecordScheduleCrrTeacher.isOff = true;
+                        if (getRecordScheduleCrrTeacher.role === ROLE_TEACHER.SP) {
+                            resClientData(res, 201, {});
+                        } else {
+                            // generate one record teacher schedule for replace teacher
+                            const recordTeacherScheduleForRT = {
+                                teacherId: replaceTeacherId,
+                                classSessionId,
+                                role: getRecordScheduleCrrTeacher.role,
+                                isReplaceTeacher: true,
+                                checked: false,
+                                isOff: false
+                            }
+                            await TeacherScheduleModel.create(recordTeacherScheduleForRT);
+                        }
+                        await getRecordScheduleCrrTeacher.save();
+                        resClientData(res, 201, {});
+                        break;
+                    case 'REPLACE':
+                        await TeacherScheduleModel.updateMany({
+                            teacherId: currentTeacherId,
+                            isOff: false,
+                            checked: false
+                        }, {
+                            teacherId: replaceTeacherId
+                        });
+                        break;
+                    default:
+                        break;
+                }
+
             } catch (error: any) {
                 resClientData(res, 403, undefined, error.message);
             }
