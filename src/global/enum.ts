@@ -35,3 +35,8 @@ export enum ROLE_TEACHER {
     MT = 'MT',
     ST = 'ST'
 }
+export enum ClassForm {
+    HYBRID = 'HYBRID',
+    ONLINE = 'ONLINE',
+    OFFLINE = 'OFFLINE',
+}

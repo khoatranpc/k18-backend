@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import { Collections } from "../../database";
-import { STATUS_CLASS } from "../../global/enum";
+import { ClassForm, STATUS_CLASS } from "../../global/enum";
 
 const classSchema = new mongoose.Schema({
     codeClass: {
@@ -33,7 +33,13 @@ const classSchema = new mongoose.Schema({
         type: String,
         enum: STATUS_CLASS,
         default: STATUS_CLASS.PREOPEN
+    },
+    classForm: {
+        type: String,
+        enum: ClassForm,
+        default: ClassForm.HYBRID
     }
+
 })
 
 const ClassModel = mongoose.model(Collections.CLASS, classSchema);

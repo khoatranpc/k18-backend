@@ -11,11 +11,23 @@ import TeacherScheduleModel from "../../models/teacherSchedule";
 const classController = {
     getAll: async (req: Request, res: Response) => {
         try {
-            const { fields } = req.query;
-            const classes = await ClassModel.find({}, { ...fields && getProjection(...fields as Array<string>) })
-                .populate('courseId courseLevelId timeSchedule', { ...fields && getProjection(...fields as Array<string>) });
-
-            resClientData(res, 200, classes, 'Thành công!');
+            const { fields, recordOnPage, currentPage } = req.query;
+            if (recordOnPage && currentPage) {
+                const classes = await ClassModel.find({}, { ...fields && getProjection(...fields as Array<string>) })
+                    .skip((Number(recordOnPage) * Number(currentPage)) - Number(recordOnPage)).limit(Number(recordOnPage))
+                    .populate('courseId courseLevelId timeSchedule', { ...fields && getProjection(...fields as Array<string>) });
+                const totalClasses = await ClassModel.find({});
+                const dataSend = {
+                    classes,
+                    totalPage: Math.ceil(totalClasses.length / Number(recordOnPage))
+                }
+                resClientData(res, 200, dataSend, 'Thành công!');
+            }
+            else {
+                const classes = await ClassModel.find({}, { ...fields && getProjection(...fields as Array<string>) })
+                    .populate('courseId courseLevelId timeSchedule', { ...fields && getProjection(...fields as Array<string>) });
+                resClientData(res, 200, classes, 'Thành công!');
+            }
         } catch (error: any) {
             resClientData(res, 500, undefined, error.message);
         }
