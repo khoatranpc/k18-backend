@@ -12,22 +12,44 @@ const classController = {
     getAll: async (req: Request, res: Response) => {
         try {
             const { fields, recordOnPage, currentPage } = req.query;
+            let classes;
             if (recordOnPage && currentPage) {
-                const classes = await ClassModel.find({}, { ...fields && getProjection(...fields as Array<string>) })
+                classes = await ClassModel.find({}, { ...fields && getProjection(...fields as Array<string>) })
                     .skip((Number(recordOnPage) * Number(currentPage)) - Number(recordOnPage)).limit(Number(recordOnPage))
                     .populate('courseId courseLevelId timeSchedule', { ...fields && getProjection(...fields as Array<string>) });
-                const totalClasses = await ClassModel.find({});
-                const dataSend = {
-                    classes,
-                    totalPage: Math.ceil(totalClasses.length / Number(recordOnPage))
-                }
-                resClientData(res, 200, dataSend, 'Thành công!');
             }
             else {
-                const classes = await ClassModel.find({}, { ...fields && getProjection(...fields as Array<string>) })
+                classes = await ClassModel.find({}, { ...fields && getProjection(...fields as Array<string>) })
                     .populate('courseId courseLevelId timeSchedule', { ...fields && getProjection(...fields as Array<string>) });
-                resClientData(res, 200, classes, 'Thành công!');
             }
+            const totalClasses = await ClassModel.find({});
+            const getListCurrentClassId = classes.map((item) => item._id);
+            const listBookTeacher = await BookTeacherModel.find({
+                classId: {
+                    $in: getListCurrentClassId
+                },
+            }, {
+                teacherRegister: 1,
+                classId: 1,
+
+            }).populate('teacherRegister.idTeacher', { fullName: 1, _id: 1 });
+            const newRefListClass = classes.map((item) => {
+                const findRecord = listBookTeacher.filter((record) => {
+                    return record.classId?.toString() === item._id.toString()
+                });
+                return {
+                    ...item.toObject(),
+                    recordBookTeacher: findRecord
+                }
+            })
+            const dataSend = {
+                classes: newRefListClass,
+                totalPage: Math.ceil(totalClasses.length / Number(recordOnPage)),
+                currentPage: Number(currentPage) || '',
+                recordOnPage: Number(recordOnPage || '')
+            }
+
+            resClientData(res, 200, dataSend, 'Thành công!');
         } catch (error: any) {
             resClientData(res, 500, undefined, error.message);
         }
