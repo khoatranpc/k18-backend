@@ -40,6 +40,8 @@ const classSchema = new mongoose.Schema({
         default: ClassForm.HYBRID
     }
 
+}, {
+    timestamps: true
 })
 
 const ClassModel = mongoose.model(Collections.CLASS, classSchema);

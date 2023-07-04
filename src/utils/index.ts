@@ -112,6 +112,15 @@ const getWeekDay = (dayNumber: number | undefined, toNumber?: boolean, crrWeekda
         }
     }
 }
+const getOrderWeekday: Record<WEEKDAY, number> = {
+    T2: 1,
+    T3: 2,
+    T4: 3,
+    T5: 4,
+    T6: 5,
+    T7: 6,
+    CN: 7
+}
 const formatDateToString = (date: Date) => {
     return date.toLocaleDateString("en-US");
 }
@@ -124,5 +133,6 @@ export {
     verifyPassword,
     getDateOfWeekday,
     getWeekDay,
-    formatDateToString
+    formatDateToString,
+    getOrderWeekday
 };

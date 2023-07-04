@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
-import { resClientData } from "../../utils";
+import { getOrderWeekday, resClientData } from "../../utils";
 import TimeScheduleModel from "../../models/timeSchedule";
+import { WEEKDAY } from "../../global/enum";
 
 const timeScheduleController = {
     create: async (req: Request, res: Response) => {
@@ -18,7 +19,13 @@ const timeScheduleController = {
     },
     getAll: async (_: Request, res: Response) => {
         try {
-            const timeSchedules = await TimeScheduleModel.find({});
+            const listTimeSchedules = await TimeScheduleModel.find({});
+            const timeSchedules = listTimeSchedules.map((item) => {
+                return {
+                    ...item.toObject(),
+                    order: getOrderWeekday[item.weekday as WEEKDAY]
+                }
+            }).sort((a, b) => a.order - b.order)
             resClientData(res, 200, timeSchedules, 'Thành công!');
         } catch (error: any) {
             resClientData(res, 500, undefined, error.message)

@@ -15,11 +15,17 @@ const classController = {
             let classes;
             if (recordOnPage && currentPage) {
                 classes = await ClassModel.find({}, { ...fields && getProjection(...fields as Array<string>) })
+                    .sort({
+                        createdAt: -1
+                    })
                     .skip((Number(recordOnPage) * Number(currentPage)) - Number(recordOnPage)).limit(Number(recordOnPage))
                     .populate('courseId courseLevelId timeSchedule', { ...fields && getProjection(...fields as Array<string>) });
             }
             else {
                 classes = await ClassModel.find({}, { ...fields && getProjection(...fields as Array<string>) })
+                    .sort({
+                        createdAt: -1
+                    })
                     .populate('courseId courseLevelId timeSchedule', { ...fields && getProjection(...fields as Array<string>) });
             }
             const totalClasses = await ClassModel.find({});
