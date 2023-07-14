@@ -5,6 +5,7 @@ import ClassModel from "../../models/class";
 import { ROLE, ROLE_TEACHER, STATUS_CLASS } from "../../global/enum";
 import { RequestMid } from "../../middlewares";
 import { getProjection, resClientData } from "../../utils";
+import mongoose from "mongoose";
 
 const bookTeacherController = {
     create: async (req: Request, res: Response) => {
@@ -32,7 +33,7 @@ const bookTeacherController = {
     handleTeacherRegisterLocaltionForClass: async (req: RequestMid, res: Response) => {
         try {
             const { idRequest } = req.params;
-            const { options, role, idTeacher } = req.query;
+            const { options, role, idTeacher, updateTeacherId } = req.query;
 
             const crrRequest = await BookTeacherModel.findById(idRequest);
             if (!crrRequest) throw new Error('Không tồn tại bản yêu cầu!');
@@ -45,7 +46,6 @@ const bookTeacherController = {
                 }
             });
             if (!crrTeacher) throw new Error('Không tồn tại giáo viên này!');
-
             const findExistedRegister = crrRequest.teacherRegister.findIndex(item => {
                 return (req.acc?.role === ROLE.TEACHER ?
                     (item.idTeacher?.toString() === crrTeacher?._id.toString()) :
@@ -98,9 +98,10 @@ const bookTeacherController = {
                         }
                         break;
                     case 'UPDATE':
+                        if (!updateTeacherId) throw new Error('Chưa có trường updateTeacherId!');
                         if (findExistedRegister >= 0) {
                             crrRequest.teacherRegister[findExistedRegister] = {
-                                idTeacher: crrRequest.teacherRegister[findExistedRegister].idTeacher,
+                                idTeacher: new mongoose.Types.ObjectId(updateTeacherId?.toString()),
                                 accept: true,
                                 roleRegister: role ? role as ROLE_TEACHER : ROLE_TEACHER.MT
                             }
