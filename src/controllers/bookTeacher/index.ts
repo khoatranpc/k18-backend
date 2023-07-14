@@ -106,7 +106,7 @@ const bookTeacherController = {
                             }
                             await crrRequest.save();
                             resClientData(res, 201, {});
-                        }
+                        } else throw new Error('Giáo viên này chưa đăng ký!');
                         break;
                     case 'REMOVE':
                         if (findExistedRegister >= 0) {

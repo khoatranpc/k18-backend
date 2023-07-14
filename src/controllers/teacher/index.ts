@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, response } from "express";
 import { getProjection, resClientData } from "../../utils";
 import TeacherModel from "../../models/teacher";
 import { RequestMid } from "../../middlewares";
@@ -38,6 +38,25 @@ const teacherController = {
             resClientData(res, 201, {});
         } catch (error: any) {
             resClientData(res, 403, undefined, error.message);
+        }
+    },
+    findByEmail: async (req: Request, res: Response) => {
+        try {
+            const { email } = req.query;
+            const listTeacher = await TeacherModel.find({
+                email: {
+                    "$regex": email as string,
+                    "$options": "i"
+                },
+                isOffical: true
+            }, {
+                _id: 1,
+                fullName: 1
+            });
+            resClientData(res, 200, listTeacher);
+
+        } catch (error: any) {
+            resClientData(res, 404, undefined, error.message);
         }
     }
 }
