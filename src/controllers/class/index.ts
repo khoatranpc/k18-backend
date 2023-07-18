@@ -143,7 +143,7 @@ const classController = {
                         day.day2 = crrItem;
                     }
                 }
-                for (let i = 2; i < 17; i++) {
+                for (let i = 2; i < 16; i++) {
                     listSession[i] = getDateOfWeekday(new Date(listSession[i - 2]), 7);
                 }
 
