@@ -33,7 +33,7 @@ const bookTeacherController = {
     handleTeacherRegisterLocaltionForClass: async (req: RequestMid, res: Response) => {
         try {
             const { idRequest } = req.params;
-            const { options, role, idTeacher, updateTeacherId } = req.query;
+            const { options, role, idTeacher, updateTeacherId, accept } = req.query;
 
             const crrRequest = await BookTeacherModel.findById(idRequest);
             if (!crrRequest) throw new Error('Không tồn tại bản yêu cầu!');
@@ -102,11 +102,11 @@ const bookTeacherController = {
                         if (findExistedRegister >= 0) {
                             crrRequest.teacherRegister[findExistedRegister] = {
                                 idTeacher: new mongoose.Types.ObjectId(updateTeacherId?.toString()),
-                                accept: true,
+                                accept: accept as unknown as boolean,
                                 roleRegister: role ? role as ROLE_TEACHER : ROLE_TEACHER.MT
                             }
                             await crrRequest.save();
-                            resClientData(res, 201, {});
+                            resClientData(res, 201, { recordUpdate: idRequest });
                         } else throw new Error('Giáo viên này chưa đăng ký!');
                         break;
                     case 'REMOVE':

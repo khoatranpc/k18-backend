@@ -104,9 +104,7 @@ const classController = {
             if (courseId) crrClass.courseId = courseId;
             if (courseLevelId) crrClass.courseLevelId = courseLevelId;
             if (timeSchedule) crrClass.timeSchedule = timeSchedule;
-            if (status) crrClass.status = status;
 
-            await crrClass.save();
             if (status === STATUS_CLASS.RUNNING && crrClass.status !== STATUS_CLASS.RUNNING) {
                 const findExistedClassSessionRecords = await ClassSessionModel.find({
                     classId: crrClass._id
@@ -145,12 +143,8 @@ const classController = {
                         day.day2 = crrItem;
                     }
                 }
-                for (let i = 0; i < 14; i++) {
-                    if (i % 2 === 0) {
-                        listSession.push(new Date(dayStart));
-                    } else {
-                        listSession.push(new Date(nextDaySession));
-                    }
+                for (let i = 2; i < 17; i++) {
+                    listSession[i] = getDateOfWeekday(new Date(listSession[i - 2]), 7);
                 }
 
                 const crrRecordBookTeacher = await BookTeacherModel.find({
@@ -170,7 +164,6 @@ const classController = {
                             weekdayTimeScheduleId: index % 2 === 0 ? day.day1?._id : day.day2?._id,
                             _id: new ObjectId()
                         }
-
                         crrRecordBookTeacher.forEach((recordBookTeacher) => {
                             const teacherAccepted = recordBookTeacher.teacherRegister.filter((teacher) => {
                                 return teacher.accept === true && newSession.locationId?.toString() === recordBookTeacher.locationId?.toString()
@@ -191,7 +184,9 @@ const classController = {
 
                 await ClassSessionModel.insertMany(genListSessionDocument);
                 const schedule = await TeacherScheduleModel.insertMany(listTeacherAccepted);
+                if (status) crrClass.status = status;
 
+                await crrClass.save();
                 resClientData(res, 201, {
                     schedule
                 }, 'Thành công!');
