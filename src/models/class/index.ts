@@ -5,7 +5,8 @@ import { ClassForm, STATUS_CLASS } from "../../global/enum";
 const classSchema = new mongoose.Schema({
     codeClass: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     courseId: {
         type: Schema.Types.ObjectId,

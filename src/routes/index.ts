@@ -10,6 +10,7 @@ import PreTeacherRouter from './preTeacher';
 import TeacherRouter from './teacher';
 import ClassSessionRouter from './classSession';
 import TeacherScheduleRouter from './teacherSchedule';
+import TeacherRegisterCouseRouter from './teacherRegisterCourse';
 
 const RootRouter = express.Router();
 
@@ -25,6 +26,7 @@ RootRouter.use('/pre-teacher', PreTeacherRouter);
 RootRouter.use('/teacher', TeacherRouter);
 RootRouter.use('/teacher-schedule', TeacherScheduleRouter);
 RootRouter.use('/class-session', ClassSessionRouter);
+RootRouter.use('/teacher-registercourse', TeacherRegisterCouseRouter);
 
 
 export default RootRouter;

@@ -1,4 +1,4 @@
-import { Request, Response, response } from "express";
+import { Request, Response } from "express";
 import { getProjection, resClientData } from "../../utils";
 import TeacherModel from "../../models/teacher";
 import { RequestMid } from "../../middlewares";
@@ -7,9 +7,23 @@ import { ROLE } from "../../global/enum";
 const teacherController = {
     getAll: async (req: Request, res: Response) => {
         try {
-            const { fields } = req.query;
-            const listTeacher = await TeacherModel.find({}, { ...fields && getProjection(...fields as Array<string>) });
-            resClientData(res, 200, listTeacher);
+            const { fields, recordOnPage, currentPage } = req.query;
+            let listTeacher;
+            if (recordOnPage && currentPage) {
+                listTeacher = await TeacherModel.find({}, { ...fields && getProjection(...fields as Array<string>) })
+                    .skip((Number(recordOnPage) * Number(currentPage)) - Number(recordOnPage)).limit(Number(recordOnPage))
+            } else {
+                listTeacher = await TeacherModel.find({}, { ...fields && getProjection(...fields as Array<string>) });
+            }
+            const listTeacherLength = await TeacherModel.countDocuments({});
+            const dataSend = {
+                listTeacher: listTeacher,
+                totalPage: Math.ceil(listTeacherLength / Number(recordOnPage)),
+                currentPage: Number(currentPage) || '',
+                recordOnPage: Number(recordOnPage || '')
+            }
+
+            resClientData(res, 200, dataSend);
         } catch (error: any) {
             resClientData(res, 500, undefined, error.message);
         }

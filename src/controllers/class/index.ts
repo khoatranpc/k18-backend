@@ -28,7 +28,7 @@ const classController = {
                     })
                     .populate('courseId courseLevelId timeSchedule', { ...fields && getProjection(...fields as Array<string>) });
             }
-            const totalClasses = await ClassModel.find({});
+            const totalClasses = await ClassModel.countDocuments({});
             const getListCurrentClassId = classes.map((item) => item._id);
             const listBookTeacher = await BookTeacherModel.find({
                 classId: {
@@ -50,7 +50,7 @@ const classController = {
             })
             const dataSend = {
                 classes: newRefListClass,
-                totalPage: Math.ceil(totalClasses.length / Number(recordOnPage)),
+                totalPage: Math.ceil(totalClasses / Number(recordOnPage)),
                 currentPage: Number(currentPage) || '',
                 recordOnPage: Number(recordOnPage || '')
             }
@@ -99,17 +99,26 @@ const classController = {
             const crrClass = await ClassModel.findById(id).populate('timeSchedule');
             if (!crrClass) throw new Error('Cập nhật thất bại!');
 
-            if (dayRange) crrClass.dayRange = dayRange;
-            if (codeClass) crrClass.codeClass = codeClass;
-            if (courseId) crrClass.courseId = courseId;
-            if (courseLevelId) crrClass.courseLevelId = courseLevelId;
-            if (timeSchedule) crrClass.timeSchedule = timeSchedule;
-
-            if (status === STATUS_CLASS.RUNNING && crrClass.status !== STATUS_CLASS.RUNNING) {
+            if (crrClass.status === STATUS_CLASS.PREOPEN) {
+                if (dayRange) crrClass.dayRange = dayRange;
+                if (codeClass) crrClass.codeClass = codeClass;
+                if (status) crrClass.status = status;
+                if (courseId) crrClass.courseId = courseId;
+                if (courseLevelId) crrClass.courseLevelId = courseLevelId;
+                if (timeSchedule) crrClass.timeSchedule = timeSchedule;
+            } else if (status === STATUS_CLASS.FINISH) {
+                if (status) crrClass.status = status;
+                await crrClass.save();
+                resClientData(res, 201, {}, 'Thành công!');
+            } else if (status === STATUS_CLASS.RUNNING && crrClass.status === STATUS_CLASS.PREOPEN) {
                 const findExistedClassSessionRecords = await ClassSessionModel.find({
                     classId: crrClass._id
                 });
-                if (findExistedClassSessionRecords.length !== 0) throw new Error('Đã có thông tin các buổi học!')
+                if (findExistedClassSessionRecords.length !== 0) {
+                    if (status) crrClass.status = status;
+                    await crrClass.save();
+                    throw new Error('Đã có thông tin các buổi học!')
+                }
                 const dayStart = new Date(crrClass.dayRange?.start as Date);
                 const weekdayOfDayStart = getWeekDay(new Date((crrClass.dayRange?.start as Date)).getDay());
                 const getIndexStartWeekday = getWeekDay(undefined, true, weekdayOfDayStart as WEEKDAY)
@@ -183,16 +192,10 @@ const classController = {
                 });
 
                 await ClassSessionModel.insertMany(genListSessionDocument);
-                const schedule = await TeacherScheduleModel.insertMany(listTeacherAccepted);
-                if (status) crrClass.status = status;
-
-                await crrClass.save();
-                resClientData(res, 201, {
-                    schedule
-                }, 'Thành công!');
-            } else {
-                throw new Error('Lớp đã bắt đầu!')
+                await TeacherScheduleModel.insertMany(listTeacherAccepted);
             }
+            await crrClass.save();
+            resClientData(res, 201, {}, 'Thành công!');
         } catch (error: any) {
             resClientData(res, 403, undefined, error.message);
         }

@@ -7,7 +7,6 @@ import { ObjectId } from "mongodb";
 import AccountModel from "../../models/account";
 import { ROLE_TEACHER, STATUS } from "../../global/enum";
 import { RequestMid } from "../../middlewares";
-import { Obj } from "../../global/interface";
 
 const preTeacherController = {
     register: async (req: Request, res: Response) => {

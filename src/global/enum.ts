@@ -14,7 +14,7 @@ export enum STATUS {
 export enum GENDER {
     M = "MALE",
     FM = "FEMALE",
-    NA = "BEDE"
+    NA = "NA"
 }
 export enum WEEKDAY {
     T2 = 'T2',
@@ -28,7 +28,8 @@ export enum WEEKDAY {
 export enum STATUS_CLASS {
     RUNNING = 'RUNNING',
     PREOPEN = 'PREOPEN',
-    DROP = 'DROP'
+    DROP = 'DROP',
+    FINISH = 'FINISH'
 }
 export enum ROLE_TEACHER {
     SP = 'SP',
