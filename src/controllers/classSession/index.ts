@@ -9,6 +9,7 @@ import BookTeacherModel from "../../models/bookTeacher";
 import { ObjectId } from "mongodb";
 import TeacherModel from "../../models/teacher";
 import { ROLE_TEACHER } from "../../global/enum";
+import mongoose from "mongoose";
 
 const classSessionController = {
     getClassSessionByClassId: async (req: Request, res: Response) => {
@@ -205,6 +206,23 @@ const classSessionController = {
 
         } catch (error: any) {
             resClientData(res, 403, undefined, error.message);
+        }
+    },
+    getAttendanceTeacher: async (req: Request, res: Response) => {
+        try {
+            const { sessionNumber, classId, fields } = req.query;
+            const findAllClassSessionMappingSessionNumber = await ClassSessionModel.find({
+                sessionNumber: sessionNumber,
+                classId
+            });
+            const listTeacher = await TeacherScheduleModel.find({
+                classSessionId: {
+                    $in: findAllClassSessionMappingSessionNumber.map((item) => item._id)
+                }
+            }, { ...fields && getProjection(...fields as Array<string>) }).populate('classSessionId teacherId classSessionId.locationId', { ...fields && getProjection(...fields as Array<string>) });
+            resClientData(res, 200, listTeacher);
+        } catch (error: any) {
+            resClientData(res, 500, undefined, error.message);
         }
     }
 };

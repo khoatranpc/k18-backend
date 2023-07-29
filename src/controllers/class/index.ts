@@ -99,26 +99,28 @@ const classController = {
             const crrClass = await ClassModel.findById(id).populate('timeSchedule');
             if (!crrClass) throw new Error('Cập nhật thất bại!');
 
-            if (crrClass.status === STATUS_CLASS.PREOPEN) {
+            if (status === STATUS_CLASS.PREOPEN) {
                 if (dayRange) crrClass.dayRange = dayRange;
                 if (codeClass) crrClass.codeClass = codeClass;
                 if (status) crrClass.status = status;
                 if (courseId) crrClass.courseId = courseId;
                 if (courseLevelId) crrClass.courseLevelId = courseLevelId;
                 if (timeSchedule) crrClass.timeSchedule = timeSchedule;
-            } else if (status === STATUS_CLASS.FINISH) {
+            }
+            if (status === STATUS_CLASS.FINISH) {
                 if (status) crrClass.status = status;
                 await crrClass.save();
                 resClientData(res, 201, {}, 'Thành công!');
-            } else if (status === STATUS_CLASS.RUNNING && crrClass.status === STATUS_CLASS.PREOPEN) {
+            }
+            if (status === STATUS_CLASS.RUNNING) {
                 const findExistedClassSessionRecords = await ClassSessionModel.find({
                     classId: crrClass._id
                 });
                 if (findExistedClassSessionRecords.length !== 0) {
-                    if (status) crrClass.status = status;
                     await crrClass.save();
                     throw new Error('Đã có thông tin các buổi học!')
                 }
+                if (status) crrClass.status = status;
                 const dayStart = new Date(crrClass.dayRange?.start as Date);
                 const weekdayOfDayStart = getWeekDay(new Date((crrClass.dayRange?.start as Date)).getDay());
                 const getIndexStartWeekday = getWeekDay(undefined, true, weekdayOfDayStart as WEEKDAY)
@@ -144,7 +146,6 @@ const classController = {
                     day1?: Obj,
                     day2?: Obj
                 } = {};
-
                 for (let i = 0; i < crrClass.timeSchedule.length; i++) {
                     const crrItem = crrClass.timeSchedule[i] as unknown as Obj;
                     if (crrItem.weekday === weekdayOfDayStart) day.day1 = crrItem;
@@ -173,24 +174,21 @@ const classController = {
                             weekdayTimeScheduleId: index % 2 === 0 ? day.day1?._id : day.day2?._id,
                             _id: new ObjectId()
                         }
-                        crrRecordBookTeacher.forEach((recordBookTeacher) => {
-                            const teacherAccepted = recordBookTeacher.teacherRegister.filter((teacher) => {
-                                return teacher.accept === true && newSession.locationId?.toString() === recordBookTeacher.locationId?.toString()
-                            });
-                            teacherAccepted.forEach((recordTeacher) => {
-                                listTeacherAccepted.push({
-                                    locationId: newSession.locationId,
-                                    classSessionId: newSession._id,
-                                    teacherId: recordTeacher.idTeacher,
-                                    role: recordTeacher.roleRegister,
-                                    checked: false
-                                });
-                            })
+                        const teacherAccepted = record.teacherRegister.filter((teacher) => {
+                            return teacher.accept === true && newSession.locationId?.toString() === record.locationId?.toString()
                         });
+                        teacherAccepted.forEach((recordTeacher) => {
+                            listTeacherAccepted.push({
+                                locationId: newSession.locationId,
+                                classSessionId: newSession._id,
+                                teacherId: recordTeacher.idTeacher,
+                                role: recordTeacher.roleRegister,
+                                checked: false
+                            });
+                        })
                         genListSessionDocument.push(newSession);
                     });
                 });
-
                 await ClassSessionModel.insertMany(genListSessionDocument);
                 await TeacherScheduleModel.insertMany(listTeacherAccepted);
             }

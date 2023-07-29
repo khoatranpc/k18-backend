@@ -15,4 +15,10 @@ const validateaOnLeave = yup.object({
         currentTeacherId: yup.string().required('Bạn cần gửi thông tin giáo viên hiện tại (currentTeacherId)!'),
     })
 });
-export { validateCreateSessionBody, validateaOnLeave };
+const getAttendanceTeacher = yup.object({
+    query: yup.object({
+        classId: yup.string().required('Bạn cần cung cấp classId!'),
+        sessionNumber: yup.string().required('Bạn cần cung cấp sessionNumber!'),
+    })
+});
+export { validateCreateSessionBody, validateaOnLeave, getAttendanceTeacher };
