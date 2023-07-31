@@ -7,7 +7,7 @@ const courseLevelController = {
     create: async (req: Request, res: Response) => {
         try {
             const { courseId, levelName, levelCode, syllabus, levelNumber } = req.body;
-            const findExistedLevel = await CourseLevelModel.findOne({ levelNumber });
+            const findExistedLevel = await CourseLevelModel.findOne({ levelNumber, courseId });
             if (findExistedLevel) throw new Error(`Level ${levelNumber} đã tồn tại! Vui lòng thay đổi hoặc cập nhật level trước đó!`);
             const createLevel = await CourseLevelModel.create({
                 courseId,

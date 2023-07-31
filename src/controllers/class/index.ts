@@ -7,6 +7,7 @@ import { Obj } from "../../global/interface";
 import BookTeacherModel from "../../models/bookTeacher";
 import ClassSessionModel from "../../models/classSession";
 import TeacherScheduleModel from "../../models/teacherSchedule";
+import FeedbackModel from "../../models/feedback";
 
 const classController = {
     getAll: async (req: Request, res: Response) => {
@@ -189,6 +190,31 @@ const classController = {
                         genListSessionDocument.push(newSession);
                     });
                 });
+                const recordFb1 = {
+                    codeClass: crrClass._id,
+                    time: 1,
+                    date: listSession[3],
+                    numberCollected: 0,
+                    done: false,
+                    enabled: false,
+                    codeClassText: crrClass.codeClass
+                };
+                const recordFb2 = {
+                    codeClass: crrClass._id,
+                    time: 2,
+                    date: listSession[7],
+                    numberCollected: 0,
+                    done: false,
+                    enabled: false,
+                    codeClassText: crrClass.codeClass
+                };
+                const getListRecordFb = [recordFb1, recordFb2];
+                const findExistedRecordFB = await FeedbackModel.find({
+                    codeClass
+                });
+                if (findExistedRecordFB.length > 0) throw new Error('Đã tồn tại các bản ghi feedback')
+
+                await FeedbackModel.insertMany(getListRecordFb);
                 await ClassSessionModel.insertMany(genListSessionDocument);
                 await TeacherScheduleModel.insertMany(listTeacherAccepted);
             }
