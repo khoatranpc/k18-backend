@@ -11,7 +11,8 @@ export enum Collections {
     TEACHERREGISTERCOURSE = 'teacherregistercourses',
     TEACHERSCHEDULE = 'teacherschedules',
     CLASSSESSION = 'classsessions',
-    FEEDBACK = 'feedbacks'
+    FEEDBACK = 'feedbacks',
+    FEEDBACKRESPONSE = 'feedbackresponses',
 }
 const getUri = () => {
     const { MONGO_CLIENT, MONGO_USERNAME, MONGO_PASSWORD, MONGO_HOST, MONGO_PORT, DB_NAME } = process.env;
