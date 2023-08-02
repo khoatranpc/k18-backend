@@ -202,7 +202,7 @@ const classController = {
                 const recordFb2 = {
                     codeClass: crrClass._id,
                     time: 2,
-                    date: listSession[7],
+                    date: listSession[8],
                     numberCollected: 0,
                     done: false,
                     enabled: false,
