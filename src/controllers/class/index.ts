@@ -12,9 +12,17 @@ import FeedbackModel from "../../models/feedback";
 const classController = {
     getAll: async (req: Request, res: Response) => {
         try {
-            const { fields, recordOnPage, currentPage } = req.query;
+            const { fields, recordOnPage, currentPage, listId } = req.query;
             let classes;
-            if (recordOnPage && currentPage) {
+            if (listId) {
+                classes = await ClassModel.find({
+                    _id: {
+                        $in: listId
+                    }
+                }, { ...fields && getProjection(...fields as Array<string>) })
+                    .populate('courseId courseLevelId timeSchedule', { ...fields && getProjection(...fields as Array<string>) });
+            }
+            else if (recordOnPage && currentPage) {
                 classes = await ClassModel.find({}, { ...fields && getProjection(...fields as Array<string>) })
                     .sort({
                         createdAt: -1

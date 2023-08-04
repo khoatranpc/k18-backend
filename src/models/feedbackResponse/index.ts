@@ -48,6 +48,11 @@ const feedbackResponseSchema = new mongoose.Schema({
     docDetail: {
         type: String,
         required: true
+    },
+    feedbackId: {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: Collections.FEEDBACK,
+        required: true
     }
 }, {
     timestamps: true
