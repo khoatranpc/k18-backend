@@ -37,13 +37,18 @@ const feedbackResponseController = {
                 // sortBy,
 
             } = req.query;
-
+            const totalRecord = await FeedbackResponseModel.countDocuments({});
             const listResponse = await FeedbackResponseModel.find({}, { ...fields && getProjection(...fields as Array<string>) }).sort({
                 createdAt: -1
             })
                 .skip((Number(recordOnPage) * Number(currentPage)) - Number(recordOnPage)).limit(Number(recordOnPage))
                 .populate('course codeClass groupNumber feedbackId', { ...fields && getProjection(...fields as Array<string>) });
-            resClientData(res, 201, listResponse);
+            resClientData(res, 200, {
+                list: listResponse,
+                totalPage: Math.ceil(totalRecord / Number(recordOnPage)),
+                currentPage: Number(currentPage) || '',
+                recordOnPage: Number(recordOnPage || '')
+            });
 
         } catch (error: any) {
             resClientData(res, 500, null, error.message);
