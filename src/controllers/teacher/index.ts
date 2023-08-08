@@ -7,9 +7,16 @@ import { ROLE } from "../../global/enum";
 const teacherController = {
     getAll: async (req: Request, res: Response) => {
         try {
-            const { fields, recordOnPage, currentPage } = req.query;
+            const { fields, recordOnPage, currentPage, listTeacherId } = req.query;
             let listTeacher;
-            if (recordOnPage && currentPage) {
+            if (listTeacherId) {
+                listTeacher = await TeacherModel.find({
+                    _id: {
+                        $in: listTeacherId
+                    }
+                }, { ...fields && getProjection(...fields as Array<string>) });
+            }
+            else if (recordOnPage && currentPage) {
                 listTeacher = await TeacherModel.find({}, { ...fields && getProjection(...fields as Array<string>) })
                     .skip((Number(recordOnPage) * Number(currentPage)) - Number(recordOnPage)).limit(Number(recordOnPage))
             } else {
