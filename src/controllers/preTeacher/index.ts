@@ -93,10 +93,23 @@ const preTeacherController = {
     },
     getAll: async (req: RequestMid, res: Response) => {
         try {
-            const { fields } = req.query;
-
-            const getAll = await PreTeacherModel.find({}, { ...fields && getProjection(...fields as Array<string>) });
-            resClientData(res, 200, getAll, 'Thành công!');
+            const { fields, recordOnPage, currentPage } = req.query;
+            const getAll = await PreTeacherModel.find({
+                status: 'PENDING'
+            }, { ...fields && getProjection(...fields as Array<string>) })
+                .sort({
+                    createdAt: -1
+                })
+                .skip((Number(recordOnPage) * Number(currentPage)) - Number(recordOnPage)).limit(Number(recordOnPage))
+                .populate('coursesRegister.idCourse coursesRegister.levelHandle', { ...fields && getProjection(...fields as Array<string>) });
+            const totalRequest = await PreTeacherModel.countDocuments({});
+            const dataRes = {
+                list: getAll,
+                totalPage: Math.ceil(totalRequest / Number(recordOnPage)),
+                currentPage: Number(currentPage) || '',
+                recordOnPage: Number(recordOnPage || '')
+            }
+            resClientData(res, 200, dataRes);
         } catch (error: any) {
             resClientData(res, 403, undefined, error.message);
         }
