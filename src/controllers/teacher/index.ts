@@ -51,6 +51,7 @@ const teacherController = {
             if (req.acc?.role === ROLE.TE) {
                 await TeacherModel.findByIdAndUpdate(id, req.body);
             } else if (req.acc?.role === ROLE.TEACHER) {
+                delete req.body.salaryPH;
                 const crrTeacher = await TeacherModel.findOne({ idAccount: req.acc?.id as string });
                 if (!crrTeacher) throw new Error('Không tìm thấy giáo viên!');
                 if (crrTeacher._id.toString() !== id) throw new Error('Bạn không có quyền thực hiện hành động!');

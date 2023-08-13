@@ -29,10 +29,16 @@ const bookTeacherSchema = new mongoose.Schema({
             accept: {
                 type: Boolean,
                 default: false
+            },
+            enroll: {
+                type: Boolean,
+                default: false
             }
         }],
         default: []
     }
+}, {
+    timestamps: true
 });
 const BookTeacherModel = mongoose.model(Collections.BOOKTEACHER, bookTeacherSchema);
 export default BookTeacherModel;

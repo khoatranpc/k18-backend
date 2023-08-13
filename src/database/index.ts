@@ -13,6 +13,8 @@ export enum Collections {
     CLASSSESSION = 'classsessions',
     FEEDBACK = 'feedbacks',
     FEEDBACKRESPONSE = 'feedbackresponses',
+    TEACHERPOINT = 'teacherpoints',
+    CLASSTEACHERPOINT = 'classteacherpoints',
 }
 const getUri = () => {
     const { MONGO_CLIENT, MONGO_USERNAME, MONGO_PASSWORD, MONGO_HOST, MONGO_PORT, DB_NAME } = process.env;

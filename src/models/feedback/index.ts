@@ -17,10 +17,6 @@ const feedbackSchema = new mongoose.Schema({
         type: Date,
         required: true
     },
-    numberCollected: {
-        type: Number,
-        required: true
-    },
     done: {
         type: Boolean,
         required: true,

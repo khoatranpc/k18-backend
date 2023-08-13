@@ -49,6 +49,10 @@ const feedbackResponseSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    timeCollect: {
+        type: Number,
+        required: true
+    },
     feedbackId: {
         type: mongoose.SchemaTypes.ObjectId,
         ref: Collections.FEEDBACK,

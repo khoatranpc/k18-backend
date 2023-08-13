@@ -65,7 +65,8 @@ const bookTeacherController = {
                             crrRequest.teacherRegister.push({
                                 idTeacher: crrTeacher._id,
                                 roleRegister: role ? role as ROLE_TEACHER : ROLE_TEACHER.MT,
-                                accept: false
+                                accept: false,
+                                enroll: false
                             });
                             await crrRequest.save();
                             resClientData(res, 201, {});
@@ -91,7 +92,8 @@ const bookTeacherController = {
                             crrRequest.teacherRegister.push({
                                 idTeacher: crrTeacher._id,
                                 roleRegister: role ? role as ROLE_TEACHER : ROLE_TEACHER.MT,
-                                accept: true
+                                accept: true,
+                                enroll: true
                             });
                             await crrRequest.save();
                             resClientData(res, 201, {});
@@ -103,7 +105,8 @@ const bookTeacherController = {
                             crrRequest.teacherRegister[findExistedRegister] = {
                                 idTeacher: new mongoose.Types.ObjectId(updateTeacherId?.toString()),
                                 accept: accept as unknown as boolean,
-                                roleRegister: role ? role as ROLE_TEACHER : ROLE_TEACHER.MT
+                                roleRegister: role ? role as ROLE_TEACHER : ROLE_TEACHER.MT,
+                                enroll: true
                             }
                             await crrRequest.save();
                             resClientData(res, 201, { recordUpdate: idRequest });
@@ -125,6 +128,20 @@ const bookTeacherController = {
             resClientData(res, 500, undefined, error.message);
         }
     },
+    getByTeacherRegister: async (req: Request, res: Response) => {
+        try {
+            const { teacherId } = req.params;
+            const { fields } = req.query;
+            const data = await BookTeacherModel.find({
+                "teacherRegister.idTeacher": teacherId,
+                "teacherRegister.accept": true
+            }, { ...fields && getProjection(...fields as Array<string>) })
+                .populate('classId locationId', { ...fields && getProjection(...fields as Array<string>) })
+            resClientData(res, 200, data.reverse());
+        } catch (error: any) {
+            resClientData(res, 500, undefined, error.message);
+        }
+    }
 };
 
 export default bookTeacherController;

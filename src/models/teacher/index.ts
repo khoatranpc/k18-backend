@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import { Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
+import crypto from "crypto";
 import { Collections } from "../../database";
 import { GENDER } from "../../global/enum";
 
@@ -110,6 +110,30 @@ const teacherSchema = new mongoose.Schema(
             type: Date,
             required: true
         },
+        salaryPH: {
+            type: [
+                {
+                    index: {
+                        type: String,
+                        default: crypto.randomUUID()
+                    },
+                    rank: {
+                        type: Number,
+                        default: 0,
+                        required: true
+                    },
+                    updateAt: {
+                        type: Date,
+                        default: new Date()
+                    }
+                }
+            ],
+            default: []
+        },
+        teacherPoint: {
+            type: Number,
+            default: 0
+        }
     },
     {
         timestamps: true,

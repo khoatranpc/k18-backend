@@ -1,15 +1,54 @@
 import { Request, Response } from "express";
-import { getProjection, resClientData } from "../../utils";
 import FeedbackResponseModel from "../../models/feedbackResponse";
+import TeacherPointModel from "../../models/teacherPoint";
 import FeedbackModel from "../../models/feedback";
-import { Obj } from "../../global/interface";
+import { getProjection, resClientData } from "../../utils";
+import ClassTeacherPointModel from "../../models/classTeacherPoint";
+import TeacherModel from "../../models/teacher";
 
 const feedbackResponseController = {
     sendResponseFromForm: async (req: Request, res: Response) => {
         try {
             const dataResponse = req.body;
             const insertResponse = await FeedbackResponseModel.create(dataResponse);
-            resClientData(res, 201, insertResponse);
+            await TeacherPointModel.create({
+                classId: dataResponse.codeClass,
+                feedbackResponseId: insertResponse._id,
+                groupNumber: dataResponse.groupNumber,
+                point: dataResponse.teacherPoint,
+                teacherId: dataResponse.teacherId,
+            });
+            const checkExistedCalcTcPClass = await ClassTeacherPointModel.findOne({
+                feedbackId: dataResponse.feedbackId,
+                timeCollect: dataResponse.timeCollect
+            });
+            // calc teacherpoint for class
+            if (checkExistedCalcTcPClass) {
+                const countResponse = await FeedbackResponseModel.find({
+                    codeClass: checkExistedCalcTcPClass.classId,
+                    timeCollect: checkExistedCalcTcPClass.timeCollect,
+                });
+                let totalPoint = 0;
+                countResponse.forEach((item) => {
+                    totalPoint += ((item.pointMT + item.pointST) / 2);
+                });
+                checkExistedCalcTcPClass.teacherPoint = (totalPoint / countResponse.length);
+                await checkExistedCalcTcPClass.save();
+            }
+            // clac teacherPoint for teacher
+            const findAllFeedbackResponse = await TeacherPointModel.find({
+                teacherId: dataResponse.teacherId
+            });
+            let teacherPointForTeacher = 0;
+            findAllFeedbackResponse.forEach((item) => {
+                teacherPointForTeacher += item.point;
+            });
+            const findTeacher = await TeacherModel.findById(dataResponse.teacherId);
+            if (findTeacher) {
+                findTeacher.teacherPoint = (teacherPointForTeacher / findAllFeedbackResponse.length);
+                await findTeacher.save();
+            }
+            resClientData(res, 201, {});
         } catch (error: any) {
             resClientData(res, 500, null, error.message);
         }
@@ -46,7 +85,12 @@ const feedbackResponseController = {
                     time: Number(timeCollect) || 1
                 });
                 if (!recordFeedback) {
-                    resClientData(res, 200, [], 'Không tìm thấy thông tin!');
+                    resClientData(res, 200, {
+                        list: [],
+                        totalPage: null,
+                        currentPage: null,
+                        recordOnPage: null
+                    });
                 } else {
                     const listResponseFeedback = await FeedbackResponseModel.find({
                         feedbackId: recordFeedback?._id,
@@ -54,7 +98,12 @@ const feedbackResponseController = {
                         createdAt: -1
                     })
                         .populate('course codeClass groupNumber feedbackId', { ...fields && getProjection(...fields as Array<string>) })
-                    resClientData(res, 200, listResponseFeedback);
+                    resClientData(res, 200, {
+                        list: listResponseFeedback,
+                        totalPage: null,
+                        currentPage: null,
+                        recordOnPage: null
+                    });
                 }
             } else {
                 const totalRecord = await FeedbackResponseModel.countDocuments({});

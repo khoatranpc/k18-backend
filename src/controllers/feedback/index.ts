@@ -4,6 +4,7 @@ import FeedbackModel from "../../models/feedback";
 import { Obj } from "../../global/interface";
 import BookTeacherModel from "../../models/bookTeacher";
 import { ROLE_TEACHER } from "../../global/enum";
+import ClassTeacherPointModel from "../../models/classTeacherPoint";
 
 const feedbackController = {
     getRecordByMonth: async (req: Request, res: Response) => {
@@ -53,6 +54,17 @@ const feedbackController = {
             }, {
                 new: true
             });
+            const recordTcPClass = await ClassTeacherPointModel.findOne({
+                feedbackId: feedbackId
+            });
+            if (!recordTcPClass && update && enabled) {
+                await ClassTeacherPointModel.create({
+                    classId: update.codeClass,
+                    feedbackId: update._id,
+                    teacherPoint: 0,
+                    timeCollect: update.time,
+                });
+            }
             resClientData(res, 201, update);
         } catch (error: any) {
             resClientData(res, 403, null, error.message);
@@ -112,7 +124,8 @@ const feedbackController = {
                 roleIsSP: 0,
                 dateStartWork: 0,
                 createdAt: 0,
-                updatedAt: 0
+                updatedAt: 0,
+                salaryPH: 0
             }).exec().then((rs) => {
                 return rs.filter((item) => {
                     return item.teacherRegister.find((rc) => rc.accept === true && rc.roleRegister !== ROLE_TEACHER.SP);

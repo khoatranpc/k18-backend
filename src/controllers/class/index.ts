@@ -125,11 +125,11 @@ const classController = {
                 const findExistedClassSessionRecords = await ClassSessionModel.find({
                     classId: crrClass._id
                 });
+                if (status) crrClass.status = status;
                 if (findExistedClassSessionRecords.length !== 0) {
                     await crrClass.save();
                     throw new Error('Đã có thông tin các buổi học!')
                 }
-                if (status) crrClass.status = status;
                 const dayStart = new Date(crrClass.dayRange?.start as Date);
                 const weekdayOfDayStart = getWeekDay(new Date((crrClass.dayRange?.start as Date)).getDay());
                 const getIndexStartWeekday = getWeekDay(undefined, true, weekdayOfDayStart as WEEKDAY)
@@ -202,7 +202,6 @@ const classController = {
                     codeClass: crrClass._id,
                     time: 1,
                     date: listSession[3],
-                    numberCollected: 0,
                     done: false,
                     enabled: false,
                     codeClassText: crrClass.codeClass
@@ -211,7 +210,6 @@ const classController = {
                     codeClass: crrClass._id,
                     time: 2,
                     date: listSession[8],
-                    numberCollected: 0,
                     done: false,
                     enabled: false,
                     codeClassText: crrClass.codeClass
@@ -220,7 +218,7 @@ const classController = {
                 const findExistedRecordFB = await FeedbackModel.find({
                     codeClass
                 });
-                if (findExistedRecordFB.length > 0) throw new Error('Đã tồn tại các bản ghi feedback')
+                if (findExistedRecordFB.length > 0) throw new Error('Đã tồn tại các bản ghi feedback!')
 
                 await FeedbackModel.insertMany(getListRecordFb);
                 await ClassSessionModel.insertMany(genListSessionDocument);
