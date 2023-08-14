@@ -9,7 +9,7 @@ function App(port: number) {
     const app = express();
     mongoose.connect(getUri());
     app.use(cors({
-        origin: [process.env.CLIENT_DOMAIN as string, process.env.CLIENT_DOMAIN_HOST as string]
+        origin: '*'
     }))
     app.use(json());
     app.use(urlencoded({ extended: true }));
