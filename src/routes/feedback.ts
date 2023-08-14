@@ -10,4 +10,5 @@ FeedbackRouter.get('/form/class', feedbackController.getClassForStudentFormFeedb
 FeedbackRouter.get('/form/class/:classId/group', feedbackController.getGroupInClass);
 FeedbackRouter.post('/response', feedbackResponseController.sendResponseFromForm);
 FeedbackRouter.get('/response', middlewares.verifyJWT, middlewares.isTE, feedbackResponseController.getListRecordResponse);
+FeedbackRouter.get('/teacher/response', middlewares.verifyJWT, middlewares.isTE, feedbackResponseController.getListRecordResponseByTeacherId);
 export default FeedbackRouter;

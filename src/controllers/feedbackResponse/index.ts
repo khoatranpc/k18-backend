@@ -122,6 +122,22 @@ const feedbackResponseController = {
         } catch (error: any) {
             resClientData(res, 500, null, error.message);
         }
+    },
+    getListRecordResponseByTeacherId: async (req: Request, res: Response) => {
+        try {
+            const { teacherId, currentPage, recordOnPage, fields } = req.query;
+            const listResponse = await TeacherPointModel.find({
+                teacherId
+            }, { ...fields && getProjection(...fields as Array<string>) })
+                .sort({
+                    createdAt: -1
+                })
+                .skip((Number(recordOnPage) * Number(currentPage)) - Number(recordOnPage)).limit(Number(recordOnPage))
+                .populate('classId feedbackResponseId groupNumber', { ...fields && getProjection(...fields as Array<string>) });
+            resClientData(res, 200, listResponse);
+        } catch (error: any) {
+            resClientData(res, 500, null, error.message);
+        }
     }
 };
 export default feedbackResponseController;
