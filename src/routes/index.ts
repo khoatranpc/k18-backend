@@ -12,6 +12,7 @@ import ClassSessionRouter from './classSession';
 import TeacherScheduleRouter from './teacherSchedule';
 import TeacherRegisterCouseRouter from './teacherRegisterCourse';
 import FeedbackRouter from './feedback';
+import ClassTeacherPointRouter from './classTeacherPoint';
 
 const RootRouter = express.Router();
 
@@ -21,6 +22,7 @@ RootRouter.use('/course', CourseRouter);
 RootRouter.use('/course/level', CourseLevelRouter);
 RootRouter.use('/time-schedule', TimeScheduleRouter);
 RootRouter.use('/class', ClassRouter);
+RootRouter.use('/class-teacher-point', ClassTeacherPointRouter);
 RootRouter.use('/location', LocationRouter);
 RootRouter.use('/book-teacher', BookTeacherRouter);
 RootRouter.use('/pre-teacher', PreTeacherRouter);
