@@ -41,3 +41,34 @@ export enum ClassForm {
     ONLINE = 'ONLINE',
     OFFLINE = 'OFFLINE',
 }
+export enum ObjectTeach {
+    K18 = 'K18',
+    K12 = 'K12'
+}
+export enum StatusProcessing {
+    // no process
+    NOPROCESS = 'NOPROCESS',
+    // processing
+    PROCESSING = 'PROCESSING',
+    // DONE
+    DONE = 'DONE'
+}
+export enum ResourseApply {
+    FB = 'FB',
+    LKD = 'LKD',
+    RF = 'RF',
+    AN = 'AN'
+}
+export enum ResultInterview {
+    PASS = 'PASS',
+    NOTPASS = 'NOTPASS',
+    PENDING = 'PENDING'
+}
+export enum LevelTechnique {
+    INTERN = 'INTERN',
+    FRESHER = 'FRESHER',
+    JUNIOR = 'JUNIOR',
+    MIDDLE = 'MIDDLE',
+    SENIOR = 'SENIOR',
+    LEADER = 'LEADER'
+}
