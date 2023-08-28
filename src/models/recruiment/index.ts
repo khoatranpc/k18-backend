@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { Collections } from "../../database";
-import { LevelTechnique, ObjectTeach, ROLE_TEACHER, ResourseApply, ResultInterview, StatusProcessing } from "../../global/enum";
+import { Education, LevelTechnique, ObjectTeach, ROLE_TEACHER, ResourseApply, ResultInterview, StatusProcessing } from "../../global/enum";
 
 const recruimentSchema = new mongoose.Schema({
     fullName: {
@@ -57,11 +57,29 @@ const recruimentSchema = new mongoose.Schema({
         required: true,
         max: 5
     },
-    // chứng chỉ/bằng cấp
-    qualifications: String,
+    // đã tốt nghiệp đại học
+    graduatedUniversity: {
+        type: Boolean,
+        required: true
+    },
+    // học vấn? thạc sĩ, tiến sĩ, nghiên cứu sinh, kỹ sư
+    education: {
+        type: String,
+        required: true,
+        enum: Education,
+    },
+    // chuyên ngành it
+    specializedIt: {
+        type: Boolean,
+        required: true
+    },
     // công nghệ sử dụng
     technique: {
         type: String,
+        required: true
+    },
+    teacherCertification: {
+        type: Boolean,
         required: true
     },
     expTimeTeach: {

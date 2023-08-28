@@ -72,3 +72,11 @@ export enum LevelTechnique {
     SENIOR = 'SENIOR',
     LEADER = 'LEADER'
 }
+export enum Education {
+    BACHELOR = 'BACHELOR',
+    ENGINEER = 'ENGINEER',
+    // thạc sĩ
+    MASTER = 'MASTER',
+    // tiến sĩ
+    DOCTOR = 'DOCTOR'
+}
