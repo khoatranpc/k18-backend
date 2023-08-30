@@ -6,6 +6,10 @@ const courseSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    syllabus: {
+        type: String,
+        default: ''
+    },
     courseLevel: {
         type: [Schema.Types.ObjectId],
         ref: Collections.COURSELEVEL

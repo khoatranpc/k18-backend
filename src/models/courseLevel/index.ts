@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import mongoose, { Schema } from "mongoose";
 import { Collections } from "../../database";
 
@@ -10,7 +11,7 @@ const courseLevelSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    syllabus: String,
+    textbook: String,
     courseId: {
         type: Schema.Types.ObjectId,
         ref: Collections.COURSE,
@@ -18,6 +19,25 @@ const courseLevelSchema = new mongoose.Schema({
     },
     levelNumber: {
         type: Number,
+        required: true
+    },
+    techRequirements: {
+        type: [{
+            id: {
+                type: String,
+                default: () => {
+                    return crypto.randomUUID();
+                }
+            },
+            tech: {
+                type: String,
+                required: true
+            },
+            isStrong: {
+                type: Boolean,
+                default: false
+            }
+        }],
         required: true
     }
 });

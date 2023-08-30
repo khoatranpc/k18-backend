@@ -1,12 +1,22 @@
 import { Request, Response } from "express";
-import { resClientData } from "../../utils";
 import CourseModel from "../../models/course";
+import { Obj } from "../../global/interface";
+import { resClientData } from "../../utils";
 
 
 const courseController = {
     getAll: async (_: Request, res: Response) => {
         try {
-            const courses = await CourseModel.find({}).populate('courseLevel');
+            const courses = await CourseModel.find({}).populate('courseLevel')
+                .exec().then((rs) => {
+                    return rs.map((item) => {
+                        const data = item.toObject();
+                        data.courseLevel.sort((a, b) => {
+                            return Number((a as unknown as Obj).levelNumber) - Number((b as unknown as Obj).levelNumber)
+                        })
+                        return data;
+                    })
+                });
             resClientData(res, 200, courses, 'Thành công!');
         } catch (error: any) {
             resClientData(res, 500, undefined, error.message);

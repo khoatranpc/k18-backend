@@ -6,7 +6,7 @@ import CourseModel from "../../models/course";
 const courseLevelController = {
     create: async (req: Request, res: Response) => {
         try {
-            const { courseId, levelName, levelCode, syllabus, levelNumber } = req.body;
+            const { courseId, levelName, levelCode, syllabus, levelNumber, techRequirements } = req.body;
             const findExistedLevel = await CourseLevelModel.findOne({ levelNumber, courseId });
             if (findExistedLevel) throw new Error(`Level ${levelNumber} đã tồn tại! Vui lòng thay đổi hoặc cập nhật level trước đó!`);
             const createLevel = await CourseLevelModel.create({
@@ -14,7 +14,8 @@ const courseLevelController = {
                 levelName,
                 levelCode,
                 syllabus,
-                levelNumber
+                levelNumber,
+                techRequirements
             });
 
             await CourseModel.findByIdAndUpdate(courseId, {
@@ -44,12 +45,13 @@ const courseLevelController = {
     updateCourseLevel: async (req: Request, res: Response) => {
         try {
             const { id } = req.params;
-            const { levelName, levelCode, syllabus } = req.body;
+            const { levelName, levelCode, textbook, techRequirements } = req.body;
             const findLevel = await CourseLevelModel.findById(id);
             if (!findLevel) throw new Error('Không tìm thấy!');
             if (levelName) findLevel.levelName = levelName;
             if (levelCode) findLevel.levelCode = levelCode;
-            if (syllabus) findLevel.syllabus = syllabus;
+            if (textbook) findLevel.textbook = textbook;
+            if (techRequirements) findLevel.techRequirements = techRequirements;
             await findLevel.save();
             resClientData(res, 201, {}, 'Thành công!');
         } catch (error: any) {

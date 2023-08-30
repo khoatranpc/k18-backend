@@ -21,10 +21,6 @@ const recruimentSchema = new mongoose.Schema({
         enum: LevelTechnique,
         required: true
     },
-    subject: {
-        type: String,
-        required: true,
-    },
     phoneNumber: String,
     linkFacebook: String,
     email: {
