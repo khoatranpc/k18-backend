@@ -6,15 +6,15 @@ import CourseModel from "../../models/course";
 const courseLevelController = {
     create: async (req: Request, res: Response) => {
         try {
-            const { courseId, levelName, levelCode, syllabus, levelNumber, techRequirements } = req.body;
+            const { courseId, levelName, levelCode, textbook, levelNumber, techRequirements } = req.body;
             const findExistedLevel = await CourseLevelModel.findOne({ levelNumber, courseId });
             if (findExistedLevel) throw new Error(`Level ${levelNumber} đã tồn tại! Vui lòng thay đổi hoặc cập nhật level trước đó!`);
             const createLevel = await CourseLevelModel.create({
                 courseId,
                 levelName,
                 levelCode,
-                syllabus,
                 levelNumber,
+                textbook,
                 techRequirements
             });
 

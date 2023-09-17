@@ -4,7 +4,8 @@ import { Collections } from "../../database";
 const courseSchema = new mongoose.Schema({
     courseName: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     syllabus: {
         type: String,

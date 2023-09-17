@@ -25,7 +25,7 @@ const courseController = {
     getById: async (req: Request, res: Response) => {
         try {
             const { id } = req.params;
-            const course = await CourseModel.findById(id);
+            const course = await CourseModel.findById(id).populate('courseLevel');
             resClientData(res, 200, course, 'Thành công!');
         } catch (error: any) {
             resClientData(res, 500, undefined, error.message);
@@ -33,9 +33,10 @@ const courseController = {
     },
     createCourse: async (req: Request, res: Response) => {
         try {
-            const { courseName } = req.body;
+            const { courseName, syllabus } = req.body;
             const createCourse = await CourseModel.create({
-                courseName
+                courseName,
+                syllabus
             });
             resClientData(res, 200, createCourse, 'Thành công!');
         } catch (error: any) {
@@ -45,11 +46,12 @@ const courseController = {
     updateCourse: async (req: Request, res: Response) => {
         try {
             const { id } = req.params;
-            const { courseName } = req.body;
+            const { courseName, syllabus } = req.body;
             await CourseModel.findByIdAndUpdate(id, {
-                courseName
+                courseName,
+                syllabus
             })
-            resClientData(res, 201, {}, 'Thành công!');
+            resClientData(res, 201, {}, 'Cập nhật khoá học thành công!');
         } catch (error: any) {
             resClientData(res, 403, undefined, error.message);
         }
