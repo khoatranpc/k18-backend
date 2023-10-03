@@ -80,3 +80,11 @@ export enum Education {
     // tiến sĩ
     DOCTOR = 'DOCTOR'
 }
+export enum RoundProcess {
+    CV = 'CV',
+    INTERVIEW = 'INTERVIEW',
+    CLAUTID = 'CLAUTID',
+    TEST = 'TEST',
+    DONE = 'DONE',
+    CLASSIFY = 'CLASSIFY'
+}

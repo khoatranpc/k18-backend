@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { Collections } from "../../database";
-import { Education, LevelTechnique, ObjectTeach, ROLE_TEACHER, ResourseApply, ResultInterview, StatusProcessing } from "../../global/enum";
+import { Education, LevelTechnique, ObjectTeach, ROLE_TEACHER, ResourseApply, ResultInterview, RoundProcess, StatusProcessing } from "../../global/enum";
 
 const recruimentSchema = new mongoose.Schema({
     fullName: {
@@ -48,6 +48,10 @@ const recruimentSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    jobPosition: {
+        type: String,
+        required: true
+    },
     scoreSoftsSkill: {
         type: Number,
         required: true,
@@ -92,16 +96,20 @@ const recruimentSchema = new mongoose.Schema({
         enum: StatusProcessing,
         required: true
     },
-    sendMail: {
-        type: Boolean,
-        required: true
-    },
-    dateInterview: Date,
-    linkMeet: String,
     result: {
         type: String,
         enum: ResultInterview,
         default: ResultInterview.PENDING
+    },
+    sendMail: {
+        type: Boolean,
+        default: false
+    },
+    roundProcess: {
+        type: String,
+        enum: RoundProcess,
+        required: true,
+        default: RoundProcess.CV
     }
 },
     {

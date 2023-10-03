@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { getProjection, resClientData } from "../../utils";
 import RecruitmentModel from "../../models/recruiment";
+import RoundCVModel from "../../models/recruiment/round/cv";
 
 const recruitmentController = {
     getList: async (req: Request, res: Response) => {
@@ -31,7 +32,12 @@ const recruitmentController = {
                 email: data.email
             });
             if (findExistedEmail) throw new Error('Email đã tồn tại');
-            const createCandidate = await RecruitmentModel.create(data);
+            const createCandidate = await RecruitmentModel.create({
+                ...data
+            });
+            await RoundCVModel.create({
+                candidateId: createCandidate._id
+            });
             resClientData(res, 201, createCandidate);
         } catch (error: any) {
             resClientData(res, 403, null, error.message);
@@ -40,7 +46,9 @@ const recruitmentController = {
     getOneById: async (req: Request, res: Response) => {
         try {
             const { id } = req.params;
-            const getCrrCandidate = await RecruitmentModel.findById(id);
+            const { fields } = req.query;
+            const getCrrCandidate = await RecruitmentModel.findById(id)
+                .populate('courseApply', { ...fields && getProjection(...fields as Array<string>) });
             resClientData(res, 200, getCrrCandidate);
         } catch (error: any) {
             resClientData(res, 403, null, error.message);

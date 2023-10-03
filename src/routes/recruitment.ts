@@ -1,8 +1,10 @@
 import { Router } from 'express';
 import middlewares from '../middlewares';
 import recruitmentController from '../controllers/recruitment';
+import RoundProcessRouter from './roundProcessRecruitment';
 const RecruitmentRouter = Router();
 RecruitmentRouter.get('', middlewares.verifyJWT, middlewares.isTE, recruitmentController.getList);
 RecruitmentRouter.get('/candidate/:id', middlewares.verifyJWT, middlewares.isTE, recruitmentController.getOneById);
 RecruitmentRouter.post('', middlewares.verifyJWT, middlewares.isTE, recruitmentController.create);
+RecruitmentRouter.use('/round', middlewares.verifyJWT, middlewares.isTE, RoundProcessRouter);
 export default RecruitmentRouter;

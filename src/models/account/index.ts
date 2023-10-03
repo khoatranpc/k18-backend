@@ -20,7 +20,10 @@ const accountSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    salt: String
+    salt: String,
+    userName: String
+}, {
+    timestamps: true
 })
 
 const AccountModel = mongoose.model(Collections.ACCOUNT, accountSchema);
