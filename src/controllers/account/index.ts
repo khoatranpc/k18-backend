@@ -4,6 +4,8 @@ import AccountModel from "../../models/account";
 import { encryptPassword, generateJWT, resClientData, verifyPassword } from "../../utils";
 import { RequestMid } from "../../middlewares";
 import TeacherModel from "../../models/teacher";
+import { ROLE } from "../../global/enum";
+import TeModel from "../../models/te";
 
 const accountController = {
     login: async (req: Request, res: Response) => {
@@ -30,7 +32,7 @@ const accountController = {
     },
     createForTest: async (req: Request, res: Response) => {
         try {
-            const { email, password } = req.body;
+            const { email, password, role } = req.body;
             const readyAccount = await AccountModel.findOne({ email });
             if (readyAccount) throw new Error('Email đã tổn tại!');
 
@@ -38,7 +40,8 @@ const accountController = {
             const account = {
                 email,
                 salt,
-                password: hashedPassword
+                password: hashedPassword,
+                role
             }
             await AccountModel.create(account);
             resClientData(res, 201, {}, 'Thành công');
@@ -65,7 +68,17 @@ const accountController = {
     getInfo: async (req: RequestMid, res: Response) => {
         try {
             const crrAccount = req.acc;
-            const findInfor = await TeacherModel.findOne({ idAccount: crrAccount?.id });
+            let findInfor;
+            switch (crrAccount?.role) {
+                case ROLE.TE:
+                    findInfor = await TeModel.findOne({ accountId: crrAccount?.id }).populate('courseId');
+                    break;
+                case ROLE.TEACHER:
+                    findInfor = await TeacherModel.findOne({ idAccount: crrAccount?.id });
+                    break;
+                default:
+                    break;
+            }
             resClientData(res, 201, {
                 roleAccount: crrAccount?.role,
                 token: crrAccount?.token,

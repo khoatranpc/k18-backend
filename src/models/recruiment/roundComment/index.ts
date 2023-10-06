@@ -7,10 +7,10 @@ const RoundCommentModel = createModel('ROUNDCOMMENT', {
         type: mongoose.SchemaTypes.ObjectId,
         required: true,
     },
-    userId: {
+    teId: {
         type: mongoose.SchemaTypes.ObjectId,
         required: true,
-        ref: Collections.ACCOUNT,
+        ref: Collections.TE,
     },
     content: {
         type: String,

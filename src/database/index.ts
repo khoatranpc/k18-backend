@@ -20,7 +20,8 @@ export enum Collections {
     ROUNDCLAUTID = 'roundclautids',
     ROUNDINTERVIEW = 'roundinterviews',
     ROUNDTEST = 'roundtests',
-    ROUNDCOMMENT = 'roundcomments'
+    ROUNDCOMMENT = 'roundcomments',
+    TE = 'tes'
 }
 const getUri = () => {
     const { MONGO_CLIENT, MONGO_USERNAME, MONGO_PASSWORD, MONGO_HOST, MONGO_PORT, DB_NAME } = process.env;

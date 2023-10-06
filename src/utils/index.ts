@@ -124,6 +124,16 @@ const getOrderWeekday: Record<WEEKDAY, number> = {
 const formatDateToString = (date: Date) => {
     return date.toLocaleDateString("en-US");
 }
+const getProjectionByString = (str: string) => {
+    const listField = str ? str.split(',') : [];
+    const projection: Obj = {};
+    listField.forEach((item) => {
+        if (item) {
+            projection[item] = 1;
+        }
+    });
+    return projection;
+}
 export {
     genRandomId,
     getProjection,
@@ -134,5 +144,6 @@ export {
     getDateOfWeekday,
     getWeekDay,
     formatDateToString,
+    getProjectionByString,
     getOrderWeekday
 };

@@ -21,7 +21,6 @@ const accountSchema = new mongoose.Schema({
         default: false
     },
     salt: String,
-    userName: String
 }, {
     timestamps: true
 })

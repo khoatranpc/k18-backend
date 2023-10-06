@@ -11,32 +11,26 @@ const roundClautidSchema = new mongoose.Schema({
     classIdFirst: {
         type: mongoose.SchemaTypes.ObjectId,
         ref: Collections.CLASS,
-        requried: true
     },
     timeFirst: {
         type: Date,
-        required: true
     },
     timeFirstDone: {
         type: Boolean,
-        default: false
     },
     formFirst: {
         type: String,
-        enum: ClassForm
+        enum: ClassForm,
     },
     classIdSecond: {
         type: mongoose.SchemaTypes.ObjectId,
         ref: Collections.CLASS,
-        requried: true
     },
     timeSecond: {
         type: Date,
-        required: true
     },
     timeSecondDone: {
         type: Boolean,
-        default: false
     },
     formSecond: {
         type: String,

@@ -14,6 +14,7 @@ import TeacherRegisterCouseRouter from './teacherRegisterCourse';
 import FeedbackRouter from './feedback';
 import ClassTeacherPointRouter from './classTeacherPoint';
 import RecruitmentRouter from './recruitment';
+import TERouter from './te';
 
 const RootRouter = express.Router();
 
@@ -33,6 +34,7 @@ RootRouter.use('/class-session', ClassSessionRouter);
 RootRouter.use('/teacher-registercourse', TeacherRegisterCouseRouter);
 RootRouter.use('/feedback', FeedbackRouter);
 RootRouter.use('/recruitment', RecruitmentRouter);
+RootRouter.use('/te', TERouter);
 
 
 export default RootRouter;

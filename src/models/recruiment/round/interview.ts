@@ -8,12 +8,10 @@ const roundInterviewSchema = new mongoose.Schema({
         ref: Collections.RECRUITMENT
     },
     linkMeet: {
-        type: String,
-        requried: true
+        type: String
     },
     time: {
-        type: Date,
-        required: true
+        type: Date
     },
     result: {
         type: Boolean,
@@ -21,5 +19,5 @@ const roundInterviewSchema = new mongoose.Schema({
     }
 });
 
-const RoundInterviewModel = mongoose.model(Collections.ROUNDINTERVIEW, roundInterviewSchema);
+const       RoundInterviewModel = mongoose.model(Collections.ROUNDINTERVIEW, roundInterviewSchema);
 export default RoundInterviewModel;

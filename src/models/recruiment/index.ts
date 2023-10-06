@@ -114,6 +114,7 @@ const recruimentSchema = new mongoose.Schema({
 },
     {
         timestamps: true
-    });
+    }
+);
 const RecruitmentModel = mongoose.model(Collections.RECRUITMENT, recruimentSchema);
 export default RecruitmentModel;

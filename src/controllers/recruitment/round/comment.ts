@@ -1,13 +1,15 @@
 import { Request, Response } from "express";
-import { resClientData } from "../../../utils";
+import { getProjectionByString, resClientData } from "../../../utils";
 import RoundCommentModel from "../../../models/recruiment/roundComment";
 
 const roundCommentController = {
     getComment: async (req: Request, res: Response) => {
         try {
-            const { roundId } = req.query;
+            const { roundId, fields } = req.query;
             const data = await RoundCommentModel.find({
                 roundId,
+            }).populate('teId', getProjectionByString(fields as string)).sort({
+                createdAt: -1
             });
             resClientData(res, 200, data);
         } catch (error: any) {
@@ -16,10 +18,10 @@ const roundCommentController = {
     },
     createComment: async (req: Request, res: Response) => {
         try {
-            const { roundId, userId, content } = req.body;
+            const { roundId, teId, content } = req.body;
             const createdComment = await RoundCommentModel.create({
                 roundId,
-                userId,
+                teId,
                 content
             });
             resClientData(res, 201, createdComment);

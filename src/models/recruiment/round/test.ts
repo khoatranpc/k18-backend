@@ -9,15 +9,12 @@ const roundTestSchema = new mongoose.Schema({
     },
     linkMeet: {
         type: String,
-        required: true
     },
     doc: {
         type: String,
-        required: true
     },
     time: {
         type: Date,
-        required: true
     },
     result: {
         type: Boolean,
