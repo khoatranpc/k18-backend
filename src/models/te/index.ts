@@ -30,6 +30,10 @@ const teSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    email: {
+        type: String,
+        required: true
+    },
     dob: Date
 }, {
     timestamps: true

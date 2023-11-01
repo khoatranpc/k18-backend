@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { resClientData } from "../../../utils";
+import { getProjectionByString, resClientData } from "../../../utils";
 import RoundCVModel from "../../../models/recruiment/round/cv";
 import { RoundProcess, StatusProcessing } from "../../../global/enum";
 import RoundInterviewModel from "../../../models/recruiment/round/interview";
@@ -81,29 +81,59 @@ const roundController = {
     findByIdAndUpdate: async (req: Request, res: Response) => {
         try {
             const { id } = req.params;
-            const { result, linkMeet, time, doc, round, candidateId } = req.body;
+            const { result, linkMeet, time, doc, round, candidateId, te, mailInterviewSent, mailResultSent } = req.body;
             if (result === false || result == 'false') {
                 await RecruitmentModel.findByIdAndUpdate(candidateId, {
                     statusProcess: StatusProcessing.DONE
                 });
             }
+            const currentDataRecruitment = await RecruitmentModel.findById(candidateId);
+            if (!currentDataRecruitment) throw new Error('Không tìm thấy dữ liệu ứng viên!');
             switch (round) {
                 case RoundProcess.CV:
                     await RoundCVModel.findByIdAndUpdate(id, {
-                        result
+                        result,
+                        processed: true
                     });
                     if (result) {
-                        await RecruitmentModel.findByIdAndUpdate(candidateId, {
-                            statusProcess: StatusProcessing.PROCESSING
+                        currentDataRecruitment.statusProcess = StatusProcessing.PROCESSING;
+                        currentDataRecruitment.roundProcess = RoundProcess.INTERVIEW;
+                        await currentDataRecruitment.save();
+                        const existedDataInterview = await RoundInterviewModel.findOne({
+                            candidateId
                         });
+                        if (!existedDataInterview) {
+                            await RoundInterviewModel.create({
+                                candidateId,
+                                linkMeet,
+                                time
+                            });
+                        }
                     }
                     break;
                 case RoundProcess.INTERVIEW:
                     await RoundInterviewModel.findByIdAndUpdate(id, {
                         result,
                         linkMeet,
-                        time
+                        time,
+                        te,
+                        mailResultSent,
+                        mailInterviewSent,
+                        processed: true
                     });
+                    if (result) {
+                        currentDataRecruitment.statusProcess = StatusProcessing.PROCESSING;
+                        currentDataRecruitment.roundProcess = RoundProcess.CLAUTID;
+                        await currentDataRecruitment.save();
+                        const existedDataClautid = await RoundClautidModel.findOne({
+                            candidateId
+                        });
+                        if (!existedDataClautid) {
+                            await RoundClautidModel.create({
+                                candidateId
+                            });
+                        }
+                    }
                     break;
                 case RoundProcess.TEST:
                     await RoundTestModel.findByIdAndUpdate(id, {
@@ -122,7 +152,7 @@ const roundController = {
     },
     getRound: async (req: Request, res: Response) => {
         try {
-            const { round, listCandidateId } = req.query;
+            const { round, listCandidateId, fields } = req.query;
             let data;
             if (!listCandidateId) throw new Error('Bạn cần truyền listCandidateId!');
             switch (round) {
@@ -138,7 +168,15 @@ const roundController = {
                         candidateId: {
                             $in: (listCandidateId as unknown as string).split(',')
                         }
-                    })
+                    }, getProjectionByString(fields as string))
+                        .populate('te', getProjectionByString(fields as string))
+                        .populate({
+                            path: 'te',
+                            populate: {
+                                path: 'courseId',
+                                select: String(fields).split(',')
+                            }
+                        })
                     break;
                 case RoundProcess.CLAUTID:
                     data = await RoundClautidModel.find({

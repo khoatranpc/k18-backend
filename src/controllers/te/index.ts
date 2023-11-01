@@ -1,10 +1,27 @@
 import { Request, Response } from "express";
 import TeModel from "../../models/te";
-import { resClientData } from "../../utils";
+import { resClientData, getProjectionByString } from "../../utils";
 
 const teController = {
-    getAll: (req: Request, res: Response) => {
-
+    getAll: async (req: Request, res: Response) => {
+        try {
+            const { findBy, email, fields } = req.query;
+            if (findBy) {
+                if (findBy === 'email') {
+                    const tes = await TeModel.find({
+                        email: {
+                            '$regex': email,
+                            '$options': 'i'
+                        }
+                    }, getProjectionByString(fields as string)).populate('courseId', getProjectionByString(fields as string));
+                    resClientData(res, 201, tes);
+                }
+            } else {
+                resClientData(res, 201, []);
+            }
+        } catch (error: any) {
+            resClientData(res, 403, null, error.message);
+        }
     },
     createTeInfo: async (req: Request, res: Response) => {
         try {

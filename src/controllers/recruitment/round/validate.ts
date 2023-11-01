@@ -8,7 +8,6 @@ const createRecordDataRound = yup.object({
 });
 const updateRecoredDataRound = yup.object({
     body: yup.object({
-        result: yup.boolean().required('Bạn cần cung cấp kết quả!'),
         round: yup.string().oneOf(['INTERVIEW', 'CLAUTID', 'TEST', 'CV'], 'round không hợp lệ!').required('Bạn chưa cung cấp round process!')
     }),
 });

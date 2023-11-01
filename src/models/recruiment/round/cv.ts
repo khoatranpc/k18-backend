@@ -10,6 +10,10 @@ const roundCVSchema = new mongoose.Schema({
     result: {
         type: Boolean,
         default: false
+    },
+    processed: {
+        type: Boolean,
+        default: false
     }
 });
 
