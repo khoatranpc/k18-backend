@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
-import { getProjection, resClientData } from "../../utils";
+import { getProjection, getProjectionByString, resClientData } from "../../utils";
 import RecruitmentModel from "../../models/recruiment";
 import RoundCVModel from "../../models/recruiment/round/cv";
+import { RoundProcess } from "../../global/enum";
+import RoundClautidModel from "../../models/recruiment/round/clautid";
 
 const recruitmentController = {
     getList: async (req: Request, res: Response) => {
@@ -52,6 +54,56 @@ const recruitmentController = {
             resClientData(res, 200, getCrrCandidate);
         } catch (error: any) {
             resClientData(res, 403, null, error.message);
+        }
+    },
+    //on board
+    getCandidateByEmailForOnboard: async (req: Request, res: Response) => {
+        try {
+            const { email, fields } = req.query;
+            const getCrrCandidate = await RecruitmentModel.aggregate([
+                {
+                    $match: {
+                        email,
+                        $and: [
+                            {
+                                roundProcess: {
+                                    $ne: RoundProcess.CV
+                                }
+                            },
+                            {
+                                roundProcess: {
+                                    $ne: RoundProcess.INTERVIEW
+                                }
+                            },
+                        ]
+                    },
+                },
+                {
+                    $limit: 1
+                },
+                ...fields ? [{
+                    $project: getProjectionByString(fields as string)
+                }] : [{
+                    $project: {
+                        fullName: 1
+                    }
+                }]
+            ]);
+            if (!getCrrCandidate) throw new Error('Không tìm thấy dữ liệu ứng viên!');
+            resClientData(res, 200, getCrrCandidate);
+        } catch (error: any) {
+            resClientData(res, 500, null, error.message);
+        }
+    },
+    getRoundClautid: async (req: Request, res: Response) => {
+        try {
+            const { fields, candidateId } = req.query;
+            const getRecordData = await RoundClautidModel.findOne({
+                candidateId
+            }, getProjectionByString(fields as string));
+            resClientData(res, 200, getRecordData);
+        } catch (error: any) {
+            resClientData(res, 500, null, error.message);
         }
     }
 }

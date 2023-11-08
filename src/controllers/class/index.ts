@@ -12,7 +12,7 @@ import FeedbackModel from "../../models/feedback";
 const classController = {
     getAll: async (req: Request, res: Response) => {
         try {
-            const { fields, recordOnPage, currentPage, listId } = req.query;
+            const { fields, recordOnPage, currentPage, listId, status, forRecruitment, course } = req.query;
             let classes;
             if (listId) {
                 classes = await ClassModel.find({
@@ -23,7 +23,14 @@ const classController = {
                     .populate('courseId courseLevelId timeSchedule', { ...fields && getProjection(...fields as Array<string>) });
             }
             else if (recordOnPage && currentPage) {
-                classes = await ClassModel.find({}, { ...fields && getProjection(...fields as Array<string>) })
+                classes = await ClassModel.find({
+                    ...status ? {
+                        status: STATUS_CLASS.RUNNING
+                    } : {},
+                    ...course ? {
+                        courseId: course
+                    } : {}
+                }, { ...fields && getProjection(...fields as Array<string>) })
                     .sort({
                         createdAt: -1
                     })
@@ -39,6 +46,7 @@ const classController = {
             }
             const totalClasses = await ClassModel.countDocuments({});
             const getListCurrentClassId = classes.map((item) => item._id);
+            const getFieldPopulate = `teacherRegister.idTeacher${forRecruitment ? ' locationId' : ''}`
             const listBookTeacher = await BookTeacherModel.find({
                 classId: {
                     $in: getListCurrentClassId
@@ -46,8 +54,7 @@ const classController = {
             }, {
                 teacherRegister: 1,
                 classId: 1,
-
-            }).populate('teacherRegister.idTeacher', { fullName: 1, _id: 1 });
+            }).populate(getFieldPopulate, { fullName: 1, _id: 1, ...forRecruitment ? { locationCode: 1, locationDetail: 1 } : {} });
             const newRefListClass = classes.map((item) => {
                 const findRecord = listBookTeacher.filter((record) => {
                     return record.classId?.toString() === item._id.toString()

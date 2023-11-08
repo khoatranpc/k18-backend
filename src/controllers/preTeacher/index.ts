@@ -7,6 +7,7 @@ import { ObjectId } from "mongodb";
 import AccountModel from "../../models/account";
 import { ROLE_TEACHER, STATUS } from "../../global/enum";
 import { RequestMid } from "../../middlewares";
+import RecruitmentModel from "../../models/recruiment";
 
 const preTeacherController = {
     register: async (req: Request, res: Response) => {
@@ -14,7 +15,13 @@ const preTeacherController = {
             const { email } = req.body;
             const existedEmail = await PreTeacherModel.findOne({ email });
             if (existedEmail) throw new Error('Đã tồn tại email!');
+            const findCandidate = await RecruitmentModel.findOne({
+                email
+            });
+            if (!findCandidate) throw new Error('Không tìm thấy ứng viên!');
             const register = await PreTeacherModel.create(req.body);
+            findCandidate.fillForm = true;
+            await findCandidate.save();
             resClientData(res, 201, register, 'Thành công!');
         } catch (error: any) {
             resClientData(res, 403, undefined, error.message);

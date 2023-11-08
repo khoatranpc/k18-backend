@@ -39,8 +39,11 @@ const classSchema = new mongoose.Schema({
         type: String,
         enum: ClassForm,
         default: ClassForm.HYBRID
+    },
+    linkZoom: {
+        type: String,
+        default: ''
     }
-
 }, {
     timestamps: true
 })

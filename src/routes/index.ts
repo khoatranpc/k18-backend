@@ -15,6 +15,8 @@ import FeedbackRouter from './feedback';
 import ClassTeacherPointRouter from './classTeacherPoint';
 import RecruitmentRouter from './recruitment';
 import TERouter from './te';
+import MailRouter from './mailer';
+import MailTemplateRouter from './mailTemplate';
 
 const RootRouter = express.Router();
 
@@ -35,6 +37,8 @@ RootRouter.use('/teacher-registercourse', TeacherRegisterCouseRouter);
 RootRouter.use('/feedback', FeedbackRouter);
 RootRouter.use('/recruitment', RecruitmentRouter);
 RootRouter.use('/te', TERouter);
+RootRouter.use('/mail', MailRouter);
+RootRouter.use('/mail-template', MailTemplateRouter);
 
 
 export default RootRouter;

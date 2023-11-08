@@ -18,6 +18,10 @@ const roundClautidSchema = new mongoose.Schema({
     timeFirstDone: {
         type: Boolean,
     },
+    locationFirst: {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: Collections.LOCATION,
+    },
     formFirst: {
         type: String,
         enum: ClassForm,
@@ -31,6 +35,10 @@ const roundClautidSchema = new mongoose.Schema({
     },
     timeSecondDone: {
         type: Boolean,
+    },
+    locationSecond: {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: Collections.LOCATION,
     },
     formSecond: {
         type: String,

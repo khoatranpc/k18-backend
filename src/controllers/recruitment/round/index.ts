@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { getProjectionByString, resClientData } from "../../../utils";
 import RoundCVModel from "../../../models/recruiment/round/cv";
-import { RoundProcess, StatusProcessing } from "../../../global/enum";
+import { ResultInterview, RoundProcess, StatusProcessing } from "../../../global/enum";
 import RoundInterviewModel from "../../../models/recruiment/round/interview";
 import RoundClautidModel from "../../../models/recruiment/round/clautid";
 import RoundTestModel from "../../../models/recruiment/round/test";
@@ -84,7 +84,8 @@ const roundController = {
             const { result, linkMeet, time, doc, round, candidateId, te, mailInterviewSent, mailResultSent } = req.body;
             if (result === false || result == 'false') {
                 await RecruitmentModel.findByIdAndUpdate(candidateId, {
-                    statusProcess: StatusProcessing.DONE
+                    statusProcess: StatusProcessing.DONE,
+                    result: ResultInterview.NOTPASS
                 });
             }
             const currentDataRecruitment = await RecruitmentModel.findById(candidateId);
@@ -183,7 +184,7 @@ const roundController = {
                         candidateId: {
                             $in: (listCandidateId as unknown as string).split(',')
                         }
-                    })
+                    });
                     break;
                 case RoundProcess.TEST:
                     data = await RoundTestModel.find({

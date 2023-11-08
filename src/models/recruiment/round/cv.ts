@@ -11,6 +11,10 @@ const roundCVSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    sentMail: {
+        type: Boolean,
+        default: false
+    },
     processed: {
         type: Boolean,
         default: false

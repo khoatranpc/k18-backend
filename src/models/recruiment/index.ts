@@ -110,6 +110,10 @@ const recruimentSchema = new mongoose.Schema({
         enum: RoundProcess,
         required: true,
         default: RoundProcess.CV
+    },
+    fillForm: {
+        type: Boolean,
+        default: false
     }
 },
     {

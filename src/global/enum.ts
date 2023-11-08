@@ -81,6 +81,7 @@ export enum Education {
     DOCTOR = 'DOCTOR'
 }
 export enum RoundProcess {
+    FILLFORM = 'FILLFORM',
     CV = 'CV',
     INTERVIEW = 'INTERVIEW',
     CLAUTID = 'CLAUTID',
@@ -93,4 +94,10 @@ export enum PositionTe {
     ASSISTANT = 'ASSISTANT',
     QC = 'QC',
     HR = 'HR'
+}
+export enum TemplateMail {
+    FAILCV = 'FAILCV',
+    FAILINTERVIEW = 'FAILINTERVIEW',
+    PASSINTERVIEW = 'PASSINTERVIEW',
+    NOCONNECT = 'NOCONNECT'
 }
