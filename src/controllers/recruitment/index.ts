@@ -1,9 +1,11 @@
 import { Request, Response } from "express";
+import mongoose from "mongoose";
 import { getProjection, getProjectionByString, resClientData } from "../../utils";
 import RecruitmentModel from "../../models/recruiment";
 import RoundCVModel from "../../models/recruiment/round/cv";
 import { RoundProcess } from "../../global/enum";
 import RoundClautidModel from "../../models/recruiment/round/clautid";
+import FeedbackClautidModel from "../../models/recruiment/feedbackClautid";
 
 const recruitmentController = {
     getList: async (req: Request, res: Response) => {
@@ -100,8 +102,105 @@ const recruitmentController = {
             const { fields, candidateId } = req.query;
             const getRecordData = await RoundClautidModel.findOne({
                 candidateId
-            }, getProjectionByString(fields as string));
+            }, getProjectionByString(fields as string))
+                .populate("classIdFirst classIdSecond locationFirst locationSecond", getProjectionByString(fields as string));
             resClientData(res, 200, getRecordData);
+        } catch (error: any) {
+            resClientData(res, 500, null, error.message);
+        }
+    },
+    registerClautid: async (req: Request, res: Response) => {
+        try {
+            const { emailCandidate, classId, form, location, date } = req.body;
+            const getCandidate = await RecruitmentModel.findOne({
+                email: emailCandidate
+            });
+            if (!getCandidate) throw new Error('Không tìm thấy ứng viên!');
+            const getRecordClautidData = await RoundClautidModel.findOne({
+                candidateId: getCandidate._id
+            });
+            if (!getRecordClautidData) throw new Error('Ứng viên chưa thể thực hiện dự thính!');
+            if (!getRecordClautidData.classIdFirst) {
+                getRecordClautidData.classIdFirst = new mongoose.Types.ObjectId(classId as string);
+                getRecordClautidData.formFirst = form as string;
+                getRecordClautidData.timeFirst = new Date(date as string);
+                getRecordClautidData.locationFirst = new mongoose.Types.ObjectId(location as string);
+                await getRecordClautidData.save();
+            } else if (!getRecordClautidData.classIdSecond) {
+                getRecordClautidData.classIdSecond = new mongoose.Types.ObjectId(classId as string);
+                getRecordClautidData.formSecond = form as string;
+                getRecordClautidData.timeSecond = new Date(date as string);
+                getRecordClautidData.locationSecond = new mongoose.Types.ObjectId(location as string);
+                await getRecordClautidData.save();
+            }
+            resClientData(res, 201, {});
+        } catch (error: any) {
+            resClientData(res, 500, null, error.message);
+        }
+    },
+    createFeedbackClautid: async (req: Request, res: Response) => {
+        try {
+            const payload = req.body;
+            const { countTime } = req.body;
+            await FeedbackClautidModel.create(payload);
+            if (typeof countTime === 'number') {
+                if (!countTime) {
+                    await RoundClautidModel.findOneAndUpdate({
+                        classIdFirst: payload.class
+                    }, {
+                        timeFirstDone: true
+                    });
+                } else {
+                    await RoundClautidModel.findOneAndUpdate({
+                        classIdSecond: payload.class
+                    }, {
+                        timeSecondDone: true,
+                        result: true
+                    });
+                }
+            }
+            resClientData(res, 201, {});
+        } catch (error: any) {
+            resClientData(res, 500, null, error.message);
+        }
+    },
+    getFeedbackClautid: async (req: Request, res: Response) => {
+        try {
+            // logic for list candidate, list class id
+            const { listCandidateId, listClassId, fields } = req.query;
+            const data = await FeedbackClautidModel.find({
+                candidateId: {
+                    $in: String(listCandidateId).split(',')
+                },
+                class: {
+                    $in: String(listClassId).split(',')
+                },
+            }, getProjectionByString(fields as string));
+            resClientData(res, 200, data);
+        } catch (error: any) {
+            resClientData(res, 500, null, error.message);
+        }
+    },
+    updateClautid: async (req: Request, res: Response) => {
+        try {
+            const { recordId } = req.params;
+            const { classId, location, form, date, countTime } = req.body;
+            if (typeof countTime === 'number') {
+                await RoundClautidModel.findOneAndUpdate({
+                    _id: recordId
+                }, ...!Number(countTime) ? [{
+                    classIdFirst: classId,
+                    timeFirst: date,
+                    locationFirst: location,
+                    formFirst: form
+                }] : [{
+                    classIdSecond: classId,
+                    timeSecond: date,
+                    locationSecond: location,
+                    formSecond: form
+                }]);
+            }
+            resClientData(res, 201, {});
         } catch (error: any) {
             resClientData(res, 500, null, error.message);
         }

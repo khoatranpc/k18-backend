@@ -17,6 +17,7 @@ const roundClautidSchema = new mongoose.Schema({
     },
     timeFirstDone: {
         type: Boolean,
+        default: false
     },
     locationFirst: {
         type: mongoose.SchemaTypes.ObjectId,
@@ -35,6 +36,7 @@ const roundClautidSchema = new mongoose.Schema({
     },
     timeSecondDone: {
         type: Boolean,
+        default: false
     },
     locationSecond: {
         type: mongoose.SchemaTypes.ObjectId,
