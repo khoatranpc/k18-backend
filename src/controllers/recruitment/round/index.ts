@@ -184,7 +184,7 @@ const roundController = {
                         candidateId: {
                             $in: (listCandidateId as unknown as string).split(',')
                         }
-                    });
+                    }).populate("classIdFirst classIdSecond locationFirst locationSecond", getProjectionByString(fields as string));
                     break;
                 case RoundProcess.TEST:
                     data = await RoundTestModel.find({
