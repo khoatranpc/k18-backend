@@ -12,4 +12,6 @@ OnboardRouter.post('/clautid/feedback', validate(feedbackClautid, 403), recruitm
 OnboardRouter.get('/clautid/feedback', recruitmentController.getFeedbackClautid);
 
 OnboardRouter.put('/clautid/:recordId', recruitmentController.updateClautid);
+
+OnboardRouter.get('/clautid/test', recruitmentController.getRoundTest);
 export default OnboardRouter;

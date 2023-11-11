@@ -157,8 +157,14 @@ const roundController = {
                         linkMeet,
                         doc,
                         time,
-                        te
+                        te,
                     });
+                    if (result) {
+                        currentDataRecruitment.statusProcess = StatusProcessing.DONE;
+                        currentDataRecruitment.result = ResultInterview.PASS;
+                        currentDataRecruitment.roundProcess = RoundProcess.DONE;
+                        await currentDataRecruitment.save();
+                    }
                     break;
                 default:
                     throw new Error('round không hợp lệ!');

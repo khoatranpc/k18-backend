@@ -6,6 +6,7 @@ import RoundCVModel from "../../models/recruiment/round/cv";
 import { RoundProcess } from "../../global/enum";
 import RoundClautidModel from "../../models/recruiment/round/clautid";
 import FeedbackClautidModel from "../../models/recruiment/feedbackClautid";
+import RoundTestModel from "../../models/recruiment/round/test";
 
 const recruitmentController = {
     getList: async (req: Request, res: Response) => {
@@ -206,6 +207,18 @@ const recruitmentController = {
             resClientData(res, 201, {});
         } catch (error: any) {
             resClientData(res, 500, null, error.message);
+        }
+    },
+    getRoundTest: async (req: Request, res: Response) => {
+        try {
+            const { candidateId } = req.query;
+            const findRecord = await RoundTestModel.findOne({
+                candidateId
+            });
+            if (!findRecord) throw new Error('Không tìm thấy bản ghi!');
+            resClientData(res, 200, findRecord);
+        } catch (error: any) {
+            resClientData(res, 404, null, error.message);
         }
     }
 }
