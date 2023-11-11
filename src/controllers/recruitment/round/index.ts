@@ -136,11 +136,28 @@ const roundController = {
                         }
                     }
                     break;
+                case RoundProcess.CLAUTID:
+                    if (result) {
+                        const existedDataClautid = await RoundTestModel.findOne({
+                            candidateId
+                        });
+                        if (!existedDataClautid) {
+                            await RoundTestModel.create({
+                                candidateId,
+                                doc,
+                                linkMeet,
+                                time
+                            });
+                        }
+                    }
+                    break;
                 case RoundProcess.TEST:
                     await RoundTestModel.findByIdAndUpdate(id, {
                         result,
                         linkMeet,
-                        doc
+                        doc,
+                        time,
+                        te
                     });
                     break;
                 default:
@@ -191,7 +208,14 @@ const roundController = {
                         candidateId: {
                             $in: (listCandidateId as unknown as string).split(',')
                         }
-                    })
+                    }, getProjectionByString(fields as string)).populate('te', getProjectionByString(fields as string))
+                        .populate({
+                            path: 'te',
+                            populate: {
+                                path: 'courseId',
+                                select: String(fields).split(',')
+                            }
+                        })
                     break;
                 default:
                     throw new Error('round query không hợp lệ!');

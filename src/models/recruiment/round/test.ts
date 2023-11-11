@@ -16,11 +16,15 @@ const roundTestSchema = new mongoose.Schema({
     time: {
         type: Date,
     },
+    te: {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: Collections.TE
+    },
     result: {
         type: Boolean,
         default: false
     }
-});
+}, { timestamps: true });
 
 const RoundTestModel = mongoose.model(Collections.ROUNDTEST, roundTestSchema);
 export default RoundTestModel;

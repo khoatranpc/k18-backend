@@ -157,6 +157,9 @@ const recruitmentController = {
                         timeSecondDone: true,
                         result: true
                     });
+                    await RecruitmentModel.findByIdAndUpdate(payload.candidateId, {
+                        roundProcess: RoundProcess.TEST
+                    });
                 }
             }
             resClientData(res, 201, {});
