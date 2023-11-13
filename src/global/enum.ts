@@ -101,3 +101,10 @@ export enum TemplateMail {
     PASSINTERVIEW = 'PASSINTERVIEW',
     NOCONNECT = 'NOCONNECT'
 }
+export enum Area {
+    HN = 'HN',
+    HCM = 'HCM',
+    DN = 'DN',
+    ONL = 'ONL',
+    ANT = 'ANT'
+}

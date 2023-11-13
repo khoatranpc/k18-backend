@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import crypto from "crypto";
 import { Collections } from "../../database";
-import { GENDER } from "../../global/enum";
+import { Area, GENDER } from "../../global/enum";
 
 const teacherSchema = new mongoose.Schema(
     {
@@ -60,6 +60,7 @@ const teacherSchema = new mongoose.Schema(
         },
         area: {
             type: String,
+            enum: Area,
             required: true
         },
         educationInfo: {
@@ -133,7 +134,12 @@ const teacherSchema = new mongoose.Schema(
         teacherPoint: {
             type: Number,
             default: 0
-        }
+        },
+        dateOffWork: {
+            type: Date,
+        },
+        note: String,
+        linkCv: String,
     },
     {
         timestamps: true,
