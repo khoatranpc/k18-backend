@@ -7,6 +7,8 @@ import { getAttendanceTeacher, validateCreateSessionBody, validateaOnLeave } fro
 const ClassSessionRouter = Router();
 
 ClassSessionRouter.get('/attendance-teacher', middlewares.verifyJWT, middlewares.isTE, validate(getAttendanceTeacher), classSessionController.getAttendanceTeacher);
+ClassSessionRouter.post('/attendance-teacher/generate', middlewares.verifyJWT, middlewares.isTE, classSessionController.generateListRecordTeacherSchedule);
+
 ClassSessionRouter.get('/detail/:classId', middlewares.verifyJWT, classSessionController.getClassSessionByClassId);
 ClassSessionRouter.get('/session/:sessionId', middlewares.verifyJWT, middlewares.isTE, classSessionController.getTeacherInSession);
 ClassSessionRouter.post('', middlewares.verifyJWT, middlewares.isTE, validate(validateCreateSessionBody), classSessionController.handleClassSession);

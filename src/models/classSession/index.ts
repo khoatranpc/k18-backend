@@ -12,6 +12,11 @@ const classSessionSchema = new mongoose.Schema({
         ref: Collections.LOCATION,
         required: true
     },
+    bookTeacher: {
+        type: Schema.Types.ObjectId,
+        ref: Collections.BOOKTEACHER,
+        required: true
+    },
     sessionNumber: {
         type: Number,
         required: true,

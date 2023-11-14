@@ -135,101 +135,108 @@ const classController = {
                 if (status) crrClass.status = status;
                 if (findExistedClassSessionRecords.length !== 0) {
                     await crrClass.save();
-                    throw new Error('Đã có thông tin các buổi học!')
-                }
-                const dayStart = new Date(crrClass.dayRange?.start as Date);
-                const weekdayOfDayStart = getWeekDay(new Date((crrClass.dayRange?.start as Date)).getDay());
-                const getIndexStartWeekday = getWeekDay(undefined, true, weekdayOfDayStart as WEEKDAY)
-
-                const remainWeekday = crrClass.timeSchedule.find((item) => {
-                    return (item as unknown as Obj).weekday !== weekdayOfDayStart;
-                });
-
-                const getIndexRemainWeekday = getWeekDay(undefined, true, (remainWeekday as unknown as Obj)?.weekday as WEEKDAY)
-
-                let distanceWeekday = 0;
-                if (getIndexRemainWeekday < getIndexStartWeekday) {
-                    distanceWeekday = Math.abs(((getIndexStartWeekday as number) - (getIndexRemainWeekday as number)) - 1);
+                    resClientData(res, 201, {});
                 } else {
-                    distanceWeekday = (getIndexRemainWeekday as number) - (getIndexStartWeekday as number);
-                }
+                    const dayStart = new Date(crrClass.dayRange?.start as Date);
+                    const weekdayOfDayStart = getWeekDay(new Date((crrClass.dayRange?.start as Date)).getDay());
+                    const getIndexStartWeekday = getWeekDay(undefined, true, weekdayOfDayStart as WEEKDAY)
 
-                const listSession: Date[] = [];
-                listSession.push(new Date(dayStart));
-                const nextDaySession = getDateOfWeekday(new Date(crrClass.dayRange?.start as Date), distanceWeekday);
-                listSession.push(new Date(nextDaySession));
-                const day: {
-                    day1?: Obj,
-                    day2?: Obj
-                } = {};
-                for (let i = 0; i < crrClass.timeSchedule.length; i++) {
-                    const crrItem = crrClass.timeSchedule[i] as unknown as Obj;
-                    if (crrItem.weekday === weekdayOfDayStart) day.day1 = crrItem;
-                    else {
-                        day.day2 = crrItem;
+                    const remainWeekday = crrClass.timeSchedule.find((item) => {
+                        return (item as unknown as Obj).weekday !== weekdayOfDayStart;
+                    });
+
+                    const getIndexRemainWeekday = getWeekDay(undefined, true, (remainWeekday as unknown as Obj)?.weekday as WEEKDAY)
+
+                    let distanceWeekday = 0;
+                    if (getIndexRemainWeekday < getIndexStartWeekday) {
+                        distanceWeekday = Math.abs(((getIndexStartWeekday as number) - (getIndexRemainWeekday as number)) - 1);
+                    } else {
+                        distanceWeekday = (getIndexRemainWeekday as number) - (getIndexStartWeekday as number);
+                    }
+
+                    const listSession: Date[] = [];
+                    listSession.push(new Date(dayStart));
+                    const nextDaySession = getDateOfWeekday(new Date(crrClass.dayRange?.start as Date), distanceWeekday);
+                    listSession.push(new Date(nextDaySession));
+                    const day: {
+                        day1?: Obj,
+                        day2?: Obj
+                    } = {};
+                    for (let i = 0; i < crrClass.timeSchedule.length; i++) {
+                        const crrItem = crrClass.timeSchedule[i] as unknown as Obj;
+                        if (crrItem.weekday === weekdayOfDayStart) day.day1 = crrItem;
+                        else {
+                            day.day2 = crrItem;
+                        }
+                    }
+                    for (let i = 2; i < 16; i++) {
+                        listSession[i] = getDateOfWeekday(new Date(listSession[i - 2]), 7);
+                    }
+
+                    const crrRecordBookTeacher = await BookTeacherModel.find({
+                        classId: crrClass._id
+                    });
+
+                    const listTeacherAccepted: Obj[] = [];
+                    const genListSessionDocument: Obj[] = [];
+                    listSession.forEach((item, index) => {
+                        crrRecordBookTeacher.forEach((record) => {
+                            const newSession = {
+                                classId: crrClass._id,
+                                locationId: record.locationId,
+                                sessionNumber: index + 1,
+                                date: item,
+                                document: '',
+                                weekdayTimeScheduleId: index % 2 === 0 ? day.day1?._id : day.day2?._id,
+                                _id: new ObjectId(),
+                                bookTeacher: record._id
+                            }
+                            const teacherAccepted = record.teacherRegister.filter((teacher) => {
+                                return teacher.accept === true && newSession.locationId?.toString() === record.locationId?.toString()
+                            });
+                            teacherAccepted.forEach((recordTeacher) => {
+                                listTeacherAccepted.push({
+                                    locationId: newSession.locationId,
+                                    classSessionId: newSession._id,
+                                    teacherId: recordTeacher.idTeacher,
+                                    role: recordTeacher.roleRegister,
+                                    checked: false
+                                });
+                            })
+                            genListSessionDocument.push(newSession);
+                        });
+                    });
+                    const recordFb1 = {
+                        codeClass: crrClass._id,
+                        time: 1,
+                        date: listSession[3],
+                        done: false,
+                        enabled: false,
+                        codeClassText: crrClass.codeClass
+                    };
+                    const recordFb2 = {
+                        codeClass: crrClass._id,
+                        time: 2,
+                        date: listSession[8],
+                        done: false,
+                        enabled: false,
+                        codeClassText: crrClass.codeClass
+                    };
+                    const getListRecordFb = [recordFb1, recordFb2];
+                    const findExistedRecordFB = await FeedbackModel.find({
+                        codeClass
+                    });
+                    if (!findExistedRecordFB.length) {
+                        await FeedbackModel.insertMany(getListRecordFb);
+                    }
+                    const findExistedRecordClassSession = await ClassSessionModel.countDocuments({
+                        classId: codeClass
+                    });
+                    if (!findExistedRecordClassSession) {
+                        await ClassSessionModel.insertMany(genListSessionDocument);
+                        await TeacherScheduleModel.insertMany(listTeacherAccepted);
                     }
                 }
-                for (let i = 2; i < 16; i++) {
-                    listSession[i] = getDateOfWeekday(new Date(listSession[i - 2]), 7);
-                }
-
-                const crrRecordBookTeacher = await BookTeacherModel.find({
-                    classId: crrClass._id
-                });
-
-                const listTeacherAccepted: Obj[] = [];
-                const genListSessionDocument: Obj[] = [];
-                listSession.forEach((item, index) => {
-                    crrRecordBookTeacher.forEach((record) => {
-                        const newSession = {
-                            classId: crrClass._id,
-                            locationId: record.locationId,
-                            sessionNumber: index + 1,
-                            date: item,
-                            document: '',
-                            weekdayTimeScheduleId: index % 2 === 0 ? day.day1?._id : day.day2?._id,
-                            _id: new ObjectId()
-                        }
-                        const teacherAccepted = record.teacherRegister.filter((teacher) => {
-                            return teacher.accept === true && newSession.locationId?.toString() === record.locationId?.toString()
-                        });
-                        teacherAccepted.forEach((recordTeacher) => {
-                            listTeacherAccepted.push({
-                                locationId: newSession.locationId,
-                                classSessionId: newSession._id,
-                                teacherId: recordTeacher.idTeacher,
-                                role: recordTeacher.roleRegister,
-                                checked: false
-                            });
-                        })
-                        genListSessionDocument.push(newSession);
-                    });
-                });
-                const recordFb1 = {
-                    codeClass: crrClass._id,
-                    time: 1,
-                    date: listSession[3],
-                    done: false,
-                    enabled: false,
-                    codeClassText: crrClass.codeClass
-                };
-                const recordFb2 = {
-                    codeClass: crrClass._id,
-                    time: 2,
-                    date: listSession[8],
-                    done: false,
-                    enabled: false,
-                    codeClassText: crrClass.codeClass
-                };
-                const getListRecordFb = [recordFb1, recordFb2];
-                const findExistedRecordFB = await FeedbackModel.find({
-                    codeClass
-                });
-                if (findExistedRecordFB.length > 0) throw new Error('Đã tồn tại các bản ghi feedback!')
-
-                await FeedbackModel.insertMany(getListRecordFb);
-                await ClassSessionModel.insertMany(genListSessionDocument);
-                await TeacherScheduleModel.insertMany(listTeacherAccepted);
             }
             await crrClass.save();
             resClientData(res, 201, {}, 'Thành công!');

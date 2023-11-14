@@ -6,6 +6,9 @@ import { ROLE, ROLE_TEACHER, STATUS_CLASS } from "../../global/enum";
 import { RequestMid } from "../../middlewares";
 import { getProjection, resClientData } from "../../utils";
 import mongoose from "mongoose";
+import ClassSessionModel from "../../models/classSession";
+import TeacherScheduleModel from "../../models/teacherSchedule";
+import { Obj } from "../../global/interface";
 
 const bookTeacherController = {
     create: async (req: Request, res: Response) => {
@@ -96,6 +99,34 @@ const bookTeacherController = {
                                 enroll: true
                             });
                             await crrRequest.save();
+                            if (crrClass.status === STATUS_CLASS.RUNNING) {
+                                const getAllClassSession = await ClassSessionModel.find({
+                                    classId: crrClass._id
+                                });
+                                const getSessionUnChecked = getAllClassSession.filter((item) => {
+                                    return !item.ran;
+                                });
+                                const findExistedTimeSchedule = await TeacherScheduleModel.countDocuments({
+                                    classSessionId: {
+                                        $in: getSessionUnChecked.map(item => {
+                                            return item._id;
+                                        })
+                                    },
+                                    teacherId: crrTeacher._id
+                                });
+                                if (!findExistedTimeSchedule) {
+                                    const listTimeKeeping: Obj[] = [];
+                                    getSessionUnChecked.forEach((item) => {
+                                        const createTimeKeeping = {
+                                            teacherId: crrTeacher._id,
+                                            classSessionId: item._id,
+                                            role: role ? role as ROLE_TEACHER : ROLE_TEACHER.MT
+                                        };
+                                        listTimeKeeping.push(createTimeKeeping);
+                                    });
+                                    await TeacherScheduleModel.insertMany(listTimeKeeping);
+                                }
+                            }
                             resClientData(res, 201, {});
                         }
                         break;
@@ -107,6 +138,34 @@ const bookTeacherController = {
                                 accept: accept as unknown as boolean,
                                 roleRegister: role ? role as ROLE_TEACHER : ROLE_TEACHER.MT,
                                 enroll: true
+                            }
+                            if (crrClass.status === STATUS_CLASS.RUNNING && Boolean(accept)) {
+                                const getAllClassSession = await ClassSessionModel.find({
+                                    classId: crrClass._id
+                                });
+                                const getSessionUnChecked = getAllClassSession.filter((item) => {
+                                    return !item.ran;
+                                });
+                                const findExistedTimeSchedule = await TeacherScheduleModel.countDocuments({
+                                    classSessionId: {
+                                        $in: getSessionUnChecked.map(item => {
+                                            return item._id;
+                                        })
+                                    },
+                                    teacherId: crrTeacher._id
+                                });
+                                if (!findExistedTimeSchedule) {
+                                    const listTimeKeeping: Obj[] = [];
+                                    getSessionUnChecked.forEach((item) => {
+                                        const createTimeKeeping = {
+                                            teacherId: crrTeacher._id,
+                                            classSessionId: item._id,
+                                            role: role ? role as ROLE_TEACHER : ROLE_TEACHER.MT
+                                        };
+                                        listTimeKeeping.push(createTimeKeeping);
+                                    });
+                                    await TeacherScheduleModel.insertMany(listTimeKeeping);
+                                }
                             }
                             await crrRequest.save();
                             resClientData(res, 201, { recordUpdate: idRequest });

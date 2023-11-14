@@ -8,8 +8,7 @@ import { Obj } from "../../global/interface";
 import BookTeacherModel from "../../models/bookTeacher";
 import { ObjectId } from "mongodb";
 import TeacherModel from "../../models/teacher";
-import { ROLE_TEACHER } from "../../global/enum";
-import mongoose from "mongoose";
+import { ROLE_TEACHER, STATUS_CLASS } from "../../global/enum";
 
 const classSessionController = {
     getClassSessionByClassId: async (req: Request, res: Response) => {
@@ -219,10 +218,67 @@ const classSessionController = {
                 classSessionId: {
                     $in: findAllClassSessionMappingSessionNumber.map((item) => item._id)
                 }
-            }, { ...fields && getProjection(...fields as Array<string>) }).populate('classSessionId teacherId classSessionId.locationId', { ...fields && getProjection(...fields as Array<string>) });
+            }, { ...fields && getProjection(...fields as Array<string>) }).populate({
+                path: 'classSessionId',
+                populate: 'bookTeacher locationId',
+                select: { ...fields && getProjection(...fields as Array<string>) }
+            });
             resClientData(res, 200, listTeacher);
         } catch (error: any) {
             resClientData(res, 500, undefined, error.message);
+        }
+    },
+    generateListRecordTeacherSchedule: async (req: Request, res: Response) => {
+        try {
+            const { classId } = req.body;
+            const currentClass = await ClassModel.findById(classId);
+            if (currentClass) {
+                const currentRecordBookTeacher = await BookTeacherModel.find({
+                    classId
+                });
+                const mapListTeacher: Obj[] = [];
+                currentRecordBookTeacher.forEach((item) => {
+                    const listTeacher = item.toObject().teacherRegister.filter((teacher) => {
+                        return teacher.accept && teacher.enroll;
+                    }).map((record) => {
+                        return {
+                            ...record,
+                            recordBookTeacherId: item._id
+                        }
+                    });
+                    mapListTeacher.push(...listTeacher);
+                });
+                const countExistedRecord = await TeacherScheduleModel.countDocuments({
+                    teacherId: {
+                        $in: mapListTeacher.map((item) => item.idTeacher)
+                    }
+                });
+                if (!countExistedRecord) {
+                    const listRecordTimeKeeping: Obj[] = [];
+                    const currentListClassSession = await ClassSessionModel.find({
+                        classId
+                    });
+                    currentListClassSession.forEach((item) => {
+                        const filterMatchingTeacher = mapListTeacher.filter((teacher) => teacher.recordBookTeacherId!.toString() === item.bookTeacher!.toString());
+                        if (filterMatchingTeacher.length) {
+                            filterMatchingTeacher.forEach((element) => {
+                                const newRecord: Obj = {
+                                    teacherId: element.idTeacher,
+                                    role: element.roleRegister,
+                                    classSessionId: item._id
+                                };
+                                listRecordTimeKeeping.push(newRecord);
+                            });
+                        }
+                    });
+                    await TeacherScheduleModel.insertMany(listRecordTimeKeeping);
+                    resClientData(res, 201, {});
+                } else {
+                    throw new Error('Đã có bản ghi điểm danh giáo viên!');
+                }
+            }
+        } catch (error: any) {
+            resClientData(res, 403, null, error.message);
         }
     }
 };
