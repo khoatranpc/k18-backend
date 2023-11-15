@@ -23,7 +23,8 @@ export enum Collections {
     ROUNDCOMMENT = 'roundcomments',
     TE = 'tes',
     MAIL_TEMPLATE = 'mailtemplates',
-    FEEDBACK_CLAUTID = 'feedbackclautids'
+    FEEDBACK_CLAUTID = 'feedbackclautids',
+    AREA = 'areas'
 }
 const getUri = () => {
     const { MONGO_CLIENT, MONGO_USERNAME, MONGO_PASSWORD, MONGO_HOST, MONGO_PORT, DB_NAME } = process.env;

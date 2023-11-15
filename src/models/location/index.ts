@@ -6,6 +6,8 @@ const locationSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    locationName: String,
+    area: {},
     locationDetail: {
         type: String,
         required: true
