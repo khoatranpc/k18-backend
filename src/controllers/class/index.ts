@@ -126,7 +126,6 @@ const classController = {
             if (status === STATUS_CLASS.FINISH) {
                 if (status) crrClass.status = status;
                 await crrClass.save();
-                resClientData(res, 201, {}, 'Thành công!');
             }
             if (status === STATUS_CLASS.RUNNING) {
                 const findExistedClassSessionRecords = await ClassSessionModel.find({
@@ -135,7 +134,6 @@ const classController = {
                 if (status) crrClass.status = status;
                 if (findExistedClassSessionRecords.length !== 0) {
                     await crrClass.save();
-                    resClientData(res, 201, {});
                 } else {
                     const dayStart = new Date(crrClass.dayRange?.start as Date);
                     const weekdayOfDayStart = getWeekDay(new Date((crrClass.dayRange?.start as Date)).getDay());

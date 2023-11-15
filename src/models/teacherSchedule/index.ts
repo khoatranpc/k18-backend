@@ -29,6 +29,10 @@ const teacherScheduleSchema = new mongoose.Schema({
     isOff: {
         type: Boolean,
         default: false,
+    },
+    hours: {
+        type: Number,
+        default: 3
     }
 });
 
