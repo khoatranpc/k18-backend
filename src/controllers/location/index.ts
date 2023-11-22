@@ -13,9 +13,9 @@ const locationController = {
     },
     create: async (req: Request, res: Response) => {
         try {
-            const { locationDetail, locationCode, locationName, area } = req.body;
+            const { locationDetail, locationCode, locationName, area, active } = req.body;
             await LocationModel.create({
-                locationDetail, locationCode, locationName, area
+                locationDetail, locationCode, locationName, area, active
             });
             resClientData(res, 201, {}, 'Thành công!');
         } catch (error: any) {
@@ -25,9 +25,9 @@ const locationController = {
     findOneAndUpdate: async (req: Request, res: Response) => {
         try {
             const { id } = req.params;
-            const { locationDetail, locationCode, locationName, area } = req.body;
+            const { locationDetail, locationCode, locationName, area, active } = req.body;
             await LocationModel.findByIdAndUpdate(id, {
-                locationDetail, locationCode, locationName, area
+                locationDetail, locationCode, locationName, area, active
             });
             resClientData(res, 201, {}, 'Thành công!');
         } catch (error: any) {

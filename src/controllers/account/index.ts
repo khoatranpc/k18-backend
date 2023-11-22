@@ -17,9 +17,20 @@ const accountController = {
             if (!comparePassword) throw new Error('Sai tài khoản hoặc mật khẩu!');
 
             if (!account.activate) throw new Error('Bạn không thể đăng nhập, hãy liên hệ với TE để được hỗ trợ!');
+            let getPosition;
+            switch (account.role) {
+                case ROLE.TE:
+                    const findTE = await TeModel.findOne({ accountId: account._id });
+                    getPosition = findTE?.positionTe;
+                    break;
+                default:
+                    getPosition = undefined;
+                    break;
+            }
             const dataToToken = {
                 accId: account._id,
-                role: account.role
+                role: account.role,
+                ...getPosition ? { position: getPosition } : {}
             }
             const token = generateJWT(dataToToken);
             resClientData(res, 202, {
@@ -69,9 +80,11 @@ const accountController = {
         try {
             const crrAccount = req.acc;
             let findInfor;
+            let getPosition = undefined;
             switch (crrAccount?.role) {
                 case ROLE.TE:
                     findInfor = await TeModel.findOne({ accountId: crrAccount?.id }).populate('courseId');
+                    getPosition = findInfor?.positionTe;
                     break;
                 case ROLE.TEACHER:
                     findInfor = await TeacherModel.findOne({ idAccount: crrAccount?.id });
@@ -81,6 +94,7 @@ const accountController = {
             }
             resClientData(res, 201, {
                 roleAccount: crrAccount?.role,
+                ...getPosition ? { position: getPosition } : {},
                 token: crrAccount?.token,
                 ...findInfor ? ((findInfor as unknown as Obj)._doc as Obj) : {}
             }, 'Thành công!');
