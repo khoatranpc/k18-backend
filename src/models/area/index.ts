@@ -5,6 +5,10 @@ const areaSchema = new mongoose.Schema({
     name: {
         type: String,
         required: String
+    },
+    code: {
+        type: String,
+        required: String
     }
 });
 const AreaModel = mongoose.model(Collections.AREA, areaSchema);

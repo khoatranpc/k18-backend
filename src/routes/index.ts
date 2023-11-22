@@ -17,6 +17,7 @@ import RecruitmentRouter from './recruitment';
 import TERouter from './te';
 import MailRouter from './mailer';
 import MailTemplateRouter from './mailTemplate';
+import AreaRouter from './area';
 
 const RootRouter = express.Router();
 
@@ -39,6 +40,7 @@ RootRouter.use('/recruitment', RecruitmentRouter);
 RootRouter.use('/te', TERouter);
 RootRouter.use('/mail', MailRouter);
 RootRouter.use('/mail-template', MailTemplateRouter);
+RootRouter.use('/area', AreaRouter);
 
 
 export default RootRouter;

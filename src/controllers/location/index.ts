@@ -5,7 +5,7 @@ import LocationModel from "../../models/location";
 const locationController = {
     get: async (_: Request, res: Response) => {
         try {
-            const locations = await LocationModel.find({});
+            const locations = await LocationModel.find({}).populate('area');
             resClientData(res, 200, locations, 'Thành công!');
         } catch (error: any) {
             resClientData(res, 500, undefined, error.message);
@@ -13,9 +13,9 @@ const locationController = {
     },
     create: async (req: Request, res: Response) => {
         try {
-            const { locationDetail, locationCode } = req.body;
+            const { locationDetail, locationCode, locationName, area } = req.body;
             await LocationModel.create({
-                locationDetail, locationCode
+                locationDetail, locationCode, locationName, area
             });
             resClientData(res, 201, {}, 'Thành công!');
         } catch (error: any) {
@@ -25,11 +25,10 @@ const locationController = {
     findOneAndUpdate: async (req: Request, res: Response) => {
         try {
             const { id } = req.params;
-            const { locationDetail, locationCode } = req.body;
-            const locations = await LocationModel.findByIdAndUpdate(id, {
-                locationDetail, locationCode
+            const { locationDetail, locationCode, locationName, area } = req.body;
+            await LocationModel.findByIdAndUpdate(id, {
+                locationDetail, locationCode, locationName, area
             });
-            if (!locations) throw new Error('Thất bại!');
             resClientData(res, 201, {}, 'Thành công!');
         } catch (error: any) {
             resClientData(res, 403, undefined, error.message);
