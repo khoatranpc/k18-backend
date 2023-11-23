@@ -87,7 +87,7 @@ const accountController = {
                     getPosition = findInfor?.positionTe;
                     break;
                 case ROLE.TEACHER:
-                    findInfor = await TeacherModel.findOne({ idAccount: crrAccount?.id });
+                    findInfor = await TeacherModel.findOne({ idAccount: crrAccount?.id }).populate('idAccount', { activate: 0, salt: 0, password: 0 });
                     break;
                 default:
                     break;

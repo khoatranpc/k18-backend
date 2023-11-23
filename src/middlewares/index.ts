@@ -1,6 +1,6 @@
 import { NextFunction, Response, Request } from "express";
 import { JwtVerify } from "../global/interface";
-import { ROLE } from "../global/enum";
+import { PositionTe, ROLE } from "../global/enum";
 import { resClientData, verifyJWT } from "../utils";
 
 
@@ -8,7 +8,8 @@ export interface RequestMid extends Request {
     acc?: {
         role: ROLE,
         id: string,
-        token: string
+        token: string,
+        position?: PositionTe
     }
 }
 const middlewares = {
@@ -24,6 +25,7 @@ const middlewares = {
                 role: (verify as JwtVerify).role as ROLE,
                 id: (verify as JwtVerify).accId as string,
                 token: token,
+                position: (verify as JwtVerify).position
             }
             next();
         } catch (error: any) {
@@ -55,6 +57,21 @@ const middlewares = {
             next();
         } catch (error: any) {
             resClientData(res, 500, undefined, error.message);
+        }
+    },
+    acceptRole: (rolePosition?: PositionTe, ...roleAccountAccept: ROLE[]) => {
+        return (req: RequestMid, res: Response, next: NextFunction) => {
+            try {
+                const crrRole = req.acc;
+                if (rolePosition) {
+                    if (crrRole?.position !== rolePosition) throw new Error('Bạn không thể thực hiện hành động!');
+                } else {
+                    if (!roleAccountAccept.includes(crrRole?.role as ROLE)) throw new Error('Bạn không thể thực hiện hành động!');
+                }
+                next();
+            } catch (error: any) {
+                resClientData(res, 403, undefined, error.message);
+            }
         }
     }
 }

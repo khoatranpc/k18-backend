@@ -1,19 +1,31 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import { getProjection, resClientData } from "../../utils";
 import TeacherRegisterCourseModel from "../../models/teacherRegisterCourse";
+import { RequestMid } from "../../middlewares";
+import { ROLE } from "../../global/enum";
+import TeacherModel from "../../models/teacher";
 
 const teacherRegisterCourseController = {
-    getDataByListTeacherId: async (req: Request, res: Response) => {
+    getDataByListTeacherId: async (req: RequestMid, res: Response) => {
         try {
+            const crrAccount = req.acc;
             const { listTeacherId, fields } = req.query;
-            if (!listTeacherId) throw new Error('Thiếu listTeacherId!');
-            const listRecord = await TeacherRegisterCourseModel.find({
-                idTeacher: {
-                    $in: listTeacherId!.toString().split(',')
-                }
-            }, { ...fields && getProjection(...fields as Array<string>) })
-                .populate('coursesRegister.idCourse coursesRegister.levelHandle', { ...fields && getProjection(...fields as Array<string>) });
-            resClientData(res, 200, listRecord);
+            if (crrAccount?.role !== ROLE.TE) {
+                const currentUser = await TeacherModel.findOne({ idAccount: crrAccount?.id }, { _id: 1 });
+                const record = await TeacherRegisterCourseModel.findOne({
+                    idTeacher: currentUser?._id
+                }).populate('coursesRegister.idCourse coursesRegister.levelHandle', { ...fields && getProjection(...fields as Array<string>) });
+                resClientData(res, 200, record);
+            } else {
+                if (!listTeacherId) throw new Error('Thiếu listTeacherId!');
+                const listRecord = await TeacherRegisterCourseModel.find({
+                    idTeacher: {
+                        $in: listTeacherId!.toString().split(',')
+                    }
+                }, { ...fields && getProjection(...fields as Array<string>) })
+                    .populate('coursesRegister.idCourse coursesRegister.levelHandle', { ...fields && getProjection(...fields as Array<string>) });
+                resClientData(res, 200, listRecord);
+            }
         } catch (error: any) {
             resClientData(res, 500, undefined, error.message);
         }
