@@ -176,9 +176,9 @@ const roundController = {
     },
     getRound: async (req: Request, res: Response) => {
         try {
-            const { round, listCandidateId, fields } = req.query;
+            const { round, listCandidateId, fields, getAll } = req.query;
             let data;
-            if (!listCandidateId) throw new Error('Bạn cần truyền listCandidateId!');
+            if (!listCandidateId && !getAll) throw new Error('Bạn cần truyền listCandidateId!');
             switch (round) {
                 case RoundProcess.CV:
                     data = await RoundCVModel.find({
@@ -188,19 +188,30 @@ const roundController = {
                     })
                     break;
                 case RoundProcess.INTERVIEW:
-                    data = await RoundInterviewModel.find({
+                    const condition = !getAll ? {
                         candidateId: {
                             $in: (listCandidateId as unknown as string).split(',')
                         }
-                    }, getProjectionByString(fields as string))
-                        .populate('te', getProjectionByString(fields as string))
+                    } : {};
+                    data = await RoundInterviewModel.find(condition, getProjectionByString(fields as string))
+                        .populate('te candidateId', getProjectionByString(fields as string))
+                        .populate({
+                            path: 'candidateId',
+                            populate: {
+                                path: 'courseApply',
+                                select: String(fields).split(',')
+                            },
+                            select: String(fields).split(',')
+                        })
                         .populate({
                             path: 'te',
                             populate: {
                                 path: 'courseId',
                                 select: String(fields).split(',')
-                            }
+                            },
+                            select: String(fields).split(',')
                         })
+                        .sort({ time: 1 })
                     break;
                 case RoundProcess.CLAUTID:
                     data = await RoundClautidModel.find({
