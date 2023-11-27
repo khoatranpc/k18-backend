@@ -114,6 +114,11 @@ const recruimentSchema = new mongoose.Schema({
     fillForm: {
         type: Boolean,
         default: false
+    },
+    area: {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: Collections.AREA,
+        required: true
     }
 },
     {

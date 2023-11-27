@@ -59,6 +59,16 @@ const recruitmentController = {
             resClientData(res, 403, null, error.message);
         }
     },
+    updateOnCandidateById: async (req: Request, res: Response) => {
+        try {
+            const { id } = req.params;
+            const data = req.body;
+            await RecruitmentModel.findByIdAndUpdate(id, data);
+            resClientData(res, 201, {});
+        } catch (error: any) {
+            resClientData(res, 500, null, error.message);
+        }
+    },
     //on board
     getCandidateByEmailForOnboard: async (req: Request, res: Response) => {
         try {
