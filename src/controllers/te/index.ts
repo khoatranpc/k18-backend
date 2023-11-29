@@ -20,21 +20,21 @@ const teController = {
                             }
                         }
                 }, getProjectionByString(fields as string)).populate('courseId', getProjectionByString(fields as string));
-                resClientData(res, 201, tes);
+                resClientData(req, res, 201, tes);
             } else {
-                resClientData(res, 201, []);
+                resClientData(req, res, 201, []);
             }
         } catch (error: any) {
-            resClientData(res, 403, null, error.message);
+            resClientData(req, res, 403, null, error.message);
         }
     },
     createTeInfo: async (req: Request, res: Response) => {
         try {
             const data = req.body;
             const te = await TeModel.create(data);
-            resClientData(res, 201, te);
+            resClientData(req, res, 201, te);
         } catch (error: any) {
-            resClientData(res, 403, null, error.message);
+            resClientData(req, res, 403, null, error.message);
         }
     },
     getByAccountId: (req: Request, res: Response) => {

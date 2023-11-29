@@ -19,9 +19,9 @@ const classSessionController = {
                 classId
             }, { ...fields && getProjection(...fields as Array<string>) })
                 .populate('weekdayTimeScheduleId', { ...fields && getProjection(...fields as Array<string>) });
-            resClientData(res, 200, crrClassSession);
+            resClientData(req, res, 200, crrClassSession);
         } catch (error: any) {
-            resClientData(res, 500, undefined, error.message)
+            resClientData(req, res, 500, undefined, error.message)
         }
     },
     getTeacherInSession: async (req: Request, res: Response) => {
@@ -31,9 +31,9 @@ const classSessionController = {
             const listTeacher = await TeacherScheduleModel.find({
                 classSessionId: sessionId
             }, { ...fields && getProjection(...fields as Array<string>) }).populate('teacherId', { ...fields && getProjection(...fields as Array<string>) });
-            resClientData(res, 200, listTeacher);
+            resClientData(req, res, 200, listTeacher);
         } catch (error: any) {
-            resClientData(res, 500, undefined, error.message);
+            resClientData(req, res, 500, undefined, error.message);
         }
     },
     handleClassSession: async (req: Request, res: Response) => {
@@ -88,7 +88,7 @@ const classSessionController = {
                     const insertListSession = await ClassSessionModel.insertMany(listSession);
                     const insertSchedule = await TeacherScheduleModel.insertMany(listNewScheduleForTeacher);
                     if (insertSchedule && insertListSession) {
-                        resClientData(res, 201, {
+                        resClientData(req, res, 201, {
                             listSession,
                             listNewScheduleForTeacher
                         });
@@ -107,7 +107,7 @@ const classSessionController = {
                     await TeacherScheduleModel.deleteMany({
                         classSessionId
                     });
-                    resClientData(res, 201, {});
+                    resClientData(req, res, 201, {});
                     break;
                 case 'UPDATE':
                     const { ssNumber, dateSs, document, weekdayTimeId } = req.body;
@@ -121,7 +121,7 @@ const classSessionController = {
                     }, {
                         new: true
                     });
-                    resClientData(res, 201, {});
+                    resClientData(req, res, 201, {});
                     break;
                 case 'RAN':
                     const { ssNumberRan, sessionId } = req.body;
@@ -144,13 +144,13 @@ const classSessionController = {
                     }, {
                         new: true
                     });
-                    resClientData(res, 201, checkedAllTeacherInSession);
+                    resClientData(req, res, 201, checkedAllTeacherInSession);
                     break;
                 default:
                     throw new Error('Không thuộc trong các options cung cấp!')
             }
         } catch (error: any) {
-            resClientData(res, 403, undefined, error.message);
+            resClientData(req, res, 403, undefined, error.message);
         }
     },
     handleTeacherOnLeave: async (req: Request, res: Response) => {
@@ -174,7 +174,7 @@ const classSessionController = {
                 case "OFF":
                     getRecordScheduleCrrTeacher.isOff = true;
                     if (getRecordScheduleCrrTeacher.role === ROLE_TEACHER.SP) {
-                        resClientData(res, 201, {});
+                        resClientData(req, res, 201, {});
                     } else {
                         // generate one record teacher schedule for replace teacher
                         const recordTeacherScheduleForRT = {
@@ -188,7 +188,7 @@ const classSessionController = {
                         await TeacherScheduleModel.create(recordTeacherScheduleForRT);
                     }
                     await getRecordScheduleCrrTeacher.save();
-                    resClientData(res, 201, {});
+                    resClientData(req, res, 201, {});
                     break;
                 case 'REPLACE':
                     await TeacherScheduleModel.updateMany({
@@ -204,7 +204,7 @@ const classSessionController = {
             }
 
         } catch (error: any) {
-            resClientData(res, 403, undefined, error.message);
+            resClientData(req, res, 403, undefined, error.message);
         }
     },
     getAttendanceTeacher: async (req: Request, res: Response) => {
@@ -223,9 +223,9 @@ const classSessionController = {
                 populate: 'bookTeacher locationId',
                 select: { ...fields && getProjection(...fields as Array<string>) }
             });
-            resClientData(res, 200, listTeacher);
+            resClientData(req, res, 200, listTeacher);
         } catch (error: any) {
-            resClientData(res, 500, undefined, error.message);
+            resClientData(req, res, 500, undefined, error.message);
         }
     },
     generateListRecordTeacherSchedule: async (req: Request, res: Response) => {
@@ -272,13 +272,13 @@ const classSessionController = {
                         }
                     });
                     await TeacherScheduleModel.insertMany(listRecordTimeKeeping);
-                    resClientData(res, 201, {});
+                    resClientData(req, res, 201, {});
                 } else {
                     throw new Error('Đã có bản ghi điểm danh giáo viên!');
                 }
             }
         } catch (error: any) {
-            resClientData(res, 403, null, error.message);
+            resClientData(req, res, 403, null, error.message);
         }
     }
 };

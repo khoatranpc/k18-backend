@@ -15,9 +15,9 @@ const bookTeacherController = {
         try {
             const { listRequest } = req.body;
             const createBookTeacherRequest = await BookTeacherModel.insertMany(listRequest);
-            resClientData(res, 201, createBookTeacherRequest, 'Thành công!');
+            resClientData(req, res, 201, createBookTeacherRequest, 'Thành công!');
         } catch (error: any) {
-            resClientData(res, 403, undefined, error.message);
+            resClientData(req, res, 403, undefined, error.message);
         }
     },
     getByClassId: async (req: Request, res: Response) => {
@@ -28,9 +28,9 @@ const bookTeacherController = {
                 classId
             }, { ...fields && getProjection(...fields as Array<string>) }).populate("locationId teacherRegister.idTeacher", { ...fields && getProjection(...fields as Array<string>) });
             if (!crrBookTeacherRequest) throw new Error('Không tìm thấy yêu cầu!');
-            resClientData(res, 200, crrBookTeacherRequest, 'Thành công!');
+            resClientData(req, res, 200, crrBookTeacherRequest, 'Thành công!');
         } catch (error: any) {
-            resClientData(res, 500, undefined, error.message);
+            resClientData(req, res, 500, undefined, error.message);
         }
     },
     handleTeacherRegisterLocaltionForClass: async (req: RequestMid, res: Response) => {
@@ -72,18 +72,18 @@ const bookTeacherController = {
                                 enroll: false
                             });
                             await crrRequest.save();
-                            resClientData(res, 201, {});
+                            resClientData(req, res, 201, {});
                         }
                         break;
                     case 'CANCEL':
                         if (findExistedRegister >= 0) {
                             crrRequest.teacherRegister.splice(findExistedRegister, 1);
                             await crrRequest.save();
-                            resClientData(res, 201, {});
+                            resClientData(req, res, 201, {});
                         } else throw new Error('Bạn chưa đăng ký!');
                         break;
                     default:
-                        resClientData(res, 500, undefined, 'options hợp lệ là REGISTER hoặc CANCEL');
+                        resClientData(req, res, 500, undefined, 'options hợp lệ là REGISTER hoặc CANCEL');
                         break;
                 }
             } else if (req.acc?.role === ROLE.TE) {
@@ -127,7 +127,7 @@ const bookTeacherController = {
                                     await TeacherScheduleModel.insertMany(listTimeKeeping);
                                 }
                             }
-                            resClientData(res, 201, {});
+                            resClientData(req, res, 201, {});
                         }
                         break;
                     case 'UPDATE':
@@ -168,23 +168,23 @@ const bookTeacherController = {
                                 }
                             }
                             await crrRequest.save();
-                            resClientData(res, 201, { recordUpdate: idRequest });
+                            resClientData(req, res, 201, { recordUpdate: idRequest });
                         } else throw new Error('Giáo viên này chưa đăng ký!');
                         break;
                     case 'REMOVE':
                         if (findExistedRegister >= 0) {
                             crrRequest.teacherRegister.splice(findExistedRegister, 1);
                             await crrRequest.save();
-                            resClientData(res, 201, {});
+                            resClientData(req, res, 201, {});
                         } else throw new Error('Giáo viên này chưa đăng ký!');
                         break;
                     default:
-                        resClientData(res, 500, undefined, 'options truyền chỉ hợp lệ ADD hoặc REMOVE hoặc UPDATE');
+                        resClientData(req, res, 500, undefined, 'options truyền chỉ hợp lệ ADD hoặc REMOVE hoặc UPDATE');
                         break;
                 }
             } else throw new Error('Bạn không thể thực hiện yêu cầu!');
         } catch (error: any) {
-            resClientData(res, 500, undefined, error.message);
+            resClientData(req, res, 500, undefined, error.message);
         }
     },
     getByTeacherRegister: async (req: Request, res: Response) => {
@@ -196,9 +196,9 @@ const bookTeacherController = {
                 "teacherRegister.accept": true
             }, { ...fields && getProjection(...fields as Array<string>) })
                 .populate('classId locationId', { ...fields && getProjection(...fields as Array<string>) })
-            resClientData(res, 200, data.reverse());
+            resClientData(req, res, 200, data.reverse());
         } catch (error: any) {
-            resClientData(res, 500, undefined, error.message);
+            resClientData(req, res, 500, undefined, error.message);
         }
     }
 };

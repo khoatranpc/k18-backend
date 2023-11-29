@@ -48,9 +48,9 @@ const feedbackResponseController = {
                 findTeacher.teacherPoint = (teacherPointForTeacher / findAllFeedbackResponse.length);
                 await findTeacher.save();
             }
-            resClientData(res, 201, {});
+            resClientData(req,res, 201, {});
         } catch (error: any) {
-            resClientData(res, 500, null, error.message);
+            resClientData(req,res, 500, null, error.message);
         }
     },
     getListRecordResponse: async (req: Request, res: Response) => {
@@ -85,7 +85,7 @@ const feedbackResponseController = {
                     time: Number(timeCollect) || 1
                 });
                 if (!recordFeedback) {
-                    resClientData(res, 200, {
+                    resClientData(req,res, 200, {
                         list: [],
                         totalPage: null,
                         currentPage: null,
@@ -98,7 +98,7 @@ const feedbackResponseController = {
                         createdAt: -1
                     })
                         .populate('course codeClass groupNumber feedbackId', { ...fields && getProjection(...fields as Array<string>) })
-                    resClientData(res, 200, {
+                    resClientData(req,res, 200, {
                         list: listResponseFeedback,
                         totalPage: null,
                         currentPage: null,
@@ -112,7 +112,7 @@ const feedbackResponseController = {
                 })
                     .skip((Number(recordOnPage) * Number(currentPage)) - Number(recordOnPage)).limit(Number(recordOnPage))
                     .populate('course codeClass groupNumber feedbackId', { ...fields && getProjection(...fields as Array<string>) });
-                resClientData(res, 200, {
+                resClientData(req,res, 200, {
                     list: listResponse,
                     totalPage: Math.ceil(totalRecord / Number(recordOnPage)),
                     currentPage: Number(currentPage) || '',
@@ -120,7 +120,7 @@ const feedbackResponseController = {
                 });
             }
         } catch (error: any) {
-            resClientData(res, 500, null, error.message);
+            resClientData(req,res, 500, null, error.message);
         }
     },
     getListRecordResponseByTeacherId: async (req: Request, res: Response) => {
@@ -134,9 +134,9 @@ const feedbackResponseController = {
                 })
                 .skip((Number(recordOnPage) * Number(currentPage)) - Number(recordOnPage)).limit(Number(recordOnPage))
                 .populate('classId feedbackResponseId groupNumber', { ...fields && getProjection(...fields as Array<string>) });
-            resClientData(res, 200, listResponse);
+            resClientData(req,res, 200, listResponse);
         } catch (error: any) {
-            resClientData(res, 500, null, error.message);
+            resClientData(req,res, 500, null, error.message);
         }
     }
 };

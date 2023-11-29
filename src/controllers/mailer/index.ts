@@ -39,14 +39,14 @@ const mailerController = {
                     default:
                         break;
                 }
-                resClientData(res, 200, rs);
+                resClientData(req, res, 200, rs);
             }).catch((err) => {
-                resClientData(res, 500, null, err);
+                resClientData(req, res, 500, null, err);
             });
 
         } catch (error: any) {
             console.log(error);
-            resClientData(res, 500, null, error.message);
+            resClientData(req, res, 500, null, error.message);
         }
     }
 };

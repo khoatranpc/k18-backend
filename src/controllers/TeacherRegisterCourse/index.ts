@@ -15,7 +15,7 @@ const teacherRegisterCourseController = {
                 const record = await TeacherRegisterCourseModel.findOne({
                     idTeacher: currentUser?._id
                 }).populate('coursesRegister.idCourse coursesRegister.levelHandle', { ...fields && getProjection(...fields as Array<string>) });
-                resClientData(res, 200, record);
+                resClientData(req, res, 200, record);
             } else {
                 if (!listTeacherId) throw new Error('Thiếu listTeacherId!');
                 const listRecord = await TeacherRegisterCourseModel.find({
@@ -24,10 +24,10 @@ const teacherRegisterCourseController = {
                     }
                 }, { ...fields && getProjection(...fields as Array<string>) })
                     .populate('coursesRegister.idCourse coursesRegister.levelHandle', { ...fields && getProjection(...fields as Array<string>) });
-                resClientData(res, 200, listRecord);
+                resClientData(req, res, 200, listRecord);
             }
         } catch (error: any) {
-            resClientData(res, 500, undefined, error.message);
+            resClientData(req, res, 500, undefined, error.message);
         }
     }
 };

@@ -12,12 +12,12 @@ const timeScheduleController = {
                 end,
                 weekday
             })
-            resClientData(res, 201, {}, 'Thành công!');
+            resClientData(req, res, 201, {}, 'Thành công!');
         } catch (error: any) {
-            resClientData(res, 403, undefined, error.message)
+            resClientData(req, res, 403, undefined, error.message)
         }
     },
-    getAll: async (_: Request, res: Response) => {
+    getAll: async (req: Request, res: Response) => {
         try {
             const listTimeSchedules = await TimeScheduleModel.find({});
             const timeSchedules = listTimeSchedules.map((item) => {
@@ -26,9 +26,9 @@ const timeScheduleController = {
                     order: getOrderWeekday[item.weekday as WEEKDAY]
                 }
             }).sort((a, b) => a.order - b.order)
-            resClientData(res, 200, timeSchedules, 'Thành công!');
+            resClientData(req, res, 200, timeSchedules, 'Thành công!');
         } catch (error: any) {
-            resClientData(res, 500, undefined, error.message)
+            resClientData(req, res, 500, undefined, error.message)
         }
     },
     update: async (req: Request, res: Response) => {
@@ -40,9 +40,9 @@ const timeScheduleController = {
                 end,
                 weekday
             }, { new: true });
-            resClientData(res, 201, {}, 'Thành công!');
+            resClientData(req, res, 201, {}, 'Thành công!');
         } catch (error: any) {
-            resClientData(res, 403, undefined, error.message);
+            resClientData(req, res, 403, undefined, error.message);
         }
     },
 };

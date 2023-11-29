@@ -11,16 +11,16 @@ const mailTemplateController = {
                     template
                 });
                 if (!templateData) {
-                    resClientData(res, 200, {});
+                    resClientData(req, res, 200, {});
                 } else {
-                    resClientData(res, 200, templateData);
+                    resClientData(req, res, 200, templateData);
                 }
             } else {
                 const listTemplate = await MailTemplateModel.find()
-                resClientData(res, 200, listTemplate);
+                resClientData(req, res, 200, listTemplate);
             }
         } catch (error: any) {
-            resClientData(res, 500, null, error.message);
+            resClientData(req, res, 500, null, error.message);
         }
     },
     create: async (req: Request, res: Response) => {
@@ -31,9 +31,9 @@ const mailTemplateController = {
                 html,
                 title
             });
-            resClientData(res, 201, createTemplate);
+            resClientData(req, res, 201, createTemplate);
         } catch (error: any) {
-            resClientData(res, 500, null, error.message);
+            resClientData(req, res, 500, null, error.message);
         }
     },
     update: async (req: Request, res: Response) => {
@@ -44,9 +44,9 @@ const mailTemplateController = {
                 html,
                 title
             });
-            resClientData(res, 201, updateTemplate);
+            resClientData(req, res, 201, updateTemplate);
         } catch (error: any) {
-            resClientData(res, 500, null, error.message);
+            resClientData(req, res, 500, null, error.message);
         }
     },
 }

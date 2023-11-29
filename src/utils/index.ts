@@ -1,4 +1,4 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import crypto from 'crypto';
 import { v4 as uuidv4 } from 'uuid';
 import jwt from 'jsonwebtoken';
@@ -19,11 +19,16 @@ const getProjection = (...fields: Array<string>) => {
     }
     return {}
 }
-function resClientData(res: Response, statusCode: number, data: any, message?: string) {
+function resClientData(req: Request, res: Response, statusCode: number, data: any, message?: string) {
     res.status(statusCode).send({
         data,
         message: message ? message : (!!data ? 'Thành công!' : 'Thất bại!'),
-        status: data ? true : false
+        status: data ? true : false,
+        query: {
+            body: req.body,
+            params: req.params,
+            query: req.query
+        }
     })
 }
 function generateJWT(data: Obj) {

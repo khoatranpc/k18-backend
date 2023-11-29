@@ -11,9 +11,9 @@ const roundCommentController = {
             }).populate('teId', getProjectionByString(fields as string)).sort({
                 createdAt: -1
             });
-            resClientData(res, 200, data);
+            resClientData(req, res, 200, data);
         } catch (error: any) {
-            resClientData(res, 403, null, error.message);
+            resClientData(req, res, 403, null, error.message);
         }
     },
     createComment: async (req: Request, res: Response) => {
@@ -24,9 +24,9 @@ const roundCommentController = {
                 teId,
                 content
             });
-            resClientData(res, 201, createdComment);
+            resClientData(req, res, 201, createdComment);
         } catch (error: any) {
-            resClientData(res, 403, null, error.message);
+            resClientData(req, res, 403, null, error.message);
         }
     }
 };

@@ -11,11 +11,21 @@ import RoundTestModel from "../../models/recruiment/round/test";
 const recruitmentController = {
     getList: async (req: Request, res: Response) => {
         try {
-            const { fields, recordOnPage, currentPage } = req.query;
+            const { fields, recordOnPage, currentPage, sort, area, status, resourceHunt } = req.query;
             const totalRecord = await RecruitmentModel.count({});
-            const listData = await RecruitmentModel.find({}, { ...fields && getProjection(...fields as Array<string>) })
+            const listData = await RecruitmentModel.find({
+                ...area && area !== 'ALL' ? {
+                    area: area
+                } : {},
+                ...status && status !== 'ALL' ? {
+                    status: status
+                } : {},
+                ...resourceHunt && resourceHunt !== 'ALL' ? {
+                    resourceApply: resourceHunt
+                } : {},
+            }, { ...fields && getProjection(...fields as Array<string>) })
                 .sort({
-                    createdAt: -1
+                    createdAt: !sort ? -1 : (sort === 'ASC' ? -1 : 1)
                 })
                 .skip((Number(recordOnPage) * Number(currentPage)) - Number(recordOnPage)).limit(Number(recordOnPage))
                 .populate('courseApply', { ...fields && getProjection(...fields as Array<string>) });
@@ -25,9 +35,9 @@ const recruitmentController = {
                 currentPage: Number(currentPage) || '',
                 recordOnPage: Number(recordOnPage || '')
             }
-            resClientData(res, 200, dataSend);
-        } catch (error) {
-            resClientData(res, 500, null);
+            resClientData(req, res, 200, dataSend);
+        } catch (error: any) {
+            resClientData(req, res, 500, null, error.messsage);
         }
     },
     create: async (req: Request, res: Response) => {
@@ -43,9 +53,9 @@ const recruitmentController = {
             await RoundCVModel.create({
                 candidateId: createCandidate._id
             });
-            resClientData(res, 201, createCandidate);
+            resClientData(req, res, 201, createCandidate);
         } catch (error: any) {
-            resClientData(res, 403, null, error.message);
+            resClientData(req, res, 403, null, error.message);
         }
     },
     getOneById: async (req: Request, res: Response) => {
@@ -54,9 +64,9 @@ const recruitmentController = {
             const { fields } = req.query;
             const getCrrCandidate = await RecruitmentModel.findById(id)
                 .populate('courseApply', { ...fields && getProjection(...fields as Array<string>) });
-            resClientData(res, 200, getCrrCandidate);
+            resClientData(req, res, 200, getCrrCandidate);
         } catch (error: any) {
-            resClientData(res, 403, null, error.message);
+            resClientData(req, res, 403, null, error.message);
         }
     },
     updateOnCandidateById: async (req: Request, res: Response) => {
@@ -64,9 +74,9 @@ const recruitmentController = {
             const { id } = req.params;
             const data = req.body;
             await RecruitmentModel.findByIdAndUpdate(id, data);
-            resClientData(res, 201, {});
+            resClientData(req, res, 201, {});
         } catch (error: any) {
-            resClientData(res, 500, null, error.message);
+            resClientData(req, res, 500, null, error.message);
         }
     },
     //on board
@@ -103,9 +113,9 @@ const recruitmentController = {
                 }]
             ]);
             if (!getCrrCandidate) throw new Error('Không tìm thấy dữ liệu ứng viên!');
-            resClientData(res, 200, getCrrCandidate);
+            resClientData(req, res, 200, getCrrCandidate);
         } catch (error: any) {
-            resClientData(res, 500, null, error.message);
+            resClientData(req, res, 500, null, error.message);
         }
     },
     getRoundClautid: async (req: Request, res: Response) => {
@@ -115,9 +125,9 @@ const recruitmentController = {
                 candidateId
             }, getProjectionByString(fields as string))
                 .populate("classIdFirst classIdSecond locationFirst locationSecond", getProjectionByString(fields as string));
-            resClientData(res, 200, getRecordData);
+            resClientData(req, res, 200, getRecordData);
         } catch (error: any) {
-            resClientData(res, 500, null, error.message);
+            resClientData(req, res, 500, null, error.message);
         }
     },
     registerClautid: async (req: Request, res: Response) => {
@@ -144,9 +154,9 @@ const recruitmentController = {
                 getRecordClautidData.locationSecond = new mongoose.Types.ObjectId(location as string);
                 await getRecordClautidData.save();
             }
-            resClientData(res, 201, {});
+            resClientData(req, res, 201, {});
         } catch (error: any) {
-            resClientData(res, 500, null, error.message);
+            resClientData(req, res, 500, null, error.message);
         }
     },
     createFeedbackClautid: async (req: Request, res: Response) => {
@@ -173,9 +183,9 @@ const recruitmentController = {
                     });
                 }
             }
-            resClientData(res, 201, {});
+            resClientData(req, res, 201, {});
         } catch (error: any) {
-            resClientData(res, 500, null, error.message);
+            resClientData(req, res, 500, null, error.message);
         }
     },
     getFeedbackClautid: async (req: Request, res: Response) => {
@@ -190,9 +200,9 @@ const recruitmentController = {
                     $in: String(listClassId).split(',')
                 },
             }, getProjectionByString(fields as string));
-            resClientData(res, 200, data);
+            resClientData(req, res, 200, data);
         } catch (error: any) {
-            resClientData(res, 500, null, error.message);
+            resClientData(req, res, 500, null, error.message);
         }
     },
     updateClautid: async (req: Request, res: Response) => {
@@ -214,9 +224,9 @@ const recruitmentController = {
                     formSecond: form
                 }]);
             }
-            resClientData(res, 201, {});
+            resClientData(req, res, 201, {});
         } catch (error: any) {
-            resClientData(res, 500, null, error.message);
+            resClientData(req, res, 500, null, error.message);
         }
     },
     getRoundTest: async (req: Request, res: Response) => {
@@ -226,9 +236,9 @@ const recruitmentController = {
                 candidateId
             });
             if (!findRecord) throw new Error('Không tìm thấy bản ghi!');
-            resClientData(res, 200, findRecord);
+            resClientData(req, res, 200, findRecord);
         } catch (error: any) {
-            resClientData(res, 404, null, error.message);
+            resClientData(req, res, 404, null, error.message);
         }
     }
 }

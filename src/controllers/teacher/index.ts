@@ -30,9 +30,9 @@ const teacherController = {
                 recordOnPage: Number(recordOnPage || '')
             }
 
-            resClientData(res, 200, dataSend);
+            resClientData(req, res, 200, dataSend);
         } catch (error: any) {
-            resClientData(res, 500, undefined, error.message);
+            resClientData(req, res, 500, undefined, error.message);
         }
     },
     getOne: async (req: Request, res: Response) => {
@@ -40,9 +40,9 @@ const teacherController = {
             const { id } = req.params;
             const { fields } = req.query;
             const listTeacher = await TeacherModel.findById(id, { ...fields && getProjection(...fields as Array<string>) });
-            resClientData(res, 200, listTeacher);
+            resClientData(req, res, 200, listTeacher);
         } catch (error: any) {
-            resClientData(res, 500, undefined, error.message);
+            resClientData(req, res, 500, undefined, error.message);
         }
     },
     findByIdAndUpdate: async (req: RequestMid, res: Response) => {
@@ -57,9 +57,9 @@ const teacherController = {
                 if (crrTeacher._id.toString() !== id) throw new Error('Bạn không có quyền thực hiện hành động!');
                 await TeacherModel.findByIdAndUpdate(id, req.body, { new: true });
             }
-            resClientData(res, 201, {});
+            resClientData(req, res, 201, {});
         } catch (error: any) {
-            resClientData(res, 403, undefined, error.message);
+            resClientData(req, res, 403, undefined, error.message);
         }
     },
     findByEmail: async (req: Request, res: Response) => {
@@ -75,10 +75,10 @@ const teacherController = {
                 _id: 1,
                 fullName: 1
             });
-            resClientData(res, 200, listTeacher);
+            resClientData(req, res, 200, listTeacher);
 
         } catch (error: any) {
-            resClientData(res, 404, undefined, error.message);
+            resClientData(req, res, 404, undefined, error.message);
         }
     }
 }

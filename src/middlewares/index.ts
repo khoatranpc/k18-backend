@@ -29,7 +29,7 @@ const middlewares = {
             }
             next();
         } catch (error: any) {
-            resClientData(res, 401, undefined, error.message);
+            resClientData(req, res, 401, undefined, error.message);
         }
     },
     isTE: (req: RequestMid, res: Response, next: NextFunction) => {
@@ -38,7 +38,7 @@ const middlewares = {
             if (crrRole?.role !== ROLE.TE) throw new Error('Bạn không thể thực hiện hành động!');
             next();
         } catch (error: any) {
-            resClientData(res, 403, undefined, error.message);
+            resClientData(req, res, 403, undefined, error.message);
         }
     },
     isTeacher: (req: RequestMid, res: Response, next: NextFunction) => {
@@ -47,7 +47,7 @@ const middlewares = {
             if (crrRole?.role !== ROLE.TEACHER) throw new Error('Bạn không thể thực hiện hành động!');
             next();
         } catch (error: any) {
-            resClientData(res, 403, undefined, error.message);
+            resClientData(req, res, 403, undefined, error.message);
         }
     },
     delete_IdFromBody: (req: RequestMid, res: Response, next: NextFunction) => {
@@ -56,7 +56,7 @@ const middlewares = {
             if (_id) throw new Error('Bạn không được phép gửi _id trong request!');
             next();
         } catch (error: any) {
-            resClientData(res, 500, undefined, error.message);
+            resClientData(req, res, 500, undefined, error.message);
         }
     },
     acceptRole: (rolePosition?: PositionTe, ...roleAccountAccept: ROLE[]) => {
@@ -70,7 +70,7 @@ const middlewares = {
                 }
                 next();
             } catch (error: any) {
-                resClientData(res, 403, undefined, error.message);
+                resClientData(req, res, 403, undefined, error.message);
             }
         }
     }

@@ -22,9 +22,9 @@ const preTeacherController = {
             const register = await PreTeacherModel.create(req.body);
             findCandidate.fillForm = true;
             await findCandidate.save();
-            resClientData(res, 201, register, 'Thành công!');
+            resClientData(req, res, 201, register, 'Thành công!');
         } catch (error: any) {
-            resClientData(res, 403, undefined, error.message);
+            resClientData(req, res, 403, undefined, error.message);
         }
     },
     acceptRequestRegister: async (req: Request, res: Response) => {
@@ -93,9 +93,9 @@ const preTeacherController = {
                     await TeacherRegisterCourseModel.create(newTeacherRegisterCourse);
                 }
             }
-            resClientData(res, 201, {}, 'Thành công!');
+            resClientData(req, res, 201, {}, 'Thành công!');
         } catch (error: any) {
-            resClientData(res, 403, undefined, error.message);
+            resClientData(req, res, 403, undefined, error.message);
         }
     },
     getAll: async (req: RequestMid, res: Response) => {
@@ -116,9 +116,9 @@ const preTeacherController = {
                 currentPage: Number(currentPage) || '',
                 recordOnPage: Number(recordOnPage || '')
             }
-            resClientData(res, 200, dataRes);
+            resClientData(req, res, 200, dataRes);
         } catch (error: any) {
-            resClientData(res, 403, undefined, error.message);
+            resClientData(req, res, 403, undefined, error.message);
         }
     }
 };

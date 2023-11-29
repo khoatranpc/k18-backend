@@ -53,7 +53,7 @@ export enum StatusProcessing {
     // DONE
     DONE = 'DONE'
 }
-export enum ResourseApply {
+export enum ResourceApply {
     FB = 'FB',
     LKD = 'LKD',
     RF = 'RF',
@@ -107,4 +107,10 @@ export enum Area {
     DN = 'DN',
     ONL = 'ONL',
     ANT = 'ANT'
+}
+export enum Region {
+    MB = 'MB',
+    MT = 'MT',
+    MN = 'MN',
+    ONL = 'ONL'
 }

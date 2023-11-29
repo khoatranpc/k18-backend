@@ -23,9 +23,9 @@ const courseLevelController = {
                     courseLevel: createLevel._id
                 }
             });
-            resClientData(res, 201, createLevel, 'Thành công!');
+            resClientData(req, res, 201, createLevel, 'Thành công!');
         } catch (error: any) {
-            resClientData(res, 403, undefined, error.message);
+            resClientData(req, res, 403, undefined, error.message);
         }
     },
     getByCourseId: async (req: Request, res: Response) => {
@@ -37,9 +37,9 @@ const courseLevelController = {
                 courseId: 0,
                 __v: 0
             });
-            resClientData(res, 200, listLevel, 'Thành công!');
+            resClientData(req, res, 200, listLevel, 'Thành công!');
         } catch (error: any) {
-            resClientData(res, 500, undefined, error.message);
+            resClientData(req, res, 500, undefined, error.message);
         }
     },
     updateCourseLevel: async (req: Request, res: Response) => {
@@ -53,9 +53,9 @@ const courseLevelController = {
             if (textbook) findLevel.textbook = textbook;
             if (techRequirements) findLevel.techRequirements = techRequirements;
             await findLevel.save();
-            resClientData(res, 201, {}, 'Thành công!');
+            resClientData(req, res, 201, {}, 'Thành công!');
         } catch (error: any) {
-            resClientData(res, 500, undefined, error.message);
+            resClientData(req, res, 500, undefined, error.message);
         }
     },
 };

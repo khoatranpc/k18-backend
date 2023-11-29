@@ -33,12 +33,12 @@ const accountController = {
                 ...getPosition ? { position: getPosition } : {}
             }
             const token = generateJWT(dataToToken);
-            resClientData(res, 202, {
+            resClientData(req, res, 202, {
                 id: account._id,
                 ...token
             }, 'Thành công');
         } catch (error: any) {
-            resClientData(res, 403, undefined, error.message);
+            resClientData(req, res, 403, undefined, error.message);
         }
     },
     createForTest: async (req: Request, res: Response) => {
@@ -55,9 +55,9 @@ const accountController = {
                 role
             }
             await AccountModel.create(account);
-            resClientData(res, 201, {}, 'Thành công');
+            resClientData(req, res, 201, {}, 'Thành công');
         } catch (error: any) {
-            resClientData(res, 403, undefined, error.message)
+            resClientData(req, res, 403, undefined, error.message)
         }
     },
     getAllAccount: async (req: RequestMid, res: Response) => {
@@ -71,9 +71,9 @@ const accountController = {
                 salt: 0,
                 password: 0
             });
-            resClientData(res, 200, getAcc, 'Thành công!');
+            resClientData(req, res, 200, getAcc, 'Thành công!');
         } catch (error: any) {
-            resClientData(res, 403, undefined, error.message);
+            resClientData(req, res, 403, undefined, error.message);
         }
     },
     getInfo: async (req: RequestMid, res: Response) => {
@@ -92,7 +92,7 @@ const accountController = {
                 default:
                     break;
             }
-            resClientData(res, 201, {
+            resClientData(req, res, 201, {
                 roleAccount: crrAccount?.role,
                 ...getPosition ? { position: getPosition } : {},
                 token: crrAccount?.token,
@@ -100,7 +100,7 @@ const accountController = {
             }, 'Thành công!');
 
         } catch (error: any) {
-            resClientData(res, 403, undefined, error.message)
+            resClientData(req, res, 403, undefined, error.message)
         }
     }
 };

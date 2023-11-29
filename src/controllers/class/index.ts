@@ -71,9 +71,9 @@ const classController = {
                 recordOnPage: Number(recordOnPage || '')
             }
 
-            resClientData(res, 200, dataSend, 'Thành công!');
+            resClientData(req, res, 200, dataSend, 'Thành công!');
         } catch (error: any) {
-            resClientData(res, 500, undefined, error.message);
+            resClientData(req, res, 500, undefined, error.message);
         }
     },
     create: async (req: Request, res: Response) => {
@@ -90,9 +90,9 @@ const classController = {
                 dayRange,
                 timeSchedule
             });
-            resClientData(res, 201, {}, 'Thành công!');
+            resClientData(req, res, 201, {}, 'Thành công!');
         } catch (error: any) {
-            resClientData(res, 403, undefined, error.message);
+            resClientData(req, res, 403, undefined, error.message);
         }
     },
     findOneById: async (req: Request, res: Response) => {
@@ -103,9 +103,9 @@ const classController = {
                 .populate('courseId courseLevelId timeSchedule', { ...fields && getProjection(...fields as Array<string>) });
 
             if (!crrClass) throw new Error('Không tồn tại lớp!');
-            resClientData(res, 200, crrClass, 'Tìm thấy!');
+            resClientData(req, res, 200, crrClass, 'Tìm thấy!');
         } catch (error: any) {
-            resClientData(res, 404, undefined, error.message);
+            resClientData(req, res, 404, undefined, error.message);
         }
     },
     findOneAndUpdate: async (req: Request, res: Response) => {
@@ -237,9 +237,9 @@ const classController = {
                 }
             }
             await crrClass.save();
-            resClientData(res, 201, {}, 'Thành công!');
+            resClientData(req, res, 201, {}, 'Thành công!');
         } catch (error: any) {
-            resClientData(res, 403, undefined, error.message);
+            resClientData(req, res, 403, undefined, error.message);
         }
     },
 };

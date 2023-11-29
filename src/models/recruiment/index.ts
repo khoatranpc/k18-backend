@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { Collections } from "../../database";
-import { Education, LevelTechnique, ObjectTeach, ROLE_TEACHER, ResourseApply, ResultInterview, RoundProcess, StatusProcessing } from "../../global/enum";
+import { Education, LevelTechnique, ObjectTeach, ROLE_TEACHER, ResourceApply, ResultInterview, RoundProcess, StatusProcessing } from "../../global/enum";
 
 const recruimentSchema = new mongoose.Schema({
     fullName: {
@@ -35,9 +35,9 @@ const recruimentSchema = new mongoose.Schema({
         required: true
     },
     note: String,
-    resourseApply: {
+    resourceApply: {
         type: String,
-        enum: ResourseApply,
+        enum: ResourceApply,
         required: true
     },
     linkCv: {

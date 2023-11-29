@@ -37,9 +37,9 @@ const feedbackController = {
                     path: 'courseId'
                 }
             });
-            resClientData(res, 200, getList);
+            resClientData(req, res, 200, getList);
         } catch (error: any) {
-            resClientData(res, 500, null, error.message);
+            resClientData(req, res, 500, null, error.message);
         }
     },
     updateRecord: async (req: Request, res: Response) => {
@@ -65,9 +65,9 @@ const feedbackController = {
                     timeCollect: update.time,
                 });
             }
-            resClientData(res, 201, update);
+            resClientData(req, res, 201, update);
         } catch (error: any) {
-            resClientData(res, 403, null, error.message);
+            resClientData(req, res, 403, null, error.message);
         }
     },
     getClassForStudentFormFeedback: async (req: Request, res: Response) => {
@@ -88,9 +88,9 @@ const feedbackController = {
                     return (item.codeClass as any).courseId.courseName === courseName
                 })
             });
-            resClientData(res, 200, findClassWithCourseName);
+            resClientData(req, res, 200, findClassWithCourseName);
         } catch (error: any) {
-            resClientData(res, 500, null, error.message);
+            resClientData(req, res, 500, null, error.message);
         }
     },
     getGroupInClass: async (req: Request, res: Response) => {
@@ -131,9 +131,9 @@ const feedbackController = {
                     return item.teacherRegister.find((rc) => rc.accept === true && rc.roleRegister !== ROLE_TEACHER.SP);
                 })
             });
-            resClientData(res, 200, recordBookTeacher);
+            resClientData(req, res, 200, recordBookTeacher);
         } catch (error: any) {
-            resClientData(res, 500, null, error.message);
+            resClientData(req, res, 500, null, error.message);
         }
     }
 };

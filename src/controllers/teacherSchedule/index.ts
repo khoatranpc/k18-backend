@@ -69,7 +69,7 @@ const teacherScheduleController = {
                             return rs.filter((item) => item.classSessionId !== null).sort((a, b) => ((a.classSessionId as any).sessionNumber) - ((b.classSessionId as any).sessionNumber));
                         })
 
-                    resClientData(res, 200, listRecordSchedule);
+                    resClientData(req, res, 200, listRecordSchedule);
                     break;
                 default:
                     const teacherSchedule = await TeacherScheduleModel.find({
@@ -84,11 +84,11 @@ const teacherScheduleController = {
                             },
                         });
 
-                    resClientData(res, 200, teacherSchedule);
+                    resClientData(req, res, 200, teacherSchedule);
                     break;
             }
         } catch (error) {
-            resClientData(res, 403, undefined);
+            resClientData(req, res, 403, undefined);
         }
     }
 };

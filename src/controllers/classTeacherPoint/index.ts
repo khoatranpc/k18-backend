@@ -13,9 +13,9 @@ const classTeacherPointController = {
             }, {
                 feedbackId: 0
             });
-            resClientData(res, 200, listClassTeacherPoint);
+            resClientData(req, res, 200, listClassTeacherPoint);
         } catch (error: any) {
-            resClientData(res, 500, null, error.message);
+            resClientData(req, res, 500, null, error.message);
         }
     }
 };

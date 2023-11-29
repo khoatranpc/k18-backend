@@ -73,9 +73,9 @@ const roundController = {
                 default:
                     throw new Error('round query không hợp lệ!');
             }
-            resClientData(res, 201, {});
+            resClientData(req, res, 201, {});
         } catch (error: any) {
-            resClientData(res, 403, null, error.message);
+            resClientData(req, res, 403, null, error.message);
         }
     },
     findByIdAndUpdate: async (req: Request, res: Response) => {
@@ -169,9 +169,9 @@ const roundController = {
                 default:
                     throw new Error('round không hợp lệ!');
             }
-            resClientData(res, 201, {});
+            resClientData(req, res, 201, {});
         } catch (error: any) {
-            resClientData(res, 403, null, error.message);
+            resClientData(req, res, 403, null, error.message);
         }
     },
     getRound: async (req: Request, res: Response) => {
@@ -237,9 +237,9 @@ const roundController = {
                 default:
                     throw new Error('round query không hợp lệ!');
             }
-            resClientData(res, 200, data);
+            resClientData(req, res, 200, data);
         } catch (error: any) {
-            resClientData(res, 500, null, error.message);
+            resClientData(req, res, 500, null, error.message);
         }
     }
 };
