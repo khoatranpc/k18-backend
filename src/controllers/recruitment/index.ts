@@ -12,13 +12,23 @@ const recruitmentController = {
     getList: async (req: Request, res: Response) => {
         try {
             const { fields, recordOnPage, currentPage, sort, area, status, resourceHunt } = req.query;
-            const totalRecord = await RecruitmentModel.count({});
+            const totalRecord = await RecruitmentModel.count({
+                ...area && area !== 'ALL' ? {
+                    area: area
+                } : {},
+                ...status && status !== 'ALL' ? {
+                    statusProcess: status
+                } : {},
+                ...resourceHunt && resourceHunt !== 'ALL' ? {
+                    resourceApply: resourceHunt
+                } : {},
+            });
             const listData = await RecruitmentModel.find({
                 ...area && area !== 'ALL' ? {
                     area: area
                 } : {},
                 ...status && status !== 'ALL' ? {
-                    status: status
+                    statusProcess: status
                 } : {},
                 ...resourceHunt && resourceHunt !== 'ALL' ? {
                     resourceApply: resourceHunt
