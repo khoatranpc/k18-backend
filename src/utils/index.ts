@@ -3,7 +3,7 @@ import crypto from 'crypto';
 import { v4 as uuidv4 } from 'uuid';
 import jwt from 'jsonwebtoken';
 import { JwtVerify, Obj } from '../global/interface';
-import { WEEKDAY } from '../global/enum';
+import { Education, LevelTechnique, ResourceApply, WEEKDAY } from '../global/enum';
 
 const genRandomId = () => {
     return uuidv4()
@@ -139,6 +139,31 @@ const getProjectionByString = (str: string) => {
     });
     return projection;
 }
+const getScoreLevelTech: Record<LevelTechnique, number> = {
+    INTERN: 1,
+    FRESHER: 2,
+    JUNIOR: 3,
+    MIDDLE: 4,
+    SENIOR: 5,
+    LEADER: 6,
+}
+const getScoreResourceApply: Record<ResourceApply, number> = {
+    AN: 1,
+    FB: 2,
+    RF: 3,
+    LKD: 4
+}
+const returnNumberBoolean = (field: any) => {
+    return field ? 1 : 0
+}
+const getScoreEducation: Record<Education, number> = {
+    BACHELOR: 1,
+    ENGINEER: 2,
+    // thạc sĩ
+    MASTER: 3,
+    // tiến sĩ
+    DOCTOR: 4
+}
 export {
     genRandomId,
     getProjection,
@@ -150,5 +175,9 @@ export {
     getWeekDay,
     formatDateToString,
     getProjectionByString,
-    getOrderWeekday
+    returnNumberBoolean,
+    getOrderWeekday,
+    getScoreLevelTech,
+    getScoreResourceApply,
+    getScoreEducation
 };

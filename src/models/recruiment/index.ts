@@ -52,6 +52,10 @@ const recruimentSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    scoreJobPosition: {
+        type: Number,
+        max: 5,
+    },
     scoreSoftsSkill: {
         type: Number,
         required: true,
@@ -119,6 +123,10 @@ const recruimentSchema = new mongoose.Schema({
         type: mongoose.SchemaTypes.ObjectId,
         ref: Collections.AREA,
         required: true
+    },
+    classifyLevel: {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: Collections.COURSELEVEL
     }
 },
     {
