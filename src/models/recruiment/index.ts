@@ -127,6 +127,10 @@ const recruimentSchema = new mongoose.Schema({
     classifyLevel: {
         type: mongoose.SchemaTypes.ObjectId,
         ref: Collections.COURSELEVEL
+    },
+    classifyRole: {
+        type: String,
+        enum: ROLE_TEACHER,
     }
 },
     {

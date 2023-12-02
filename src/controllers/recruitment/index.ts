@@ -250,6 +250,18 @@ const recruitmentController = {
         } catch (error: any) {
             resClientData(req, res, 404, null, error.message);
         }
+    },
+    predictCandidate: async (req: Request, res: Response) => {
+        try {
+            const { id } = req.params;
+            const findCandidate = await RecruitmentModel.findById(id);
+            if (!findCandidate) throw new Error("Không tồn tại ứng viên!")
+            const queryPredict = await fetch(`${process.env.MC_SERVER as string}/random-forest/${id}?isPredictCandidate=1`);
+            const getPredict = await queryPredict.json();
+            resClientData(req, res, 200, getPredict);
+        } catch (error: any) {
+            resClientData(req, res, 403, null, error.message);
+        }
     }
 }
 export default recruitmentController;
