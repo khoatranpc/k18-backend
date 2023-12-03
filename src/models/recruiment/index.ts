@@ -54,7 +54,9 @@ const recruimentSchema = new mongoose.Schema({
     },
     scoreJobPosition: {
         type: Number,
-        max: 5,
+        required: true,
+        max: 10,
+        default: 0
     },
     scoreSoftsSkill: {
         type: Number,
@@ -81,6 +83,12 @@ const recruimentSchema = new mongoose.Schema({
     technique: {
         type: String,
         required: true
+    },
+    scoreTechnique: {
+        type: Number,
+        required: true,
+        max: 10,
+        default: 0
     },
     teacherCertification: {
         type: Boolean,
