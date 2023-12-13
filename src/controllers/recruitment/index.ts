@@ -11,7 +11,7 @@ import RoundTestModel from "../../models/recruiment/round/test";
 const recruitmentController = {
     getList: async (req: Request, res: Response) => {
         try {
-            const { fields, recordOnPage, currentPage, sort, area, status, resourceHunt, email } = req.query;
+            const { fields, recordOnPage, currentPage, sort, area, status, resourceHunt, email, startDate, endDate } = req.query;
             const totalRecord = await RecruitmentModel.count({
                 ...area && area !== 'ALL' ? {
                     area: area
@@ -39,6 +39,12 @@ const recruitmentController = {
                 ...resourceHunt && resourceHunt !== 'ALL' ? {
                     resourceApply: resourceHunt
                 } : {},
+                ...startDate && endDate ? {
+                    createdAt: {
+                        '$gte': startDate,
+                        '$lte': endDate
+                    }
+                } : {}
             }, { ...fields && getProjection(...fields as Array<string>) })
                 .sort({
                     createdAt: !sort ? -1 : (sort === 'ASC' ? -1 : 1)

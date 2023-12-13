@@ -151,7 +151,8 @@ const getScoreResourceApply: Record<ResourceApply, number> = {
     AN: 1,
     FB: 2,
     RF: 3,
-    LKD: 4
+    LKD: 4,
+    TCV: 3
 }
 const returnNumberBoolean = (field: any) => {
     return field ? 1 : 0

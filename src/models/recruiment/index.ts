@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { Collections } from "../../database";
-import { Education, LevelTechnique, ObjectTeach, ROLE_TEACHER, ResourceApply, ResultInterview, RoundProcess, StatusProcessing } from "../../global/enum";
+import { Education, GENDER, LevelTechnique, ObjectTeach, ROLE_TEACHER, ResourceApply, ResultInterview, RoundProcess, StatusProcessing } from "../../global/enum";
 
 const recruimentSchema = new mongoose.Schema({
     fullName: {
@@ -90,6 +90,11 @@ const recruimentSchema = new mongoose.Schema({
         max: 10,
         default: 0
     },
+    gender: {
+        type: String,
+        enum: GENDER,
+        default: GENDER.NA
+    },
     teacherCertification: {
         type: Boolean,
         required: true
@@ -139,6 +144,12 @@ const recruimentSchema = new mongoose.Schema({
     classifyRole: {
         type: String,
         enum: ROLE_TEACHER,
+    },
+    interviewDate: {
+        type: Date
+    },
+    failCVDate: {
+        type: Date
     }
 },
     {

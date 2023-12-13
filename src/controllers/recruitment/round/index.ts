@@ -85,7 +85,8 @@ const roundController = {
             if (result === false || result == 'false') {
                 await RecruitmentModel.findByIdAndUpdate(candidateId, {
                     statusProcess: StatusProcessing.DONE,
-                    result: ResultInterview.NOTPASS
+                    result: ResultInterview.NOTPASS,
+                    failCVDate: new Date()
                 });
             }
             const currentDataRecruitment = await RecruitmentModel.findById(candidateId);
@@ -121,6 +122,9 @@ const roundController = {
                         mailResultSent,
                         mailInterviewSent,
                         processed: true
+                    });
+                    await RecruitmentModel.findByIdAndUpdate(candidateId, {
+                        interviewDate: time
                     });
                     if (result) {
                         currentDataRecruitment.statusProcess = StatusProcessing.PROCESSING;
