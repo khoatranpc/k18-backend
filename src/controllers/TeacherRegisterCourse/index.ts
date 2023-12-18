@@ -1,4 +1,4 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import { getProjection, resClientData } from "../../utils";
 import TeacherRegisterCourseModel from "../../models/teacherRegisterCourse";
 import { RequestMid } from "../../middlewares";
@@ -26,6 +26,15 @@ const teacherRegisterCourseController = {
                     .populate('coursesRegister.idCourse coursesRegister.levelHandle', { ...fields && getProjection(...fields as Array<string>) });
                 resClientData(req, res, 200, listRecord);
             }
+        } catch (error: any) {
+            resClientData(req, res, 500, undefined, error.message);
+        }
+    },
+    updateRecordRegisterCourse: async (req: Request, res: Response) => {
+        try {
+            const { id } = req.params;
+            await TeacherRegisterCourseModel.findByIdAndUpdate(id, req.body);
+            resClientData(req, res, 201, {});
         } catch (error: any) {
             resClientData(req, res, 500, undefined, error.message);
         }
