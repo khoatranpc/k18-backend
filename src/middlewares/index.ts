@@ -2,6 +2,8 @@ import { NextFunction, Response, Request } from "express";
 import { JwtVerify } from "../global/interface";
 import { PositionTe, ROLE } from "../global/enum";
 import { resClientData, verifyJWT } from "../utils";
+import AccountModel from "../models/account";
+import TeacherModel from "../models/teacher";
 
 
 export interface RequestMid extends Request {
@@ -72,6 +74,26 @@ const middlewares = {
             } catch (error: any) {
                 resClientData(req, res, 403, undefined, error.message);
             }
+        }
+    },
+    checkEqualIdForUpdate: async (req: RequestMid, res: Response, next: NextFunction) => {
+        try {
+            const crrRole = req.acc?.role;
+            if (crrRole === ROLE.TEACHER) {
+                const { id } = req.params;
+                const crrUser = await TeacherModel.findOne({
+                    idAccount: req.acc!.id as string
+                });
+                if (crrUser && crrUser._id.toString() === id) {
+                    return next();
+                } else {
+                    throw new Error('Bạn không thể thực hiện hành động!')
+                }
+            } else {
+                return next();
+            }
+        } catch (error: any) {
+            resClientData(req, res, 403, undefined, error.message);
         }
     }
 }
