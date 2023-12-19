@@ -15,8 +15,15 @@ const createAccount = yup.object({
     }),
 });
 
+const resetPasswordAccount = yup.object({
+    query: yup.object({
+        otp: yup.string().required('Bạn cần gửi mã OTP!'),
+        id: yup.string().required('Không có id tài khoản!'),
+    }),
+});
 
 export {
     loginSchemaValidate,
-    createAccount
+    createAccount,
+    resetPasswordAccount
 }

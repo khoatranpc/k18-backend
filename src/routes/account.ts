@@ -11,5 +11,6 @@ AccountRouter.post('/create/test', validate(createAccount, 403), accountControll
 AccountRouter.get('', middlewares.verifyJWT, middlewares.isTE, accountController.getAllAccount);
 
 AccountRouter.get('/personal-info', middlewares.verifyJWT, accountController.getInfo);
-
+AccountRouter.get('/reset-password', accountController.sendOtp);
+AccountRouter.put('/reset-password/:id', accountController.resetPassword);
 export default AccountRouter;

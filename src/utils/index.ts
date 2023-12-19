@@ -19,16 +19,16 @@ const getProjection = (...fields: Array<string>) => {
     }
     return {}
 }
-function resClientData(req: Request, res: Response, statusCode: number, data: any, message?: string) {
+function resClientData(req: Request, res: Response, statusCode: number, data: any, message?: string, notSendPayload?: boolean) {
     res.status(statusCode).send({
         data,
         message: message ? message : (!!data ? 'Thành công!' : 'Thất bại!'),
         status: data ? true : false,
-        query: {
+        query: !notSendPayload ? {
             body: req.body,
             params: req.params,
             query: req.query
-        }
+        } : {}
     })
 }
 function generateJWT(data: Obj) {
@@ -165,6 +165,31 @@ const getScoreEducation: Record<Education, number> = {
     // tiến sĩ
     DOCTOR: 4
 }
+const formatDateTime = (date: Date) => {
+    // Lấy thông tin giờ, phút và giây
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const seconds = date.getSeconds();
+
+    // Lấy thông tin ngày, tháng và năm
+    const day = date.getDate();
+    const month = date.getMonth() + 1; // Tháng trong JavaScript bắt đầu từ 0
+    const year = date.getFullYear();
+
+    // Chuyển đổi số liệu thành chuỗi và thêm số 0 ở trước nếu cần
+    const formattedTime = [hours, minutes, seconds].map(function (unit) {
+        return unit < 10 ? "0" + unit : unit;
+    }).join(":");
+
+    const formattedDate = [day, month, year].map(function (unit) {
+        return unit < 10 ? "0" + unit : unit;
+    }).join("-");
+
+    // Kết hợp giờ và ngày thành định dạng cuối cùng
+    const formattedDateTime = formattedTime + ", " + formattedDate;
+
+    return formattedDateTime;
+}
 export {
     genRandomId,
     getProjection,
@@ -177,6 +202,7 @@ export {
     formatDateToString,
     getProjectionByString,
     returnNumberBoolean,
+    formatDateTime,
     getOrderWeekday,
     getScoreLevelTech,
     getScoreResourceApply,

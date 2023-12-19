@@ -95,6 +95,6 @@ const middlewares = {
         } catch (error: any) {
             resClientData(req, res, 403, undefined, error.message);
         }
-    }
+    },
 }
 export default middlewares;

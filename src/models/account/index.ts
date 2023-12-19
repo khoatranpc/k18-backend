@@ -21,6 +21,12 @@ const accountSchema = new mongoose.Schema({
         default: false
     },
     salt: String,
+    otp: {
+        type: String
+    },
+    expiresInOtp: {
+        type: Date
+    }
 }, {
     timestamps: true
 })
