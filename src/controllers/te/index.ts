@@ -1,12 +1,20 @@
 import { Request, Response } from "express";
 import TeModel from "../../models/te";
 import { resClientData, getProjectionByString } from "../../utils";
+import { RequestMid } from "../../middlewares";
 
 const teController = {
-    getBySingleField: async (req: Request, res: Response) => {
+    getBySingleField: async (req: RequestMid, res: Response) => {
         try {
-            const { findBy, value, fields } = req.query;
-            if (findBy) {
+            const { findBy, value, fields, getAll } = req.query;
+            if (Boolean(getAll) === true) {
+                const tes = await TeModel.find({
+                    "_id": {
+                        "$ne": req.acc?.userId
+                    }
+                }, getProjectionByString(fields as string)).populate('courseId', getProjectionByString(fields as string));
+                resClientData(req, res, 200, tes);
+            } else if (findBy) {
                 const tes = await TeModel.find({
                     ...findBy === 'courseId' ?
                         {

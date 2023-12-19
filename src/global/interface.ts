@@ -6,5 +6,6 @@ export interface Obj {
 export interface JwtVerify {
     role: ROLE,
     accId: string,
-    position?: PositionTe
+    position?: PositionTe,
+    userId?: string
 }

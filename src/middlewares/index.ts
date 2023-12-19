@@ -2,7 +2,6 @@ import { NextFunction, Response, Request } from "express";
 import { JwtVerify } from "../global/interface";
 import { PositionTe, ROLE } from "../global/enum";
 import { resClientData, verifyJWT } from "../utils";
-import AccountModel from "../models/account";
 import TeacherModel from "../models/teacher";
 
 
@@ -11,7 +10,8 @@ export interface RequestMid extends Request {
         role: ROLE,
         id: string,
         token: string,
-        position?: PositionTe
+        position?: PositionTe,
+        userId?: string
     }
 }
 const middlewares = {
@@ -27,7 +27,8 @@ const middlewares = {
                 role: (verify as JwtVerify).role as ROLE,
                 id: (verify as JwtVerify).accId as string,
                 token: token,
-                position: (verify as JwtVerify).position
+                position: (verify as JwtVerify).position,
+                userId: (verify as JwtVerify).userId
             }
             next();
         } catch (error: any) {

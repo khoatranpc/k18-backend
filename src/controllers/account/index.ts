@@ -16,22 +16,26 @@ const accountController = {
             if (!account) throw new Error('Sai tài khoản hoặc mật khẩu!');
             const comparePassword = verifyPassword(password, account as unknown as Obj);
             if (!comparePassword) throw new Error('Sai tài khoản hoặc mật khẩu!');
-
+            let userId: string = "";
             if (!account.activate) throw new Error('Bạn không thể đăng nhập, hãy liên hệ với TE để được hỗ trợ!');
             let getPosition;
             switch (account.role) {
                 case ROLE.TE:
                     const findTE = await TeModel.findOne({ accountId: account._id });
                     getPosition = findTE?.positionTe;
+                    userId = findTE?._id.toString() as string;
                     break;
                 default:
                     getPosition = undefined;
+                    const findTeacher = await TeacherModel.findOne({ idAccount: account._id });
+                    userId = findTeacher?._id.toString() as string;
                     break;
             }
             const dataToToken = {
                 accId: account._id,
                 role: account.role,
-                ...getPosition ? { position: getPosition } : {}
+                ...getPosition ? { position: getPosition } : {},
+                userId
             }
             const token = generateJWT(dataToToken);
             resClientData(req, res, 202, {

@@ -34,7 +34,11 @@ const teSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    dob: Date
+    dob: Date,
+    activate: {
+        type: Boolean,
+        default: false
+    }
 }, {
     timestamps: true
 });
