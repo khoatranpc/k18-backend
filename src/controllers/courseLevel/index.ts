@@ -45,14 +45,8 @@ const courseLevelController = {
     updateCourseLevel: async (req: Request, res: Response) => {
         try {
             const { id } = req.params;
-            const { levelName, levelCode, textbook, techRequirements } = req.body;
-            const findLevel = await CourseLevelModel.findById(id);
+            const findLevel = await CourseLevelModel.findByIdAndUpdate(id, req.body);
             if (!findLevel) throw new Error('Không tìm thấy!');
-            if (levelName) findLevel.levelName = levelName;
-            if (levelCode) findLevel.levelCode = levelCode;
-            if (textbook) findLevel.textbook = textbook;
-            if (techRequirements) findLevel.techRequirements = techRequirements;
-            await findLevel.save();
             resClientData(req, res, 201, {}, 'Thành công!');
         } catch (error: any) {
             resClientData(req, res, 500, undefined, error.message);

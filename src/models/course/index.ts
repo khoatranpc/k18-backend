@@ -14,7 +14,25 @@ const courseSchema = new mongoose.Schema({
     courseLevel: {
         type: [Schema.Types.ObjectId],
         ref: Collections.COURSELEVEL
+    },
+    courseTitle: {
+        type: String,
+        default: ''
+    },
+    courseDescription: {
+        type: String,
+        default: ''
+    },
+    courseImage: {
+        type: String,
+        default: ''
+    },
+    active: {
+        type: Boolean,
+        default: true
     }
+}, {
+    timestamps: true
 })
 
 const CourseModel = mongoose.model(Collections.COURSE, courseSchema);

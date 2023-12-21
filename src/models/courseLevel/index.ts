@@ -7,11 +7,26 @@ const courseLevelSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    active: {
+        type: Boolean,
+        default: true
+    },
     levelCode: {
         type: String,
         required: true
     },
-    textbook: String,
+    levelImage: {
+        type: String,
+        default: ''
+    },
+    levelDescription: {
+        type: String,
+        default: ''
+    },
+    textbook: {
+        type: String,
+        default: ''
+    },
     courseId: {
         type: Schema.Types.ObjectId,
         ref: Collections.COURSE,
@@ -40,6 +55,8 @@ const courseLevelSchema = new mongoose.Schema({
         }],
         required: true
     }
+}, {
+    timestamps: true
 });
 
 const CourseLevelModel = mongoose.model(Collections.COURSELEVEL, courseLevelSchema);

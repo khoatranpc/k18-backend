@@ -17,14 +17,19 @@ const teacherRegisterCourseController = {
                 }).populate('coursesRegister.idCourse coursesRegister.levelHandle', { ...fields && getProjection(...fields as Array<string>) });
                 resClientData(req, res, 200, record);
             } else {
-                if (!listTeacherId) throw new Error('Thiếu listTeacherId!');
-                const listRecord = await TeacherRegisterCourseModel.find({
-                    idTeacher: {
-                        $in: listTeacherId!.toString().split(',')
-                    }
-                }, { ...fields && getProjection(...fields as Array<string>) })
-                    .populate('coursesRegister.idCourse coursesRegister.levelHandle', { ...fields && getProjection(...fields as Array<string>) });
-                resClientData(req, res, 200, listRecord);
+                if (!listTeacherId) {
+                    const listRecord = await TeacherRegisterCourseModel.find({}, { ...fields && getProjection(...fields as Array<string>) })
+                        .populate('coursesRegister.idCourse coursesRegister.levelHandle', { ...fields && getProjection(...fields as Array<string>) });
+                    resClientData(req, res, 200, listRecord);
+                } else {
+                    const listRecord = await TeacherRegisterCourseModel.find({
+                        idTeacher: {
+                            $in: listTeacherId!.toString().split(',')
+                        }
+                    }, { ...fields && getProjection(...fields as Array<string>) })
+                        .populate('coursesRegister.idCourse coursesRegister.levelHandle', { ...fields && getProjection(...fields as Array<string>) });
+                    resClientData(req, res, 200, listRecord);
+                }
             }
         } catch (error: any) {
             resClientData(req, res, 500, undefined, error.message);

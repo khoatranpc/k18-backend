@@ -46,11 +46,7 @@ const courseController = {
     updateCourse: async (req: Request, res: Response) => {
         try {
             const { id } = req.params;
-            const { courseName, syllabus } = req.body;
-            await CourseModel.findByIdAndUpdate(id, {
-                courseName,
-                syllabus
-            })
+            await CourseModel.findByIdAndUpdate(id, req.body);
             resClientData(req, res, 201, {}, 'Cập nhật khoá học thành công!');
         } catch (error: any) {
             resClientData(req, res, 403, undefined, error.message);
