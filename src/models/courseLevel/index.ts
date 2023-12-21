@@ -36,6 +36,10 @@ const courseLevelSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    record: {
+        type: String,
+        default: ''
+    },
     techRequirements: {
         type: [{
             id: {
