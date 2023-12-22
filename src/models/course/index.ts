@@ -30,6 +30,11 @@ const courseSchema = new mongoose.Schema({
     active: {
         type: Boolean,
         default: true
+    },
+    color: {
+        type: String,
+        default: '',
+        required: true
     }
 }, {
     timestamps: true
