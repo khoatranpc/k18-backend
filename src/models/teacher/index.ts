@@ -59,8 +59,8 @@ const teacherSchema = new mongoose.Schema(
             required: true
         },
         area: {
-            type: String,
-            enum: Area,
+            type: mongoose.SchemaTypes.ObjectId,
+            ref: Collections.AREA,
             required: true
         },
         educationInfo: {

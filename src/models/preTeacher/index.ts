@@ -56,7 +56,8 @@ const preTeacherSchema = new mongoose.Schema(
             required: true
         },
         area: {
-            type: String,
+            type: mongoose.SchemaTypes.ObjectId,
+            ref: Collections.AREA,
             required: true
         },
         educationInfo: {

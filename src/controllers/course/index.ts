@@ -33,11 +33,7 @@ const courseController = {
     },
     createCourse: async (req: Request, res: Response) => {
         try {
-            const { courseName, syllabus } = req.body;
-            const createCourse = await CourseModel.create({
-                courseName,
-                syllabus
-            });
+            const createCourse = await CourseModel.create(req.body);
             resClientData(req, res, 200, createCourse, 'Thành công!');
         } catch (error: any) {
             resClientData(req, res, 403, undefined, error.message);
