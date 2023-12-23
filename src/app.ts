@@ -8,9 +8,7 @@ import getUri from './database';
 function App(port: number) {
     const app = express();
     mongoose.connect(getUri());
-    app.use(cors({
-        origin: '*'
-    }))
+    app.use(cors())
     app.use(json());
     app.use(urlencoded({ extended: true }));
     app.get('', (_, res) => {

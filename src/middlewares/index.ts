@@ -97,5 +97,14 @@ const middlewares = {
             resClientData(req, res, 403, undefined, error.message);
         }
     },
+    uploadFileImage: (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { image, imageName } = req.body;
+            if (!image || !imageName) throw new Error("Missing image or image name!");
+            next();
+        } catch (error: any) {
+            resClientData(req, res, 403, undefined, error.message);
+        }
+    }
 }
 export default middlewares;
