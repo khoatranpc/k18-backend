@@ -8,11 +8,7 @@ const teController = {
         try {
             const { findBy, value, fields, getAll } = req.query;
             if (Boolean(getAll) === true) {
-                const tes = await TeModel.find({
-                    "_id": {
-                        "$ne": req.acc?.userId
-                    }
-                }, getProjectionByString(fields as string)).populate('courseId', getProjectionByString(fields as string));
+                const tes = await TeModel.find({}, getProjectionByString(fields as string)).populate('courseId', getProjectionByString(fields as string));
                 resClientData(req, res, 200, tes);
             } else if (findBy) {
                 const tes = await TeModel.find({

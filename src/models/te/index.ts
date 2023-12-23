@@ -37,7 +37,10 @@ const teSchema = new mongoose.Schema({
     dob: Date,
     activate: {
         type: Boolean,
-        default: false
+        default: true
+    },
+    img: {
+        type: String
     }
 }, {
     timestamps: true
