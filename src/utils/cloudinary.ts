@@ -10,7 +10,7 @@ const uploadToCloud = (file: Express.Multer.File) => {
     const dataUrl = `data:${file.mimetype};base64,${file.buffer.toString('base64')}`;
     const fileName = file.originalname.split('.')[0];
     const uploaded = cloudinary.uploader.upload(dataUrl, {
-        public_id: fileName + crypto.randomUUID(),
+        public_id: fileName,
         resource_type: 'auto',
     }, (err, result) => {
         if (result) {
@@ -18,6 +18,8 @@ const uploadToCloud = (file: Express.Multer.File) => {
         }
     }).then((rs) => {
         return rs
+    }).catch((err) => {
+        throw err
     });
     return uploaded;
 }
