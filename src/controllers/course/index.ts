@@ -34,7 +34,15 @@ const courseController = {
     },
     createCourse: async (req: Request, res: Response) => {
         try {
-            const createCourse = await CourseModel.create(req.body);
+            const file = req.file;
+            const data: Obj = {
+                ...req.body
+            };
+            if (file) {
+                const uploadFile = await uploadToCloud(file);
+                data["courseImage"] = uploadFile.secure_url;
+            }
+            const createCourse = await CourseModel.create(data);
             resClientData(req, res, 200, createCourse, 'Thành công!');
         } catch (error: any) {
             resClientData(req, res, 403, undefined, error.message);

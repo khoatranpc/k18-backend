@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { resClientData } from "../../utils";
 import CourseLevelModel from "../../models/courseLevel";
 import CourseModel from "../../models/course";
+import { Obj } from "../../global/interface";
+import uploadToCloud from "../../utils/cloudinary";
 
 const courseLevelController = {
     create: async (req: Request, res: Response) => {
@@ -48,7 +50,18 @@ const courseLevelController = {
     updateCourseLevel: async (req: Request, res: Response) => {
         try {
             const { id } = req.params;
-            const findLevel = await CourseLevelModel.findByIdAndUpdate(id, req.body);
+            const file = req.file;
+            const data: Obj = {
+                ...req.body
+            };
+            if (file) {
+                const uploadFile = await uploadToCloud(file);
+                data["levelImage"] = uploadFile.secure_url;
+            }
+            if (req.body.techRequirements) {
+                data["techRequirements"] = JSON.parse(req.body.techRequirements)
+            }
+            const findLevel = await CourseLevelModel.findByIdAndUpdate(id, data);
             if (!findLevel) throw new Error('Không tìm thấy!');
             resClientData(req, res, 201, {}, 'Thành công!');
         } catch (error: any) {
