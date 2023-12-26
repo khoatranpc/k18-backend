@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import CourseModel from "../../models/course";
 import { Obj } from "../../global/interface";
 import { resClientData } from "../../utils";
+import uploadToCloud from "../../utils/cloudinary";
 
 
 const courseController = {
@@ -41,8 +42,19 @@ const courseController = {
     },
     updateCourse: async (req: Request, res: Response) => {
         try {
+            const file = req.file;
+            const data: Obj = {
+                ...req.body
+            };
+            if (file) {
+                const uploadFile = await uploadToCloud(file);
+                data["courseImage"] = uploadFile.secure_url;
+            }
             const { id } = req.params;
-            await CourseModel.findByIdAndUpdate(id, req.body);
+            if (req.body.courseLevel) {
+                data["courseLevel"] = JSON.parse(req.body.courseLevel)
+            }
+            await CourseModel.findByIdAndUpdate(id, data);
             resClientData(req, res, 201, {}, 'Cập nhật khoá học thành công!');
         } catch (error: any) {
             resClientData(req, res, 403, undefined, error.message);
