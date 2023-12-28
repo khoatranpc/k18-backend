@@ -86,7 +86,7 @@ const roundController = {
                 await RecruitmentModel.findByIdAndUpdate(candidateId, {
                     statusProcess: StatusProcessing.DONE,
                     result: ResultInterview.NOTPASS,
-                    failCVDate: new Date()
+                    failCVDate: new Date(),
                 });
             }
             const currentDataRecruitment = await RecruitmentModel.findById(candidateId);
@@ -142,10 +142,16 @@ const roundController = {
                     break;
                 case RoundProcess.CLAUTID:
                     if (result) {
-                        const existedDataClautid = await RoundTestModel.findOne({
-                            candidateId
+                        await RoundClautidModel.findOneAndUpdate({
+                            candidateId,
+                            result
                         });
-                        if (!existedDataClautid) {
+                        currentDataRecruitment.roundProcess = RoundProcess.TEST
+                        const existedDataTest = await RoundTestModel.findOne({
+                            candidateId,
+                        });
+                        await currentDataRecruitment.save();
+                        if (!existedDataTest) {
                             await RoundTestModel.create({
                                 candidateId,
                                 doc,
