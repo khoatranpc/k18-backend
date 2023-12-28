@@ -162,7 +162,9 @@ const classController = {
                     } = {};
                     for (let i = 0; i < crrClass.timeSchedule.length; i++) {
                         const crrItem = crrClass.timeSchedule[i] as unknown as Obj;
-                        if (crrItem.weekday === weekdayOfDayStart) day.day1 = crrItem;
+                        if (crrItem.weekday === weekdayOfDayStart) {
+                            day.day1 = crrItem
+                        }
                         else {
                             day.day2 = crrItem;
                         }
@@ -174,7 +176,6 @@ const classController = {
                     const crrRecordBookTeacher = await BookTeacherModel.find({
                         classId: crrClass._id
                     });
-
                     const listTeacherAccepted: Obj[] = [];
                     const genListSessionDocument: Obj[] = [];
                     listSession.forEach((item, index) => {

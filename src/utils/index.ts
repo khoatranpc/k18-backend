@@ -79,19 +79,19 @@ const getDateOfWeekday = (date: Date, countDay: number) => {
 const getWeekDay = (dayNumber: number | undefined, toNumber?: boolean, crrWeekday?: WEEKDAY) => {
     if (!toNumber) {
         switch (dayNumber) {
-            case 1:
+            case 0:
                 return WEEKDAY.T2;
-            case 2:
+            case 1:
                 return WEEKDAY.T3;
-            case 3:
+            case 2:
                 return WEEKDAY.T4;
-            case 4:
+            case 3:
                 return WEEKDAY.T5;
-            case 5:
+            case 4:
                 return WEEKDAY.T6;
-            case 6:
+            case 5:
                 return WEEKDAY.T7;
-            case 7:
+            case 6:
                 return WEEKDAY.CN;
             default:
                 return -1
@@ -99,19 +99,19 @@ const getWeekDay = (dayNumber: number | undefined, toNumber?: boolean, crrWeekda
     } else {
         switch (crrWeekday) {
             case WEEKDAY.T2:
-                return 1;
+                return 0;
             case WEEKDAY.T3:
-                return 2;
+                return 1;
             case WEEKDAY.T4:
-                return 3;
+                return 2;
             case WEEKDAY.T5:
-                return 4;
+                return 3;
             case WEEKDAY.T6:
-                return 5;
+                return 4;
             case WEEKDAY.T7:
-                return 6;
+                return 5;
             case WEEKDAY.CN:
-                return 7;
+                return 6;
             default:
                 return -1;
         }

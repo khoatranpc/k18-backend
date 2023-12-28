@@ -41,11 +41,14 @@ const teController = {
             resClientData(req, res, 403, null, error.message);
         }
     },
-    getByAccountId: (req: Request, res: Response) => {
+    getById: async (req: Request, res: Response) => {
         try {
-            const { } = req.body
+            const { id } = req.params;
+            const te = await TeModel.findById(id);
+            if (!te) throw new Error("Không tìm thấy TE!");
+            resClientData(req, res, 200, te);
         } catch (error: any) {
-
+            resClientData(req, res, 500, null, error.message);
         }
     }
 }

@@ -5,7 +5,7 @@ import { ROLE } from '../global/enum';
 
 const TERouter = Router();
 TERouter.get('', middlewares.verifyJWT, middlewares.acceptRole(undefined, ROLE.TE, ROLE.TEACHER), teController.getBySingleField);
-TERouter.get('/:accountId', middlewares.verifyJWT, middlewares.isTE, teController.getByAccountId);
+TERouter.get('/:id', middlewares.verifyJWT, middlewares.isTE, teController.getById);
 TERouter.post('', middlewares.verifyJWT, middlewares.isTE, teController.createTeInfo);
 
 export default TERouter;

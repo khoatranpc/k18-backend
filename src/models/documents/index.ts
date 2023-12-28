@@ -1,3 +1,4 @@
+import { ROLE } from "../../global/enum";
 import { createModel } from "../../utils/model";
 
 const DocumentModel = createModel('DOCUMENT', {
@@ -16,7 +17,13 @@ const DocumentModel = createModel('DOCUMENT', {
     linkDoc: {
         type: String,
         default: ''
-    }
+    },
+    role: [
+        {
+            type: String,
+            enum: ROLE
+        }
+    ]
 }, {
     timestamps: true
 });
