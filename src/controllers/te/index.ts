@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import TeModel from "../../models/te";
 import { resClientData, getProjectionByString } from "../../utils";
 import { RequestMid } from "../../middlewares";
+import { Obj } from "../../global/interface";
+import uploadToCloud from "../../utils/cloudinary";
 
 const teController = {
     getBySingleField: async (req: RequestMid, res: Response) => {
@@ -44,12 +46,30 @@ const teController = {
     getById: async (req: Request, res: Response) => {
         try {
             const { id } = req.params;
-            const te = await TeModel.findById(id);
+            const { fields } = req.query;
+            const te = await TeModel.findById(id, getProjectionByString(fields as string)).populate("courseId", getProjectionByString(fields as string));
             if (!te) throw new Error("Không tìm thấy TE!");
             resClientData(req, res, 200, te);
         } catch (error: any) {
             resClientData(req, res, 500, null, error.message);
         }
-    }
+    },
+    updateInfo: async (req: Request, res: Response) => {
+        try {
+            const file = req.file;
+            const { id } = req.params;
+            const data: Obj = {
+                ...req.body
+            };
+            if (file) {
+                const uploadFile = await uploadToCloud(file);
+                data["img"] = uploadFile.secure_url;
+            }
+            await TeModel.findByIdAndUpdate(id, data);
+            resClientData(req, res, 201, {});
+        } catch (error: any) {
+            resClientData(req, res, 500, null, error.message);
+        }
+    },
 }
 export default teController;

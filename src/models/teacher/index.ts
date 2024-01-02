@@ -140,6 +140,7 @@ const teacherSchema = new mongoose.Schema(
         },
         note: String,
         linkCv: String,
+        img: String
     },
     {
         timestamps: true,
