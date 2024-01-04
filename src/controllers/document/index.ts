@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
-import { resClientData } from "../../utils";
+import { getProjectionByString, resClientData } from "../../utils";
 import DocumentModel from "../../models/documents";
+import { RequestMid } from "../../middlewares";
+import { ROLE } from "../../global/enum";
 
 const documentController = {
     createDoc: async (req: Request, res: Response) => {
@@ -11,10 +13,26 @@ const documentController = {
             resClientData(req, res, 403, null, error.message);
         }
     },
-    getDoc: async (req: Request, res: Response) => {
+    getDoc: async (req: RequestMid, res: Response) => {
         try {
-            const listDoc = await DocumentModel.find({});
+            const { fields } = req.query;
+            const crrRole = req.acc!.role;
+            const listDoc = await DocumentModel.find({
+                ...crrRole === ROLE.TE ? {} : {
+                    role: crrRole,
+                    active: true
+                }
+            }, getProjectionByString(fields as string));
             resClientData(req, res, 200, listDoc);
+        } catch (error: any) {
+            resClientData(req, res, 500, null, error.message);
+        }
+    },
+    getDocById: async (req: Request, res: Response) => {
+        try {
+            const { id } = req.params;
+            const doc = await DocumentModel.findById(id);
+            resClientData(req, res, 200, doc);
         } catch (error: any) {
             resClientData(req, res, 500, null, error.message);
         }

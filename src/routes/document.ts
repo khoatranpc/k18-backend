@@ -5,7 +5,8 @@ import { createDocument } from "../controllers/document/validate";
 import middlewares from "../middlewares";
 const DocumentRouter = Router();
 
-DocumentRouter.get('', documentController.getDoc);
+DocumentRouter.get('', middlewares.verifyJWT, documentController.getDoc);
+DocumentRouter.get('/:id', middlewares.verifyJWT, documentController.getDocById);
 DocumentRouter.post('', middlewares.verifyJWT, middlewares.isTE, validate(createDocument), documentController.createDoc);
 DocumentRouter.delete('/:id', middlewares.verifyJWT, middlewares.isTE, documentController.deleteDoc);
 DocumentRouter.put('/:id', middlewares.verifyJWT, middlewares.isTE, documentController.updateDocById);
