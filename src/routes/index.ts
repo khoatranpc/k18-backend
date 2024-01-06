@@ -19,7 +19,8 @@ import MailRouter from './mailer';
 import MailTemplateRouter from './mailTemplate';
 import AreaRouter from './area';
 import DocumentRouter from './document';
-import UploadRouter from './upload';
+import FolderRouter from './folder';
+import FileRouter from './file';
 
 const RootRouter = express.Router();
 
@@ -44,7 +45,8 @@ RootRouter.use('/mail', MailRouter);
 RootRouter.use('/mail-template', MailTemplateRouter);
 RootRouter.use('/area', AreaRouter);
 RootRouter.use('/document', DocumentRouter);
-RootRouter.use('/upload', UploadRouter);
+RootRouter.use('/folder', FolderRouter);
+RootRouter.use('/file', FileRouter);
 
 
 export default RootRouter;

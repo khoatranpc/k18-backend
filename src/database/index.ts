@@ -25,7 +25,9 @@ export enum Collections {
     MAIL_TEMPLATE = 'mailtemplates',
     FEEDBACK_CLAUTID = 'feedbackclautids',
     AREA = 'areas',
-    DOCUMENT = 'documents'
+    DOCUMENT = 'documents',
+    FOLDER = 'folders',
+    FILE = 'files'
 }
 const getUri = () => {
     const { MONGO_CLIENT, MONGO_USERNAME, MONGO_PASSWORD, MONGO_HOST, MONGO_PORT, DB_NAME } = process.env;
