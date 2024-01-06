@@ -37,11 +37,27 @@ const fileController = {
     updateFile: async (req: Request, res: Response) => {
         try {
             const { id } = req.params;
-            const updatedFile = await FileModel.findByIdAndUpdate(id, req.body);
+            const { restore } = req.body;
+            const updatedFile = await FileModel.findByIdAndUpdate(id, {
+                ...req.body,
+                ...restore && {
+                    isDeleted: false
+                }
+            });
             resClientData(req, res, 201, updatedFile);
         } catch (error: any) {
             resClientData(req, res, 403, null, error.message);
         }
     },
+    deleteFile: async (req: Request, res: Response) => {
+        try {
+            const { id } = req.params;
+            await FileModel.findByIdAndDelete(id);
+            resClientData(req, res, 201, {});
+        }
+        catch (error: any) {
+            resClientData(req, res, 403, null, error.message);
+        }
+    }
 };
 export default fileController;

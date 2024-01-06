@@ -38,20 +38,21 @@ const folderController = {
     updateFolder: async (req: Request, res: Response) => {
         try {
             const { id } = req.params;
-            if (req.body.isDeleted) {
+            const { restore } = req.body;
+            if (req.body.isDeleted || restore) {
                 await FileModel.updateMany({
                     path: {
                         $regex: id,
                     }
                 }, {
-                    isDeleted: true
+                    isDeleted: !!Number(restore) ? false : true
                 });
                 await FolderModel.updateMany({
                     path: {
                         $regex: id,
                     }
                 }, {
-                    isDeleted: true
+                    isDeleted: !!Number(restore) ? false : true
                 })
             } else {
                 await FolderModel.findByIdAndUpdate(id, req.body);
@@ -59,6 +60,26 @@ const folderController = {
             resClientData(req, res, 201, {});
         } catch (error: any) {
             resClientData(req, res, 403, null, error.message);
+        }
+    },
+    delete: async (req: Request, res: Response) => {
+        try {
+            const { id } = req.params;
+            await FolderModel.deleteMany({
+                isDeleted: true,
+                path: {
+                    $regex: id,
+                }
+            });
+            await FileModel.deleteMany({
+                isDeleted: true,
+                path: {
+                    $regex: id,
+                }
+            });
+            resClientData(req, res, 201, {});
+        } catch (error: any) {
+            resClientData(req, res, 500, null, error.message);
         }
     },
 };
