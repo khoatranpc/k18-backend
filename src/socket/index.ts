@@ -26,7 +26,8 @@ class Socket {
         const io = new Server(this.server, {
             cors: {
                 origin: '*'
-            }
+            },
+            transports: ["websocket", "polling"]
         });
         return io;
     }
