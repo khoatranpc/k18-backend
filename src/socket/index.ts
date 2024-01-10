@@ -26,7 +26,6 @@ class Socket {
             cors: {
                 origin: '*'
             },
-            transports: ["websocket", "polling"]
         });
         return io;
     }
