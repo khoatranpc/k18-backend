@@ -10,6 +10,8 @@ interface UserOnline {
     img?: string;
     id: string;
     isDisconnect?: boolean;
+    // side server
+    socketId?: string;
 }
 class Socket {
     private app: Express;
@@ -35,13 +37,20 @@ class Socket {
                 const findExistedUser = this.activeUsers.findIndex((item) => {
                     return item.id === user.id;
                 });
-                if (findExistedUser >= 0 && user.isDisconnect) {
-                    this.activeUsers.splice(findExistedUser, 1);
+                if (findExistedUser < 0 && user.id) {
+                    this.activeUsers.push({
+                        ...user,
+                        socketId: socket.id
+                    });
+                    this.io.emit(roomId, this.activeUsers);
                 }
-                else if (findExistedUser < 0 && user.id) {
-                    this.activeUsers.push(user);
+            });
+            socket.on('disconnect', () => {
+                const findClient = this.activeUsers.findIndex(item => item.socketId === socket.id);
+                if (findClient >= 0) {
+                    this.activeUsers.splice(findClient, 1);
+                    this.io.emit(roomId, this.activeUsers);
                 }
-                this.io.emit(roomId, this.activeUsers);
             });
         });
     }
