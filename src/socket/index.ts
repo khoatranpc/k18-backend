@@ -3,7 +3,7 @@ import { Express } from 'express';
 import { Server, Socket as SocketInterface } from "socket.io";
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 
-export interface UserOnline {
+interface UserOnline {
     userName: string;
     role: string;
     position?: string;
@@ -15,7 +15,7 @@ class Socket {
     private app: Express;
     private io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>;
     public server: http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>;
-
+    private activeUsers: UserOnline[] = []
     constructor(app: Express) {
         this.app = app;
         this.server = http.createServer(this.app);
@@ -30,19 +30,19 @@ class Socket {
         });
         return io;
     }
-    createRoomConnection(roomId: string, activeUsers: UserOnline[]) {
+    createRoomConnection(roomId: string) {
         this.io.on('connection', (socket: SocketInterface) => {
             socket.on(roomId, (user: UserOnline) => {
-                const findExistedUser = activeUsers.findIndex((item) => {
+                const findExistedUser = this.activeUsers.findIndex((item) => {
                     return item.id === user.id;
                 });
-                if (findExistedUser < 0) {
-                    activeUsers.push(user);
-                }
                 if (findExistedUser >= 0 && user.isDisconnect) {
-                    activeUsers.splice(findExistedUser, 1);
+                    this.activeUsers.splice(findExistedUser, 1);
                 }
-                this.io.emit(roomId, activeUsers);
+                else if (findExistedUser < 0 && user.id) {
+                    this.activeUsers.push(user);
+                }
+                this.io.emit(roomId, this.activeUsers);
             });
         });
     }
