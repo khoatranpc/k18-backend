@@ -119,3 +119,8 @@ export enum Region {
 export enum RoomSocket {
     COMMON = 'COMMON'
 }
+
+export enum TypeQuestion {
+    QUIZ = 'QUIZ',
+    BOOLEAN = 'BOOLEAN'
+}

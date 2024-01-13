@@ -27,7 +27,10 @@ export enum Collections {
     AREA = 'areas',
     DOCUMENT = 'documents',
     FOLDER = 'folders',
-    FILE = 'files'
+    FILE = 'files',
+    COLLECTIONQUIZ = 'collectionquizzes',
+    QUESTION = 'questions',
+    OPTION = 'options'
 }
 const getUri = () => {
     const { MONGO_CLIENT, MONGO_USERNAME, MONGO_PASSWORD, MONGO_HOST, MONGO_PORT, DB_NAME } = process.env;

@@ -21,6 +21,8 @@ import AreaRouter from './area';
 import DocumentRouter from './document';
 import FolderRouter from './folder';
 import FileRouter from './file';
+import CollectionQuizRouter from './collectionQuiz';
+import QuestionRouter from './question';
 
 const RootRouter = express.Router();
 
@@ -47,6 +49,8 @@ RootRouter.use('/area', AreaRouter);
 RootRouter.use('/document', DocumentRouter);
 RootRouter.use('/folder', FolderRouter);
 RootRouter.use('/file', FileRouter);
+RootRouter.use('/collection-quiz', CollectionQuizRouter);
+RootRouter.use('/question', QuestionRouter);
 
 
 export default RootRouter;
