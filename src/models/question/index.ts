@@ -20,7 +20,8 @@ const questionSchema = new mongoose.Schema({
     isDelete: {
         type: Boolean,
         default: false
-    }
+    },
+    order: Number
 }, {
     timestamps: true
 });

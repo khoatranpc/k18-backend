@@ -16,6 +16,7 @@ const questionController = {
                 if (existedQuestion) {
                     existedQuestion.title = item.title as string;
                     existedQuestion.type = item.type as TypeQuestion;
+                    existedQuestion.isDelete = item.isDelete as boolean;
                     return existedQuestion.save();
                 } else {
                     const newQuestion = new QuestionModel(item);
@@ -27,6 +28,7 @@ const questionController = {
                 if (existedOption) {
                     existedOption.content = item.content as string;
                     existedOption.isCorrect = item.isCorrect as boolean;
+                    existedOption.isDelete = item.isDelete as boolean;
                     return existedOption.save();
                 } else {
                     const newOption = new OptionModel(item);
