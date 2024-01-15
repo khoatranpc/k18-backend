@@ -7,10 +7,12 @@ import getUri from './database';
 import Socket from './socket';
 import { RoomSocket } from './global/enum';
 
-function App(port: number) {
+export const SocketIo: { socketIo?: Socket } = {};
+async function App(port: number) {
     const app = express();
     const socketIO = new Socket(app);
-    mongoose.connect(getUri());
+    SocketIo['socketIo'] = socketIO;
+    await mongoose.connect(getUri());
     app.use(cors())
     app.use(json());
     app.use(urlencoded({ extended: true }));
@@ -19,8 +21,9 @@ function App(port: number) {
             message: 'Kết nối thành công!'
         })
     });
-    app.use('/api/v1', middlewares.delete_IdFromBody, RootRouter)
+    app.use('/api/v1', middlewares.delete_IdFromBody, RootRouter);
     socketIO.createRoomConnection(RoomSocket.COMMON);
+    socketIO.createTestQuizz();
     socketIO.server.listen(port, () => {
         console.log(`The application is listening on port ${port}!`);
     })

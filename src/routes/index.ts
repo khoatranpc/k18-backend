@@ -23,6 +23,7 @@ import FolderRouter from './folder';
 import FileRouter from './file';
 import CollectionQuizRouter from './collectionQuiz';
 import QuestionRouter from './question';
+import RoomQuizzTestRouter from './roomQuizzTest';
 
 const RootRouter = express.Router();
 
@@ -51,6 +52,7 @@ RootRouter.use('/folder', FolderRouter);
 RootRouter.use('/file', FileRouter);
 RootRouter.use('/collection-quiz', CollectionQuizRouter);
 RootRouter.use('/question', QuestionRouter);
+RootRouter.use('/room-quizz-test', RoomQuizzTestRouter);
 
 
 export default RootRouter;
