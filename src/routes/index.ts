@@ -24,6 +24,7 @@ import FileRouter from './file';
 import CollectionQuizRouter from './collectionQuiz';
 import QuestionRouter from './question';
 import RoomQuizzTestRouter from './roomQuizzTest';
+import RequestOnleaveRouter from './requestOnLeave';
 
 const RootRouter = express.Router();
 
@@ -53,6 +54,7 @@ RootRouter.use('/file', FileRouter);
 RootRouter.use('/collection-quiz', CollectionQuizRouter);
 RootRouter.use('/question', QuestionRouter);
 RootRouter.use('/room-quizz-test', RoomQuizzTestRouter);
+RootRouter.use('/request-on-leave', RequestOnleaveRouter);
 
 
 export default RootRouter;

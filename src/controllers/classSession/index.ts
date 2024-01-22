@@ -280,6 +280,13 @@ const classSessionController = {
         } catch (error: any) {
             resClientData(req, res, 403, null, error.message);
         }
+    },
+    createRequestOnLeave: async (req: Request, res: Response) => {
+        try {
+            
+        } catch (error: any) {
+            resClientData(req, res, 403, undefined, error.message);
+        }
     }
 };
 export default classSessionController;
