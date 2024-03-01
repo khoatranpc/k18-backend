@@ -5,7 +5,7 @@ const createMailTemplateSchema = yup.object({
     body: yup.object({
         html: yup.string().required('Bạn chưa cung cấp nội dung!'),
         title: yup.string().required('Bạn chưa cung cấp tiêu đề!'),
-        template: yup.string().oneOf([TemplateMail.FAILCV, TemplateMail.FAILINTERVIEW, TemplateMail.NOCONNECT, TemplateMail.PASSINTERVIEW], 'template không hợp lệ!'),
+        template: yup.string().oneOf([TemplateMail.FAILCV, TemplateMail.FAILINTERVIEW, TemplateMail.NOCONNECT, TemplateMail.PASSINTERVIEW, TemplateMail.INVITEINTERVIEW], 'template không hợp lệ!'),
     }),
 });
 const updateMailTemplateSchema = yup.object({
