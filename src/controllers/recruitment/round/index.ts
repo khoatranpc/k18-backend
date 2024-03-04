@@ -1,11 +1,16 @@
 import { Request, Response } from "express";
-import { getProjectionByString, resClientData } from "../../../utils";
+import { formatDateTime, getProjectionByString, resClientData } from "../../../utils";
 import RoundCVModel from "../../../models/recruiment/round/cv";
-import { ResultInterview, RoundProcess, StatusProcessing } from "../../../global/enum";
+import { ResultInterview, RoundProcess, StatusProcessing, TemplateMail } from "../../../global/enum";
 import RoundInterviewModel from "../../../models/recruiment/round/interview";
 import RoundClautidModel from "../../../models/recruiment/round/clautid";
 import RoundTestModel from "../../../models/recruiment/round/test";
 import RecruitmentModel from "../../../models/recruiment";
+import Google from "../../../google";
+import MailTemplateModel from "../../../models/mailTemplate";
+import { Obj } from "../../../global/interface";
+import TeModel from "../../../models/te";
+import { calendar_v3 } from "googleapis";
 
 const roundController = {
     create: async (req: Request, res: Response) => {
@@ -89,7 +94,7 @@ const roundController = {
                     failCVDate: new Date(),
                 });
             }
-            const currentDataRecruitment = await RecruitmentModel.findById(candidateId);
+            const currentDataRecruitment = await RecruitmentModel.findById(candidateId).populate('courseApply');
             if (!currentDataRecruitment) throw new Error('Không tìm thấy dữ liệu ứng viên!');
             switch (round) {
                 case RoundProcess.CV:
@@ -108,21 +113,78 @@ const roundController = {
                             await RoundInterviewModel.create({
                                 candidateId,
                                 linkMeet,
-                                time
+                                time,
+                                processed: false
                             });
                         }
                     }
                     break;
                 case RoundProcess.INTERVIEW:
-                    await RoundInterviewModel.findByIdAndUpdate(id, {
-                        result,
-                        linkMeet,
-                        time,
-                        te,
-                        mailResultSent,
-                        mailInterviewSent,
-                        processed: true
-                    });
+                    // missing logic check existed event google calendar
+                    // data round interview
+                    const dataInterview = await RoundInterviewModel.findById(id);
+                    if (!dataInterview) throw new Error("Chưa có dữ liệu thông tin phỏng vấn!");
+                    // create google calendar
+                    const endTime = time ? new Date(time) : new Date();
+                    endTime.setMinutes(endTime.getMinutes() + 20);
+                    endTime.setSeconds(0);
+                    const getMailTemplateInterview = await MailTemplateModel.findOne({ template: TemplateMail.INVITEINTERVIEW });
+                    if (!getMailTemplateInterview) throw new Error('Không tồn tại mẫu email!');
+                    const mapInfoMail = {
+                        NAME: currentDataRecruitment.fullName,
+                        EMAIL: currentDataRecruitment.email,
+                        POSITION: (currentDataRecruitment.courseApply as unknown as Obj)?.courseName as string ?? '',
+                        CVLink: currentDataRecruitment.linkCv,
+                        TIME: formatDateTime(new Date(time))
+                    };
+                    let getContentMail = getMailTemplateInterview?.html;
+                    getContentMail = getContentMail.replace("NAME", mapInfoMail['NAME']);
+                    getContentMail = getContentMail.replace("POSITION", mapInfoMail['POSITION']);
+                    getContentMail = getContentMail.replace("TIME", mapInfoMail['TIME']);
+                    getContentMail = getContentMail.replace("LINK", `<a href='${mapInfoMail['CVLink']}'><b>Link</b></a>`);
+                    const getTe = await TeModel.findById(te);
+                    if (!getTe) throw new Error("Không tìm thấy dữ liệu TE!");
+                    let event: any;
+                    const config: calendar_v3.Params$Resource$Events$Insert | undefined = {
+                        requestBody: {
+                            start: {
+                                dateTime: time
+                            },
+                            end: {
+                                dateTime: endTime.toISOString()
+                            },
+                            summary: getMailTemplateInterview.title,
+                            description: getContentMail,
+                            attendees: [
+                                {
+                                    email: mapInfoMail.EMAIL
+                                },
+                                {
+                                    email: getTe.email
+                                }
+                            ]
+                        },
+                    }
+                    if (dataInterview.eventCalendarId) {
+                        const existedEvent = await Google.getEvent(dataInterview.eventCalendarId);
+                        if (!existedEvent) {
+                            event = await Google.createEvents(config);
+                        }
+                        else {
+                            event = await Google.updateEvent(dataInterview.eventCalendarId, config)
+                        }
+                    } else {
+                        event = await Google.createEvents(config);
+                    }
+                    dataInterview.result = result;
+                    dataInterview.linkMeet = event.hangoutLink as string;
+                    dataInterview.time = new Date(event.start?.dateTime as string);
+                    dataInterview.te = te;
+                    dataInterview.mailResultSent = mailResultSent;
+                    dataInterview.mailInterviewSent = mailInterviewSent;
+                    dataInterview.processed = false;
+                    dataInterview.eventCalendarId = event.id as string;
+                    await dataInterview.save();
                     await RecruitmentModel.findByIdAndUpdate(candidateId, {
                         interviewDate: time
                     });

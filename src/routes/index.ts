@@ -25,6 +25,7 @@ import CollectionQuizRouter from './collectionQuiz';
 import QuestionRouter from './question';
 import RoomQuizzTestRouter from './roomQuizzTest';
 import RequestOnleaveRouter from './requestOnLeave';
+import GoogleRouter from './google';
 
 const RootRouter = express.Router();
 
@@ -55,6 +56,7 @@ RootRouter.use('/collection-quiz', CollectionQuizRouter);
 RootRouter.use('/question', QuestionRouter);
 RootRouter.use('/room-quizz-test', RoomQuizzTestRouter);
 RootRouter.use('/request-on-leave', RequestOnleaveRouter);
+RootRouter.use('/google', GoogleRouter);
 
 
 export default RootRouter;

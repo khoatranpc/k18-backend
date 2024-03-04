@@ -33,6 +33,10 @@ const roundInterviewSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    eventCalendarId: {
+        type: String,
+        default: ''
+    }
 });
 
 const RoundInterviewModel = mongoose.model(Collections.ROUNDINTERVIEW, roundInterviewSchema);
