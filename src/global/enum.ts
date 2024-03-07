@@ -125,3 +125,8 @@ export enum TypeQuestion {
     QUIZ = 'QUIZ',
     BOOLEAN = 'BOOLEAN'
 }
+
+export enum TeachingDepartment {
+    K18 = 'K18',
+    K12 = 'K12'
+}

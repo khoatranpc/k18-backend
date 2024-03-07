@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import crypto from "crypto";
 import { Collections } from "../../database";
-import { Area, GENDER } from "../../global/enum";
+import { GENDER, TeachingDepartment } from "../../global/enum";
 
 const teacherSchema = new mongoose.Schema(
     {
@@ -15,7 +15,8 @@ const teacherSchema = new mongoose.Schema(
         },
         email: {
             type: String,
-            required: true
+            required: true,
+            unique: true,
         },
         fullName: {
             type: String,
@@ -65,51 +66,43 @@ const teacherSchema = new mongoose.Schema(
         },
         educationInfo: {
             type: String,
-            required: true
         },
         companyInfo: {
             type: String,
-            required: true
         },
         background: {
             type: String,
-            required: true
         },
         address: {
             type: String,
-            required: true
         },
         CVfile: {
             type: String,
-            required: true
         },
         bankName: {
             type: String,
-            required: true
         },
         bankNumber: {
             type: String,
-            required: true
         },
         bankHolderName: {
             type: String,
-            required: true
         },
         roleIsST: {
             type: Boolean,
-            required: true,
+            default: false,
         },
         roleIsMT: {
             type: Boolean,
-            required: true,
+            default: false,
         },
         roleIsSP: {
             type: Boolean,
-            required: true,
+            default: false,
         },
         dateStartWork: {
             type: Date,
-            required: true
+            required: true,
         },
         salaryPH: {
             type: [
@@ -135,12 +128,16 @@ const teacherSchema = new mongoose.Schema(
             type: Number,
             default: 0
         },
-        dateOffWork: {
-            type: Date,
-        },
         note: String,
-        linkCv: String,
-        img: String
+        img: String,
+        frontId: String,
+        backId: String,
+        infoAllowance: String,
+        teachingDepartment: {
+            type: [String],
+            enum: TeachingDepartment
+        },
+        certificate: String
     },
     {
         timestamps: true,

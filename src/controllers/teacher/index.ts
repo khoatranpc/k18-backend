@@ -1,8 +1,17 @@
 import { Request, Response } from "express";
-import { getProjection, resClientData } from "../../utils";
+import { ObjectId } from "mongodb";
+import csvParser from "csv-parser";
+import { encryptPassword, getProjection, resClientData } from "../../utils";
 import TeacherModel from "../../models/teacher";
 import { RequestMid } from "../../middlewares";
-import { ROLE } from "../../global/enum";
+import { ROLE, TeachingDepartment } from "../../global/enum";
+import { Obj } from "../../global/interface";
+import CourseModel from "../../models/course";
+import CourseLevelModel from "../../models/courseLevel";
+import { convertStringToDate, getKeyByValue, isValidDate, labelArea, labelGender, orderLevelCourse } from "./config";
+import TeacherRegisterCourseModel from "../../models/teacherRegisterCourse";
+import AreaModel from "../../models/area";
+import AccountModel from "../../models/account";
 
 const teacherController = {
     getAll: async (req: Request, res: Response) => {
@@ -76,9 +85,169 @@ const teacherController = {
                 fullName: 1
             });
             resClientData(req, res, 200, listTeacher);
-
         } catch (error: any) {
             resClientData(req, res, 404, undefined, error.message);
+        }
+    },
+    importCSV: async (req: Request, res: Response) => {
+        try {
+            const csvFile = req.file;
+            const resultCSV: Obj[] = [];
+            const resultsTeacherInfo: any[] = [];
+            const recordRegisterCourses: any[] = [];
+            const listAccount: any[] = [];
+            if (!csvFile) throw new Error('Không có file CSV');
+            const stringFile = csvFile.buffer.toString("utf-8");
+            const existingEmails = await TeacherModel.distinct("email");
+            const existingAccounts = await AccountModel.distinct("email");
+            const existingTeacherRegisterCourse = await TeacherRegisterCourseModel.distinct("teacherEmail");
+
+            csvParser({ headers: true })
+                .on('data', (data) => {
+                    resultCSV.push(data);
+                })
+                .write(stringFile);
+            const getColumnTitles = (resultCSV[0]["_0"] as string).split(";");
+            getColumnTitles.forEach((item, idx) => {
+                getColumnTitles[idx] = item.replace(/[^a-zA-Z0-9]/g, '');
+            });
+            const getListCourse = await CourseModel.find({}, { _id: 1, courseName: 1 });
+            const getListCourseLevel = await CourseLevelModel.find({}, { _id: 1, levelNumber: 1, courseId: 1 });
+            const listArea = await AreaModel.find({});
+            const areas: Obj = {};
+            listArea.forEach((area) => {
+                areas[area.code as string] = area._id;
+            });
+            const courseId: Obj = {};
+            getListCourse.forEach((course) => {
+                courseId[course.courseName] = course._id.toString()
+            });
+            for (let i = 1; i < resultCSV.length; i++) {
+                const crrValueRow = resultCSV[i];
+                let mapStringValue: string = '';
+                for (const key in crrValueRow) {
+                    mapStringValue += `${crrValueRow[key]}`;
+                }
+                const newValueRow: Obj = {
+                    _id: new ObjectId()
+                };
+                const getValueRows = mapStringValue.split(";");
+                for (let idx = 0; idx < getColumnTitles.length; idx++) {
+                    const title = getColumnTitles[idx];
+                    newValueRow[title] = getValueRows[idx];
+                    if (title === 'email' && existingEmails.includes(newValueRow[title])) {
+                        break;
+                    }
+                    if (title === 'linkCv') {
+                        newValueRow['CVfile'] = newValueRow[title];
+                    }
+                    if (title === 'courseRegister') {
+                        newValueRow[title] = String(newValueRow[title]).split(' ').filter((item => {
+                            return courseId[item]
+                        })).map((item) => courseId[item]);
+                    }
+                    if (title === 'levelCourse') {
+                        newValueRow[title] = String(newValueRow[title]).split(' ').filter((item => {
+                            return orderLevelCourse[item as keyof typeof orderLevelCourse]
+                        })).map((item) => orderLevelCourse[item as keyof typeof orderLevelCourse]);
+                    }
+                    if (title === 'area') {
+                        newValueRow['area'] = areas[getKeyByValue(labelArea, newValueRow['area']) ? getKeyByValue(labelArea, newValueRow['area']) as string : "Online"] ?? areas['Online'];
+                    }
+                    if (title === 'teachingDepartment') {
+                        newValueRow[title] = [TeachingDepartment.K18];
+                    }
+                    if (title === 'gender') {
+                        newValueRow['gender'] = getKeyByValue(labelGender, newValueRow['gender'] as keyof typeof labelGender);
+                    }
+                    if (title === 'dateStartWork') {
+                        const getDate = isValidDate(newValueRow[title] as string);
+                        if (getDate) {
+                            newValueRow[title] = new Date(newValueRow[title] as string);
+                        } else {
+                            newValueRow[title] = new Date();
+                        }
+                    }
+                    if (title === 'licenseDate' || title === 'dob') {
+                        newValueRow[title] = convertStringToDate(newValueRow[title] as string);
+                    }
+                    if (title === 'role') {
+                        if (String(newValueRow[title]).includes("Giáo viên")) {
+                            newValueRow.roleIsST = true;
+                        }
+                        if (String(newValueRow[title]).includes("Mentor")) {
+                            newValueRow.roleIsMT = true;
+                        }
+                        if (String(newValueRow[title]).includes("Supporter")) {
+                            newValueRow.roleIsSP = true;
+                        }
+                    }
+                    if (title === 'Status' && newValueRow["Status"] === "Active") {
+                        newValueRow.isOffical = true;
+                    } else {
+                        newValueRow.isOffical = false;
+                    }
+                }
+                if (newValueRow.email && !existingEmails.includes(newValueRow['email'])) {
+                    resultsTeacherInfo.push(newValueRow);
+                }
+            }
+            resultsTeacherInfo.map((teacher) => {
+                const { salt, hashedPassword } = encryptPassword(teacher['email']);
+                if (!existingAccounts.includes(teacher['email'])) {
+                    const account = {
+                        email: teacher['email'],
+                        salt,
+                        password: hashedPassword,
+                        role: ROLE.TEACHER,
+                        activate: true
+                    };
+                    listAccount.push(account);
+                }
+                const courseRegister = teacher['courseRegister'][0] as string;
+                if (!existingTeacherRegisterCourse.includes(teacher.email)) {
+                    if (!courseRegister) {
+                        const newRecordRegisterCourse = {
+                            idTeacher: teacher._id,
+                            coursesRegister: [],
+                            teacherEmail: teacher.email
+                        };
+                        recordRegisterCourses.push(newRecordRegisterCourse);
+                    } else {
+                        const listLevel = getListCourseLevel.filter((level) => {
+                            return (teacher['levelCourse'] as number[]).some(value => value === level.levelNumber) && level.courseId.toString() === courseRegister && courseRegister;
+                        }).map(item => item._id.toString());
+                        if (!listLevel.length) {
+                            const newRecordRegisterCourse = {
+                                idTeacher: teacher._id,
+                                coursesRegister: [],
+                                teacherEmail: teacher.email
+                            };
+                            recordRegisterCourses.push(newRecordRegisterCourse);
+                        } else {
+                            const recordRegisterCourse = {
+                                idTeacher: teacher._id,
+                                coursesRegister: [
+                                    {
+                                        idCourse: courseRegister,
+                                        levelHandle: listLevel,
+                                    }
+                                ],
+                                teacherEmail: teacher.email
+                            };
+                            recordRegisterCourses.push(recordRegisterCourse);
+                        }
+                    }
+                }
+            });
+            await Promise.all([
+                TeacherModel.insertMany(resultsTeacherInfo, { ordered: false }),
+                TeacherRegisterCourseModel.insertMany(recordRegisterCourses, { ordered: false }),
+                AccountModel.insertMany(listAccount, { ordered: false }),
+            ]);
+            resClientData(req, res, 201, {});
+        } catch (error: any) {
+            resClientData(req, res, 403, undefined, error.message);
         }
     }
 }

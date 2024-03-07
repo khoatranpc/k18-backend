@@ -2,8 +2,6 @@ import { NextFunction, Response, Request } from "express";
 import { JwtVerify } from "../global/interface";
 import { PositionTe, ROLE } from "../global/enum";
 import { resClientData, verifyJWT } from "../utils";
-import TeacherModel from "../models/teacher";
-import TeModel from "../models/te";
 
 
 export interface RequestMid extends Request {

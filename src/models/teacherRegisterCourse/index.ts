@@ -9,6 +9,10 @@ const teacherRegisterCourseSchema = new mongoose.Schema(
             ref: Collections.TEACHER,
             required: true
         },
+        teacherEmail: {
+            type: String,
+            unique: true,
+        },
         coursesRegister: {
             type: [{
                 idCourse: {
