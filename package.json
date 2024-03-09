@@ -5,7 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon -L index.ts"
+    "dev": "node --watch index.ts"
   },
   "author": "",
   "license": "ISC",
@@ -13,9 +13,7 @@
     "@types/cors": "^2.8.13",
     "@types/jsonwebtoken": "^9.0.1",
     "@types/mongodb": "^4.0.7",
-    "@types/mongoose": "^5.11.97",
     "@types/uuid": "^9.0.1",
-    "@types/yup": "^0.32.0",
     "cloudinary": "^1.41.1",
     "cors": "^2.8.5",
     "csv-parser": "^3.0.0",
@@ -27,7 +25,6 @@
     "mongoose": "^7.0.4",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.7",
-    "nodemon": "^2.0.22",
     "socket.io": "^4.7.3",
     "ts-node": "^10.9.1",
     "uuid": "^9.0.0",
