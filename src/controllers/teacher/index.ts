@@ -192,7 +192,7 @@ const teacherController = {
                     resultsTeacherInfo.push(newValueRow);
                 }
             }
-            resultsTeacherInfo.map((teacher) => {
+            resultsTeacherInfo.map((teacher, idx) => {
                 const { salt, hashedPassword } = encryptPassword(teacher['email']);
                 if (!existingAccounts.includes(teacher['email'])) {
                     const account = {
@@ -200,8 +200,10 @@ const teacherController = {
                         salt,
                         password: hashedPassword,
                         role: ROLE.TEACHER,
-                        activate: true
+                        activate: true,
+                        _id: new ObjectId()
                     };
+                    resultsTeacherInfo[idx].idAccount = account._id;
                     listAccount.push(account);
                 }
                 const courseRegister = teacher['courseRegister'][0] as string;
