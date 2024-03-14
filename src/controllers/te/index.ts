@@ -1,9 +1,11 @@
 import { Request, Response } from "express";
 import TeModel from "../../models/te";
-import { resClientData, getProjectionByString } from "../../utils";
+import { resClientData, getProjectionByString, encryptPassword } from "../../utils";
 import { RequestMid } from "../../middlewares";
 import { Obj } from "../../global/interface";
 import uploadToCloud from "../../utils/cloudinary";
+import { ROLE } from "../../global/enum";
+import AccountModel from "../../models/account";
 
 const teController = {
     getBySingleField: async (req: RequestMid, res: Response) => {
@@ -65,10 +67,40 @@ const teController = {
                 const uploadFile = await uploadToCloud(file);
                 data["img"] = uploadFile.secure_url;
             }
-            await TeModel.findByIdAndUpdate(id, data);
+            await TeModel.findByIdAndUpdate(id, {
+                ...data,
+                courseId: (data.courseId as string).split(",")
+            });
             resClientData(req, res, 201, {});
         } catch (error: any) {
             resClientData(req, res, 500, null, error.message);
+        }
+    },
+    createNewTe: async (req: Request, res: Response) => {
+        try {
+            const data = req.body;
+            const { salt, hashedPassword } = encryptPassword(data['email']);
+            const newAccount = {
+                email: data.email,
+                password: hashedPassword,
+                role: ROLE.TE,
+                activate: true,
+                salt
+            }
+            const findExistedEmail = await AccountModel.findOne({ email: data.email });
+            if (findExistedEmail) {
+                throw new Error("Email đã tồn tại!");
+            }
+            const createdAccount = await AccountModel.create(newAccount);
+            if (createdAccount) {
+                await TeModel.create({
+                    accountId: createdAccount._id,
+                    ...data
+                });
+            }
+            resClientData(req, res, 201, {});
+        } catch (error: any) {
+            resClientData(req, res, 403, null, error.message);
         }
     },
 }

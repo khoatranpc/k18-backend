@@ -9,5 +9,6 @@ TERouter.get('', middlewares.verifyJWT, middlewares.acceptRole(undefined, ROLE.T
 TERouter.get('/:id', middlewares.verifyJWT, middlewares.isTE, teController.getById);
 TERouter.put('/:id', middlewares.verifyJWT, middlewares.isTE, middlewares.checkEqualIdForUpdate, upload.single("fileImage"), teController.updateInfo);
 TERouter.post('', middlewares.verifyJWT, middlewares.isTE, teController.createTeInfo);
+TERouter.post('/new-te', middlewares.verifyJWT, middlewares.isTE, teController.createNewTe);
 
 export default TERouter;

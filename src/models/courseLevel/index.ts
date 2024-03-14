@@ -58,7 +58,12 @@ const courseLevelSchema = new mongoose.Schema({
             }
         }],
         required: true
-    }
+    },
+    slide: String,
+    teachingGuide: String,
+    lessonPlan: String,
+    practice: String,
+    quiz: String
 }, {
     timestamps: true
 });

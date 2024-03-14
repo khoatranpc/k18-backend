@@ -1,14 +1,15 @@
 import { Request, Response } from "express";
 import CourseModel from "../../models/course";
 import { Obj } from "../../global/interface";
-import { resClientData } from "../../utils";
+import { getProjectionByString, resClientData } from "../../utils";
 import uploadToCloud from "../../utils/cloudinary";
 
 
 const courseController = {
     getAll: async (req: Request, res: Response) => {
         try {
-            const courses = await CourseModel.find({}).populate('courseLevel')
+            const { fields } = req.query;
+            const courses = await CourseModel.find({}, getProjectionByString(fields as string)).populate('courseLevel', getProjectionByString(fields as string))
                 .exec().then((rs) => {
                     return rs.map((item) => {
                         const data = item.toObject();

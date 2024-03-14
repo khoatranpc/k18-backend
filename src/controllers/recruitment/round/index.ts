@@ -161,7 +161,10 @@ const roundController = {
                                 },
                                 {
                                     email: getTe.email
-                                }
+                                },
+                                {
+                                    email: getTe.personalEmail
+                                },
                             ]
                         },
                     }

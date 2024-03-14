@@ -13,8 +13,13 @@ const teSchema = new mongoose.Schema({
         required: true
     },
     courseId: {
-        type: mongoose.SchemaTypes.ObjectId,
-        ref: Collections.COURSE
+        type: [
+            {
+                type: mongoose.SchemaTypes.ObjectId,
+                ref: Collections.COURSE
+            }
+        ],
+        default: []
     },
     accountId: {
         type: mongoose.SchemaTypes.ObjectId,
@@ -33,6 +38,10 @@ const teSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true
+    },
+    personalEmail: {
+        type: String,
+        required: true,
     },
     dob: Date,
     activate: {
