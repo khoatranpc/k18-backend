@@ -73,6 +73,7 @@ const preTeacherController = {
                     if (item === ROLE_TEACHER.SP) mapRole.roleIsSP = true;
                 })
                 const newInfoTeacher = {
+                    ...findRequest,
                     _id: new ObjectId(),
                     idAccount: newAccount._id,
                     isOffical: true,
