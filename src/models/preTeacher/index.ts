@@ -115,6 +115,9 @@ const preTeacherSchema = new mongoose.Schema(
             }],
             required: true
         },
+        frontId: String,
+        backId: String,
+        certificate: String,
     },
     {
         timestamps: true,

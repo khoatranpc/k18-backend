@@ -8,21 +8,37 @@ import AccountModel from "../../models/account";
 import { ROLE_TEACHER, STATUS } from "../../global/enum";
 import { RequestMid } from "../../middlewares";
 import RecruitmentModel from "../../models/recruiment";
+import { Obj } from "../../global/interface";
+import uploadToCloud from "../../utils/cloudinary";
 
 const preTeacherController = {
     register: async (req: Request, res: Response) => {
         try {
-            const { email } = req.body;
-            const existedEmail = await PreTeacherModel.findOne({ email });
-            if (existedEmail) throw new Error('Đã tồn tại email!');
-            const findCandidate = await RecruitmentModel.findOne({
-                email
-            });
-            if (!findCandidate) throw new Error('Không tìm thấy ứng viên!');
-            const register = await PreTeacherModel.create(req.body);
-            findCandidate.fillForm = true;
-            await findCandidate.save();
-            resClientData(req, res, 201, register, 'Thành công!');
+            const frontId = (req.files as any)?.["frontId"]?.[0];
+            const backId = (req.files as any)?.["backId"]?.[0];
+            if (frontId && backId) {
+                const data: Obj = {};
+                for (const key in req.body) {
+                    data[key] = JSON.parse(req.body[key]);
+                }
+                const { email } = data;
+                const existedEmail = await PreTeacherModel.findOne({ email });
+                if (existedEmail) throw new Error('Đã tồn tại email!');
+                const findCandidate = await RecruitmentModel.findOne({
+                    email
+                });
+                if (!findCandidate) throw new Error('Không tìm thấy ứng viên!');
+                const uploadFrontId = await uploadToCloud(frontId);
+                const uploadBackId = await uploadToCloud(backId);
+                data["frontId"] = uploadFrontId.secure_url;
+                data["backId"] = uploadBackId.secure_url;
+                const register = await PreTeacherModel.create(data);
+                findCandidate.fillForm = true;
+                await findCandidate.save();
+                resClientData(req, res, 201, register, 'Thành công!');
+            } else {
+                throw new Error("Không có ảnh CCCD!");
+            }
         } catch (error: any) {
             resClientData(req, res, 403, undefined, error.message);
         }
