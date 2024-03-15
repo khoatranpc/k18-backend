@@ -16,7 +16,7 @@ import AccountModel from "../../models/account";
 const teacherController = {
     getAll: async (req: Request, res: Response) => {
         try {
-            const { fields, recordOnPage, currentPage, listTeacherId } = req.query;
+            const { fields, recordOnPage, currentPage, listTeacherId, email } = req.query;
             let listTeacher;
             if (listTeacherId) {
                 listTeacher = await TeacherModel.find({
@@ -26,12 +26,33 @@ const teacherController = {
                 }, { ...fields && getProjection(...fields as Array<string>) });
             }
             else if (recordOnPage && currentPage) {
-                listTeacher = await TeacherModel.find({}, { ...fields && getProjection(...fields as Array<string>) })
+                listTeacher = await TeacherModel.find({
+                    ...email ? {
+                        email: {
+                            "$regex": email,
+                            "$options": "i"
+                        }
+                    } : {}
+                }, { ...fields && getProjection(...fields as Array<string>) })
                     .skip((Number(recordOnPage) * Number(currentPage)) - Number(recordOnPage)).limit(Number(recordOnPage))
             } else {
-                listTeacher = await TeacherModel.find({}, { ...fields && getProjection(...fields as Array<string>) });
+                listTeacher = await TeacherModel.find({
+                    ...email ? {
+                        email: {
+                            "$regex": email,
+                            "$options": "i"
+                        }
+                    } : {}
+                }, { ...fields && getProjection(...fields as Array<string>) });
             }
-            const listTeacherLength = await TeacherModel.countDocuments({});
+            const listTeacherLength = await TeacherModel.countDocuments({
+                ...email ? {
+                    email: {
+                        "$regex": email,
+                        "$options": "i"
+                    }
+                } : {}
+            });
             const dataSend = {
                 listTeacher: listTeacher,
                 totalPage: Math.ceil(listTeacherLength / Number(recordOnPage)),

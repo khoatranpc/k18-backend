@@ -116,15 +116,21 @@ const preTeacherController = {
     },
     getAll: async (req: RequestMid, res: Response) => {
         try {
-            const { fields, recordOnPage, currentPage } = req.query;
+            const { fields, recordOnPage, currentPage, email } = req.query;
             const getAll = await PreTeacherModel.find({
-                status: 'PENDING'
+                status: 'PENDING',
+                ...email ? {
+                    email: {
+                        "$regex": email,
+                        "$options": "i"
+                    }
+                } : {}
             }, { ...fields && getProjection(...fields as Array<string>) })
                 .sort({
                     createdAt: -1
                 })
                 .skip((Number(recordOnPage) * Number(currentPage)) - Number(recordOnPage)).limit(Number(recordOnPage))
-                .populate('coursesRegister.idCourse coursesRegister.levelHandle', { ...fields && getProjection(...fields as Array<string>) });
+                .populate('coursesRegister.idCourse coursesRegister.levelHandle area', { ...fields && getProjection(...fields as Array<string>) });
             const totalRequest = await PreTeacherModel.countDocuments({});
             const dataRes = {
                 list: getAll,
