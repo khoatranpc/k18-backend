@@ -234,9 +234,15 @@ const recruitmentController = {
         try {
             const { recordId } = req.params;
             const { classId, location, form, date, countTime } = req.body;
+
             if (typeof countTime === 'number') {
                 await RoundClautidModel.findOneAndUpdate({
-                    _id: recordId
+                    _id: recordId,
+                    ...Number(countTime) === 1 ? {
+                        timeFirstDone: false
+                    } : {
+                        timeSecondDone: false
+                    }
                 }, ...!Number(countTime) ? [{
                     classIdFirst: classId,
                     timeFirst: date,

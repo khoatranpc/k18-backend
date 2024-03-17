@@ -6,7 +6,7 @@ import { resClientData, verifyJWT } from "../utils";
 
 export interface RequestMid extends Request {
     acc?: {
-        role: ROLE,
+        role: ROLE | string,
         id: string,
         token: string,
         position?: PositionTe,
@@ -32,6 +32,28 @@ const middlewares = {
             next();
         } catch (error: any) {
             resClientData(req, res, 401, undefined, error.message);
+        }
+    },
+    verifyJWTnotRequired: (req: RequestMid, _: Response, next: NextFunction) => {
+        const authHeader = req.headers.authorization;
+        const token = String(authHeader).split(' ')[1];
+        const verify = verifyJWT(token);
+        if (!authHeader || (authHeader && (verify === 'jwt expired' || verify === 'invalid token'))) {
+            req.acc = {
+                id: "",
+                role: "",
+                token: "",
+            }
+            return next();
+        } else {
+            req.acc = {
+                role: (verify as JwtVerify).role as ROLE,
+                id: (verify as JwtVerify).accId as string,
+                token: token,
+                position: (verify as JwtVerify).position,
+                userId: (verify as JwtVerify).userId
+            }
+            return next();
         }
     },
     isTE: (req: RequestMid, res: Response, next: NextFunction) => {

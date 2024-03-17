@@ -7,7 +7,7 @@ import upload from '../utils/multer';
 
 const CourseRouter = express.Router();
 
-CourseRouter.get('', courseController.getAll);
+CourseRouter.get('', middlewares.verifyJWTnotRequired, courseController.getAll);
 CourseRouter.get('/:id', courseController.getById);
 
 CourseRouter.post('', middlewares.verifyJWT, middlewares.isTE, upload.single("fileImage"), validate(createCourseSchema, 403), courseController.createCourse);

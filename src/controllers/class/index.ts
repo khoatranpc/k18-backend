@@ -12,7 +12,7 @@ import FeedbackModel from "../../models/feedback";
 const classController = {
     getAll: async (req: Request, res: Response) => {
         try {
-            const { fields, recordOnPage, currentPage, listId, status, forRecruitment, course } = req.query;
+            const { fields, recordOnPage, currentPage, listId, status, forRecruitment, course, codeClass } = req.query;
             let classes;
             if (listId) {
                 classes = await ClassModel.find({
@@ -20,7 +20,7 @@ const classController = {
                         $in: listId
                     }
                 }, { ...fields && getProjection(...fields as Array<string>) })
-                    .populate('courseId courseLevelId timeSchedule', { ...fields && getProjection(...fields as Array<string>) });
+                    .populate('courseId courseLevelId timeSchedule', { ...fields && getProjection(...fields as Array<string>), _id: 1 });
             }
             else if (recordOnPage && currentPage) {
                 classes = await ClassModel.find({
@@ -30,19 +30,19 @@ const classController = {
                     ...course ? {
                         courseId: course
                     } : {}
-                }, { ...fields && getProjection(...fields as Array<string>) })
+                }, { ...fields && getProjection(...fields as Array<string>), _id: 1 })
                     .sort({
                         createdAt: -1
                     })
                     .skip((Number(recordOnPage) * Number(currentPage)) - Number(recordOnPage)).limit(Number(recordOnPage))
-                    .populate('courseId courseLevelId timeSchedule', { ...fields && getProjection(...fields as Array<string>) });
+                    .populate('courseId courseLevelId timeSchedule', { ...fields && getProjection(...fields as Array<string>), _id: 1 });
             }
             else {
-                classes = await ClassModel.find({}, { ...fields && getProjection(...fields as Array<string>) })
+                classes = await ClassModel.find({ codeClass }, { ...fields && getProjection(...fields as Array<string>), _id: 1 })
                     .sort({
                         createdAt: -1
                     })
-                    .populate('courseId courseLevelId timeSchedule', { ...fields && getProjection(...fields as Array<string>) });
+                    .populate('courseId courseLevelId timeSchedule', { ...fields && getProjection(...fields as Array<string>), _id: 1 });
             }
             const totalClasses = await ClassModel.countDocuments({});
             const getListCurrentClassId = classes.map((item) => item._id);
