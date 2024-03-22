@@ -19,7 +19,6 @@ const recruimentSchema = new mongoose.Schema({
     levelTechnique: {
         type: String,
         enum: LevelTechnique,
-        required: true
     },
     phoneNumber: String,
     linkFacebook: String,
@@ -46,11 +45,9 @@ const recruimentSchema = new mongoose.Schema({
     },
     expTimeTech: {
         type: Number,
-        required: true
     },
     jobPosition: {
         type: String,
-        required: true
     },
     scoreJobPosition: {
         type: Number,
@@ -60,7 +57,6 @@ const recruimentSchema = new mongoose.Schema({
     },
     scoreSoftsSkill: {
         type: Number,
-        required: true,
         max: 5
     },
     // đã tốt nghiệp đại học
@@ -71,22 +67,18 @@ const recruimentSchema = new mongoose.Schema({
     // học vấn? thạc sĩ, tiến sĩ, nghiên cứu sinh, kỹ sư
     education: {
         type: String,
-        required: true,
         enum: Education,
     },
     // chuyên ngành it
     specializedIt: {
         type: Boolean,
-        required: true
     },
     // công nghệ sử dụng
     technique: {
         type: String,
-        required: true
     },
     scoreTechnique: {
         type: Number,
-        required: true,
         max: 10,
         default: 0
     },
@@ -97,15 +89,12 @@ const recruimentSchema = new mongoose.Schema({
     },
     teacherCertification: {
         type: Boolean,
-        required: true
     },
     expTimeTeach: {
         type: Number,
-        required: true
     },
     objectExpTeach: {
         type: String,
-        required: true,
         enum: ObjectTeach
     },
     statusProcess: {
