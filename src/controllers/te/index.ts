@@ -49,7 +49,13 @@ const teController = {
         try {
             const { id } = req.params;
             const { fields } = req.query;
-            const te = await TeModel.findById(id, getProjectionByString(fields as string)).populate("courseId", getProjectionByString(fields as string));
+            const te = await TeModel.findById(id, getProjectionByString(fields as string))
+                .populate("courseId", getProjectionByString(fields as string))
+                .populate("accountId", {
+                    _id: 1,
+                    email: 1,
+                    roleAccount: 1,
+                });
             if (!te) throw new Error("Không tìm thấy TE!");
             resClientData(req, res, 200, te);
         } catch (error: any) {
@@ -63,13 +69,14 @@ const teController = {
             const data: Obj = {
                 ...req.body
             };
+            delete data.accountId;
             if (file) {
                 const uploadFile = await uploadToCloud(file);
                 data["img"] = uploadFile.secure_url;
             }
             await TeModel.findByIdAndUpdate(id, {
                 ...data,
-                courseId: (data.courseId as string).split(",")
+                courseId: !!data.courseId ? (data.courseId as string).split(",") : []
             });
             resClientData(req, res, 201, {});
         } catch (error: any) {

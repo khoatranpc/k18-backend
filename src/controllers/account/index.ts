@@ -81,6 +81,37 @@ const accountController = {
             resClientData(req, res, 403, undefined, error.message);
         }
     },
+    updateInfoAccount: async (req: RequestMid, res: Response) => {
+        try {
+            const { email, password } = req.body;
+            const { id } = req.params;
+            if (req.acc?.role === ROLE.TEACHER) {
+                if (password) {
+                    const { salt, hashedPassword } = encryptPassword(password);
+                    await AccountModel.findByIdAndUpdate(id, {
+                        password: hashedPassword,
+                        salt
+                    }, {
+                        new: true
+                    });
+                }
+            } else if (req.acc?.role === ROLE.TE) {
+                if (password && email) {
+                    const { salt, hashedPassword } = encryptPassword(password);
+                    await AccountModel.findByIdAndUpdate(id, {
+                        password: hashedPassword,
+                        salt,
+                        email
+                    }, {
+                        new: true
+                    });
+                }
+            }
+            resClientData(req, res, 201, {});
+        } catch (error: any) {
+            resClientData(req, res, 403, undefined, error.message);
+        }
+    },
     getInfo: async (req: RequestMid, res: Response) => {
         try {
             const crrAccount = req.acc;
