@@ -12,6 +12,7 @@ import { convertStringToDate, getKeyByValue, isValidDate, labelArea, labelGender
 import TeacherRegisterCourseModel from "../../models/teacherRegisterCourse";
 import AreaModel from "../../models/area";
 import AccountModel from "../../models/account";
+import uploadToCloud from "../../utils/cloudinary";
 
 const teacherController = {
     getAll: async (req: Request, res: Response) => {
@@ -78,14 +79,38 @@ const teacherController = {
     findByIdAndUpdate: async (req: RequestMid, res: Response) => {
         try {
             const { id } = req.params;
+            const { frontId, backId } = req.files as any;
+            const data: Obj | any = {
+                ...req.body
+            };
             if (req.acc?.role === ROLE.TE) {
-                await TeacherModel.findByIdAndUpdate(id, req.body);
+                if (frontId) {
+                    const uploadFile = await uploadToCloud(frontId[0]);
+                    data["frontId"] = uploadFile.secure_url;
+                }
+                if (backId) {
+                    const uploadFile = await uploadToCloud(backId[0]);
+                    data["backId"] = uploadFile.secure_url;
+                }
+                await TeacherModel.findByIdAndUpdate(id, data);
             } else if (req.acc?.role === ROLE.TEACHER) {
-                delete req.body.salaryPH;
+                delete data.salaryPH;
                 const crrTeacher = await TeacherModel.findOne({ idAccount: req.acc?.id as string });
                 if (!crrTeacher) throw new Error('Không tìm thấy giáo viên!');
                 if (crrTeacher._id.toString() !== id) throw new Error('Bạn không có quyền thực hiện hành động!');
-                await TeacherModel.findByIdAndUpdate(id, req.body, { new: true });
+                if (frontId) {
+                    const uploadFile = await uploadToCloud(frontId[0]);
+                    data["frontId"] = uploadFile.secure_url;
+                }
+                if (backId) {
+                    const uploadFile = await uploadToCloud(backId[0]);
+                    data["backId"] = uploadFile.secure_url;
+                }
+                console.log(data);
+                await TeacherModel.findByIdAndUpdate(id, {
+                    ...data,
+                    area: new ObjectId(JSON.parse(data['area'])).toString()
+                }, { new: true });
             }
             resClientData(req, res, 201, {});
         } catch (error: any) {
