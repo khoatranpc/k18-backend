@@ -15,16 +15,19 @@ const teacherSchema = new mongoose.Schema(
         },
         email: {
             type: String,
+            default: '',
             required: true,
             unique: true,
         },
         fullName: {
             type: String,
-            required: true
+            default: '',
+            required: true,
         },
         phoneNumber: {
             type: String,
-            required: true
+
+            default: '', required: true
         },
         gender: {
             type: String,
@@ -37,7 +40,8 @@ const teacherSchema = new mongoose.Schema(
         },
         identify: {
             type: String,
-            required: true
+
+            default: '', required: true
         },
         licenseDate: {
             type: Date,
@@ -45,19 +49,23 @@ const teacherSchema = new mongoose.Schema(
         },
         licensePlace: {
             type: String,
+            default: '',
             required: true,
         },
         permanentAddress: {
             type: String,
+            default: '',
             required: false
         },
         taxCode: {
             type: String,
+            default: '',
             required: false
         },
         facebookLink: {
             type: String,
-            required: true
+
+            default: '', required: true
         },
         area: {
             type: mongoose.SchemaTypes.ObjectId,
@@ -66,27 +74,43 @@ const teacherSchema = new mongoose.Schema(
         },
         educationInfo: {
             type: String,
+
+            default: '',
         },
         companyInfo: {
             type: String,
+
+            default: '',
         },
         background: {
             type: String,
+
+            default: '',
         },
         address: {
             type: String,
+
+            default: '',
         },
         CVfile: {
             type: String,
+
+            default: '',
         },
         bankName: {
             type: String,
+
+            default: '',
         },
         bankNumber: {
             type: String,
+
+            default: '',
         },
         bankHolderName: {
             type: String,
+
+            default: '',
         },
         roleIsST: {
             type: Boolean,
