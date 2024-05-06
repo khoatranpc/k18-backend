@@ -4,6 +4,7 @@ import CourseLevelModel from "../../models/courseLevel";
 import CourseModel from "../../models/course";
 import { Obj } from "../../global/interface";
 import uploadToCloud from "../../utils/cloudinary";
+import { RequestMid } from "../../middlewares";
 
 const courseLevelController = {
     create: async (req: Request, res: Response) => {
@@ -33,14 +34,21 @@ const courseLevelController = {
             resClientData(req, res, 403, undefined, error.message);
         }
     },
-    getByCourseId: async (req: Request, res: Response) => {
+    getByCourseId: async (req: RequestMid, res: Response) => {
         try {
             const { courseId } = req.params;
             const listLevel = await CourseLevelModel.find({
                 courseId
             }, {
-                courseId: 0,
-                __v: 0
+                ...!req.acc?.token ? {
+                    _id: 1,
+                    levelName: 1,
+                    levelDescription: 1,
+                    levelImage: 1
+                } : {
+                    courseId: 0,
+                    __v: 0,
+                }
             });
             resClientData(req, res, 200, listLevel, 'Thành công!');
         } catch (error: any) {

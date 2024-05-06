@@ -7,7 +7,7 @@ import upload from '../utils/multer';
 
 const CourseLevelRouter = express.Router();
 
-CourseLevelRouter.get('/:courseId', courseLevelController.getByCourseId);
+CourseLevelRouter.get('/:courseId', middlewares.verifyJWTnotRequired, courseLevelController.getByCourseId);
 CourseLevelRouter.post('', middlewares.verifyJWT, middlewares.isTE, validate(createCourseLevelSchema, 403), courseLevelController.create);
 CourseLevelRouter.put('/:id', middlewares.verifyJWT, middlewares.isTE, upload.single("fileImage"), courseLevelController.updateCourseLevel);
 

@@ -17,7 +17,7 @@ import uploadToCloud from "../../utils/cloudinary";
 const teacherController = {
     getAll: async (req: Request, res: Response) => {
         try {
-            const { fields, recordOnPage, currentPage, listTeacherId, email } = req.query;
+            const { fields, recordOnPage, currentPage, listTeacherId, valueSearch } = req.query;
             let listTeacher;
             if (listTeacherId) {
                 listTeacher = await TeacherModel.find({
@@ -28,30 +28,60 @@ const teacherController = {
             }
             else if (recordOnPage && currentPage) {
                 listTeacher = await TeacherModel.find({
-                    ...email ? {
-                        email: {
-                            "$regex": email,
-                            "$options": "i"
-                        }
+                    ...valueSearch ? {
+                        '$or': [
+                            {
+                                email: {
+                                    "$regex": valueSearch,
+                                    "$options": "i"
+                                }
+                            },
+                            {
+                                fullName: {
+                                    "$regex": valueSearch,
+                                    "$options": "i"
+                                }
+                            }
+                        ]
                     } : {}
                 }, { ...fields && getProjection(...fields as Array<string>) })
                     .skip((Number(recordOnPage) * Number(currentPage)) - Number(recordOnPage)).limit(Number(recordOnPage))
             } else {
                 listTeacher = await TeacherModel.find({
-                    ...email ? {
-                        email: {
-                            "$regex": email,
-                            "$options": "i"
-                        }
+                    ...valueSearch ? {
+                        '$or': [
+                            {
+                                email: {
+                                    "$regex": valueSearch,
+                                    "$options": "i"
+                                }
+                            },
+                            {
+                                fullName: {
+                                    "$regex": valueSearch,
+                                    "$options": "i"
+                                }
+                            }
+                        ]
                     } : {}
                 }, { ...fields && getProjection(...fields as Array<string>) });
             }
             const listTeacherLength = await TeacherModel.countDocuments({
-                ...email ? {
-                    email: {
-                        "$regex": email,
-                        "$options": "i"
-                    }
+                ...valueSearch ? {
+                    '$or': [
+                        {
+                            email: {
+                                "$regex": valueSearch,
+                                "$options": "i"
+                            }
+                        },
+                        {
+                            fullName: {
+                                "$regex": valueSearch,
+                                "$options": "i"
+                            }
+                        }
+                    ]
                 } : {}
             });
             const dataSend = {
@@ -79,7 +109,7 @@ const teacherController = {
     findByIdAndUpdate: async (req: RequestMid, res: Response) => {
         try {
             const { id } = req.params;
-            const { frontId, backId } = req.files as any;
+            const { frontId, backId }: any = req.files ? req.files : { frontId: null, backId: null };
             const data: Obj | any = {
                 ...req.body
             };

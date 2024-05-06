@@ -4,7 +4,9 @@ dotenv.config();
 import { OAuth2Client } from 'google-auth-library';
 import { ROLE } from '../global/enum';
 
-const googleOptions = JSON.parse(process.env.CONFIG_GOOGLE as any).web;
+const googleOptions = JSON.parse(process.env.CONFIG_GOOGLE as any).web as any;
+googleOptions.redirect_uris[0] = String(googleOptions.redirect_uris[0]).replace("http://localhost:3000", process.env.ENV === 'DEV' ? process.env.CLIENT_DOMAIN as string : process.env.CLIENT_DOMAIN_HOST as string);
+
 const defaultConfigCalendar = (config?: calendar_v3.Params$Resource$Events$Insert | undefined) => {
     const start = new Date();
     const end = new Date();
@@ -62,6 +64,7 @@ class Google {
         const url = this.oauth2Client.generateAuthUrl({
             access_type: "offline",
             scope: ['https://www.googleapis.com/auth/calendar.readonly', (role && role !== ROLE.TEACHER ? 'https://www.googleapis.com/auth/calendar.events' : '')],
+            // redirect_uri: process.env.ENV === 'DEV' ? process.env.CLIENT_DOMAIN : process.env.CLIENT_DOMAIN_HOST
         });
         return url;
     }

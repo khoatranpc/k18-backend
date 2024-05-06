@@ -11,7 +11,7 @@ import RoundTestModel from "../../models/recruiment/round/test";
 const recruitmentController = {
     getList: async (req: Request, res: Response) => {
         try {
-            const { fields, recordOnPage, currentPage, sort, area, status, resourceHunt, email, startDate, endDate, courseApply } = req.query;
+            const { fields, recordOnPage, currentPage, sort, area, status, resourceHunt, valueSearch, startDate, endDate, courseApply } = req.query;
             const totalRecord = await RecruitmentModel.count({
                 ...area && area !== 'ALL' ? {
                     area: area
@@ -24,11 +24,21 @@ const recruitmentController = {
                 } : {},
             });
             const listData = await RecruitmentModel.find({
-                ...email ? {
-                    email: {
-                        "$regex": email,
-                        "$options": "i"
-                    }
+                ...valueSearch ? {
+                    '$or': [
+                        {
+                            email: {
+                                "$regex": valueSearch,
+                                "$options": "i"
+                            }
+                        },
+                        {
+                            fullName: {
+                                "$regex": valueSearch,
+                                "$options": "i"
+                            }
+                        }
+                    ]
                 } : {},
                 ...area && area !== 'ALL' ? {
                     area: area

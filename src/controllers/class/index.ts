@@ -38,7 +38,7 @@ const classController = {
                     .populate('courseId courseLevelId timeSchedule', { ...fields && getProjection(...fields as Array<string>), _id: 1 });
             }
             else {
-                classes = await ClassModel.find({ codeClass }, { ...fields && getProjection(...fields as Array<string>), _id: 1 })
+                classes = await ClassModel.find(codeClass ? { codeClass } : {}, { ...fields && getProjection(...fields as Array<string>), _id: 1 })
                     .sort({
                         createdAt: -1
                     })
