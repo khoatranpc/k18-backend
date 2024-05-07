@@ -114,7 +114,7 @@ const roundController = {
                                 candidateId,
                                 linkMeet,
                                 time,
-                                processed: false
+                                processed: true
                             });
                         }
                     }
@@ -122,9 +122,9 @@ const roundController = {
                 case RoundProcess.INTERVIEW:
                     // missing logic check existed event google calendar
                     // data round interview
+                    const dataInterview = await RoundInterviewModel.findById(id);
+                    if (!dataInterview) throw new Error("Chưa có dữ liệu thông tin phỏng vấn!");
                     if (isSetInterview) {
-                        const dataInterview = await RoundInterviewModel.findById(id);
-                        if (!dataInterview) throw new Error("Chưa có dữ liệu thông tin phỏng vấn!");
                         // create google calendar
                         const endTime = time ? new Date(time) : new Date();
                         endTime.setMinutes(endTime.getMinutes() + 20);
@@ -144,7 +144,6 @@ const roundController = {
                         getContentMail = getContentMail.replace("TIME", mapInfoMail['TIME']);
                         getContentMail = getContentMail.replace("LINK", `<a href='${mapInfoMail['CVLink']}'><b>Link</b></a>`);
                         const getTe = await TeModel.findById(te);
-                        console.log(te);
                         if (!getTe) throw new Error("Không tìm thấy dữ liệu TE!");
                         let event: any;
                         const config: calendar_v3.Params$Resource$Events$Insert | undefined = {
@@ -185,8 +184,8 @@ const roundController = {
                         dataInterview.linkMeet = event.hangoutLink as string;
                         dataInterview.time = new Date(event.start?.dateTime as string);
                         dataInterview.te = te;
-                        dataInterview.mailResultSent = mailResultSent;
-                        dataInterview.mailInterviewSent = mailInterviewSent;
+                        dataInterview.mailResultSent = false;
+                        dataInterview.mailInterviewSent = true;
                         dataInterview.processed = false;
                         dataInterview.eventCalendarId = event.id as string;
                         await dataInterview.save();
@@ -197,7 +196,10 @@ const roundController = {
                     if (result) {
                         currentDataRecruitment.statusProcess = StatusProcessing.PROCESSING;
                         currentDataRecruitment.roundProcess = RoundProcess.CLAUTID;
+                        dataInterview.processed = true;
+                        dataInterview.result = true;
                         await currentDataRecruitment.save();
+                        await dataInterview.save();
                         const existedDataClautid = await RoundClautidModel.findOne({
                             candidateId
                         });
@@ -206,6 +208,10 @@ const roundController = {
                                 candidateId
                             });
                         }
+                    } else if (result === false) {
+                        dataInterview.processed = true;
+                        dataInterview.result = false;
+                        await dataInterview.save();
                     }
                     break;
                 case RoundProcess.CLAUTID:
