@@ -7,6 +7,7 @@ import { RoundProcess } from "../../global/enum";
 import RoundClautidModel from "../../models/recruiment/round/clautid";
 import FeedbackClautidModel from "../../models/recruiment/feedbackClautid";
 import RoundTestModel from "../../models/recruiment/round/test";
+import Mailer from "../../utils/mailer";
 
 const recruitmentController = {
     getList: async (req: Request, res: Response) => {
@@ -85,9 +86,17 @@ const recruitmentController = {
             const createCandidate = await RecruitmentModel.create({
                 ...data
             });
-            await RoundCVModel.create({
+            const created = await RoundCVModel.create({
                 candidateId: createCandidate._id
             });
+            if (created) {
+                const mailer = new Mailer('K18', {
+                    to: data.email,
+                    subject: data.mail.title,
+                    html: data.mail.html
+                });
+                mailer.send();
+            }
             resClientData(req, res, 201, createCandidate);
         } catch (error: any) {
             resClientData(req, res, 403, null, error.message);
