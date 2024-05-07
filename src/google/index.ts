@@ -4,8 +4,7 @@ dotenv.config();
 import { OAuth2Client } from 'google-auth-library';
 import { ROLE } from '../global/enum';
 
-const googleOptions = JSON.parse(process.env.CONFIG_GOOGLE as any).web as any;
-googleOptions.redirect_uris[0] = String(googleOptions.redirect_uris[0]).replace("http://localhost:3000", process.env.ENV === 'DEV' ? process.env.CLIENT_DOMAIN as string : process.env.CLIENT_DOMAIN_HOST as string);
+const googleOptions = JSON.parse(process.env.ENV === 'DEV' ? process.env.CONFIG_GOOGLE as any : process.env.CONFIG_GOOGLE_PROD as any).web as any;
 
 const defaultConfigCalendar = (config?: calendar_v3.Params$Resource$Events$Insert | undefined) => {
     const start = new Date();
