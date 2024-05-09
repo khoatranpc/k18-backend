@@ -8,11 +8,12 @@ import RoundClautidModel from "../../models/recruiment/round/clautid";
 import FeedbackClautidModel from "../../models/recruiment/feedbackClautid";
 import RoundTestModel from "../../models/recruiment/round/test";
 import Mailer from "../../utils/mailer";
+import RoundInterviewModel from "../../models/recruiment/round/interview";
 
 const recruitmentController = {
     getList: async (req: Request, res: Response) => {
         try {
-            const { fields, recordOnPage, currentPage, sort, area, status, resourceHunt, valueSearch, startDate, endDate, courseApply } = req.query;
+            const { fields, recordOnPage, currentPage, sort, area, status, resourceHunt, valueSearch, startDate, endDate, courseApply, isGetInfoProcessCandidate } = req.query;
             const totalRecord = await RecruitmentModel.count({
                 ...area && area !== 'ALL' ? {
                     area: area
@@ -24,7 +25,7 @@ const recruitmentController = {
                     resourceApply: resourceHunt
                 } : {},
             });
-            const listData = await RecruitmentModel.find({
+            const listCandidate = await RecruitmentModel.find({
                 ...valueSearch ? {
                     '$or': [
                         {
@@ -65,8 +66,32 @@ const recruitmentController = {
                 })
                 .skip((Number(recordOnPage) * Number(currentPage)) - Number(recordOnPage)).limit(Number(recordOnPage))
                 .populate('courseApply', { ...fields && getProjection(...fields as Array<string>) });
+            let getInfoProcessCandidate = undefined;
+
+            if (isGetInfoProcessCandidate) {
+                const infoCvRound = RoundCVModel.find({
+                    candidateId: {
+                        $in: listCandidate.map(item => item._id)
+                    }
+                });
+                const infoInterviewRound = RoundInterviewModel.find({
+                    candidateId: {
+                        $in: listCandidate.map(item => item._id)
+                    }
+                });
+                getInfoProcessCandidate = await Promise.all([infoCvRound, infoInterviewRound]);
+            }
+            const mapData = listCandidate.map((candidate) => {
+                const findRCV = getInfoProcessCandidate?.[0].find(item => item.candidateId.toString() === candidate._id.toString());
+                const findRIT = getInfoProcessCandidate?.[1].find(item => item.candidateId.toString() === candidate._id.toString());
+                return {
+                    ...candidate.toObject(),
+                    processCV: findRCV,
+                    processInterview: findRIT
+                }
+            })
             const dataSend = {
-                listData,
+                listData: mapData,
                 totalPage: Math.ceil(totalRecord / Number(recordOnPage)),
                 currentPage: Number(currentPage) || '',
                 recordOnPage: Number(recordOnPage || '')
