@@ -14,12 +14,19 @@ import uploadToCloud from "../../utils/cloudinary";
 const preTeacherController = {
     register: async (req: Request, res: Response) => {
         try {
-            const frontId = (req.files as any)?.["frontId"]?.[0];
-            const backId = (req.files as any)?.["backId"]?.[0];
+            const frontId = (req.files as any)?.["frontId"]?.[0] ?? req.body.frontId;
+            const backId = (req.files as any)?.["backId"]?.[0] ?? req.body.backId;
+            const { isFromSheet } = req.body;
             if (frontId && backId) {
-                const data: Obj = {};
-                for (const key in req.body) {
-                    data[key] = JSON.parse(req.body[key]);
+                let data: Obj = {};
+                if (isFromSheet) {
+                    data = {
+                        ...req.body
+                    }
+                } else {
+                    for (const key in req.body) {
+                        data[key] = JSON.parse(req.body[key]);
+                    }
                 }
                 const { email } = data;
                 const existedEmail = await PreTeacherModel.findOne({ email });
@@ -28,10 +35,12 @@ const preTeacherController = {
                     email
                 });
                 if (!findCandidate) throw new Error('Không tìm thấy ứng viên!');
-                const uploadFrontId = await uploadToCloud(frontId);
-                const uploadBackId = await uploadToCloud(backId);
-                data["frontId"] = uploadFrontId.secure_url;
-                data["backId"] = uploadBackId.secure_url;
+                if (typeof backId !== 'string' && typeof frontId !== 'string') {
+                    const uploadFrontId = await uploadToCloud(frontId);
+                    const uploadBackId = await uploadToCloud(backId);
+                    data["frontId"] = uploadFrontId.secure_url;
+                    data["backId"] = uploadBackId.secure_url;
+                }
                 const register = await PreTeacherModel.create(data);
                 findCandidate.fillForm = true;
                 await findCandidate.save();

@@ -20,8 +20,8 @@ const preTeacherSchema = yup.object({
         bankName: yup.string().required('Bạn chưa điền tên ngân hàng!'),
         bankNumber: yup.string().required('Bạn chưa điền số tài khoản!'),
         bankHolderName: yup.string().required('Bạn chưa điền tên chủ sở hữu!'),
-        role: yup.string().required('Bạn cần chọn vị trí!'),
-        coursesRegister: yup.string().required('Bạn cần chọn khóa học!')
+        role: yup.mixed().required('Bạn cần chọn vị trí!'),
+        coursesRegister: yup.mixed().required('Bạn cần chọn khóa học!')
     })
 });
 export {
