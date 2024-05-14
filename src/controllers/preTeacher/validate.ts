@@ -13,7 +13,7 @@ const preTeacherSchema = yup.object({
         facebookLink: yup.string().required('Bạn chưa điền link facebook!'),
         area: yup.string().required('Bạn chưa chọn khu vực sống!'),
         educationInfo: yup.string().required('Bạn chưa điền thông tin học vấn!'),
-        companyInfo: yup.string().required('Bạn chưa điền Công việc/Nơi làm việc'),
+        // companyInfo: yup.string().required('Bạn chưa điền Công việc/Nơi làm việc'),
         background: yup.string().required('Bạn chưa điền lý lịch xuất phát công việc!'),
         address: yup.string().required('Bạn chưa điền địa chỉ hiện tại!'),
         CVfile: yup.string().required('Bạn chưa điền thông tin CV'),
