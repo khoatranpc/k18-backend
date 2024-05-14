@@ -6,7 +6,7 @@ class Mailer {
     private mailOptions: MailOptions;
     private from: 'K12' | 'K18';
 
-    constructor(from: 'K12' | 'K18', mailOptions: MailOptions) {
+    constructor(from: 'K12' | 'K18', mailOptions?: MailOptions) {
         this.from = from;
         this.transport = (): Transporter<SentMessageInfo> => {
             return nodemailer.createTransport({

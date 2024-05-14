@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { encryptPassword, getProjection, resClientData } from "../../utils";
+import { encryptPassword, getProjection, mailNotifiFillFormOnboard, resClientData } from "../../utils";
 import PreTeacherModel from "../../models/preTeacher";
 import TeacherModel from "../../models/teacher";
 import TeacherRegisterCourseModel from "../../models/teacherRegisterCourse";
@@ -14,19 +14,22 @@ import CourseModel from "../../models/course";
 import CourseLevelModel from "../../models/courseLevel";
 import { labelRole } from "../teacher/config";
 import AreaModel from "../../models/area";
+import Mailer from "../../utils/mailer";
 
 const preTeacherController = {
     register: async (req: Request, res: Response) => {
+        let data: Obj = {};
+        data = {
+            ...req.body
+        };
         try {
             const frontId = (req.files as any)?.["frontId"]?.[0] ?? req.body.frontId;
             const backId = (req.files as any)?.["backId"]?.[0] ?? req.body.backId;
             const { isFromSheet } = req.body;
             if (frontId && backId) {
-                let data: Obj = {};
+
                 if (isFromSheet) {
-                    data = {
-                        ...req.body
-                    };
+
                     const getDataCourseRegister = data.coursesRegister as Obj;
                     const crrCourse = await CourseModel.findOne({
                         courseName: {
@@ -82,11 +85,23 @@ const preTeacherController = {
                 const register = await PreTeacherModel.create(data);
                 findCandidate.fillForm = true;
                 await findCandidate.save();
+                const mailer = new Mailer("K18", {
+                    to: String(data.email),
+                    subject: "[MindX School] Thông báo kết quả điền thông tin - Thành công",
+                    html: mailNotifiFillFormOnboard(String(data.fullName), true)
+                });
+                await mailer.send();
                 resClientData(req, res, 201, register, 'Thành công!');
             } else {
                 throw new Error("Không có ảnh CCCD!");
             }
         } catch (error: any) {
+            const mailer = new Mailer("K18", {
+                to: String(data.email),
+                subject: "[MindX School] Thông báo kết quả điền thông tin - Thất bại",
+                html: mailNotifiFillFormOnboard(String(data.fullName))
+            });
+            await mailer.send();
             resClientData(req, res, 403, undefined, error.message);
         }
     },

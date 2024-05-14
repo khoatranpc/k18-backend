@@ -190,6 +190,162 @@ const formatDateTime = (date: Date) => {
 
     return formattedDateTime;
 }
+
+const mailNotifiFillFormOnboard = (name: string, success?: boolean) => {
+    return success?`
+    <p>Th&acirc;n gửi <strong>${name}</strong></p>
+<p>Th&ocirc;ng tin của bạn đ&atilde; được ghi nhận <strong>th&agrave;nh c&ocirc;ng</strong></p>
+<p>Bạn vui l&ograve;ng truy cập <a href="https://client.tms-k18.id.vn/candidate">https://client.tms-k18.id.vn/candidate</a> để tiếp tục</p>
+<style type="text/css">
+    p.p1 {
+        margin: 0.0px 0.0px 0.0px 0.0px;
+        line-height: 18.0px;
+        font: 15.0px 'Helvetica Neue';
+        color: #000000
+    }
+
+    span.s1 {
+        text-decoration: underline
+    }
+</style>
+<div style="text-align: start;color: rgb(34, 34, 34);font-size: small;">
+    <div>
+        <div>
+            <div>
+                <div>
+                    <div>
+                        <div>
+                            <div>
+                                <div>
+                                    <div>
+                                        <div>
+                                            <div>
+                                                <div>
+                                                    <div>
+                                                        <div>
+                                                            <div>
+                                                                <div>
+                                                                    <div>
+                                                                        <div>
+                                                                            <div>
+                                                                                <div>
+                                                                                    <p style="text-align: justify;"><br></p>
+                                                                                    <p style="text-align: justify;">--</p>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="text-align: start;color: rgb(34, 34, 34);font-size: small;">
+    <div>
+        <div>
+            <p style="text-align: start;color: rgb(34, 34, 34);background-color: rgb(255, 255, 255);font-size: small;"><span style="font-size: 14.6667px;"><strong>Teaching K18 Team</strong></span></p>
+            <p style="text-align: start;color: rgb(34, 34, 34);background-color: rgb(255, 255, 255);font-size: small;"><strong><span style="color: rgb(0, 0, 0);font-size: 11pt;">M</span></strong><span style="color: rgb(0, 0, 0);font-size: 11pt;">&nbsp; +08 226666 64 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span><strong><span style="color: rgb(0, 0, 0);font-size: 11pt;">E <span style="font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: pre-wrap; background-color: transparent; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; font-size: 11pt; font-family: Arial; color: rgb(17, 85, 204); vertical-align: baseline;">teachingk18@mindx.edu.vn</span></span></strong><span style="color: rgb(0, 0, 0);font-size: 11pt;">&nbsp;</span><span style="color: transparent;font-size: 11pt;">teac</span></p>
+            <p style="text-align: start;color: rgb(34, 34, 34);background-color: rgb(255, 255, 255);font-size: small;"><span style="color: transparent;font-size: 11pt;">--------------------------</span></p>
+            <p style="text-align: start;color: rgb(34, 34, 34);background-color: rgb(255, 255, 255);font-size: small;"><span style="color: transparent;font-size: 11pt;"><span style="border: none;"><img src="https://lh5.googleusercontent.com/UkuiNxSmurwHEqrReNmuJZJvyFHdqx5n2CcJMMhff1J-dww0itwlnwRQM_RWCvCYFWZ7hw20r96X5dJ1WilIxyCdWQr9HVeKn9YM7E3dSq28_NG-9FH86SGVVEC5qLrHLbUzV7LWz8LRb0_RVBfjvErkG0mFU3IVToZba8KrrE83MmH3WP3qxv_ByGu8uQ" width="200" height="68"></span></span></p>
+            <p style="text-align: start;color: rgb(34, 34, 34);background-color: rgb(255, 255, 255);font-size: small;"><strong><span style="color: rgb(0, 0, 0);font-size: 11pt;">Be extraordinary</span></strong></p>
+            <p style="text-align: start;color: rgb(34, 34, 34);background-color: rgb(255, 255, 255);font-size: small;"><strong><span style="color: rgb(255, 0, 0);font-size: 11pt;">HO</span></strong><span style="color: rgb(0, 0, 0);font-size: 11pt;">&nbsp;Hanoi: 5th ﬂ., 71 Nguyen Chi Thanh st., Dong Da</span></p>
+            <p style="text-align: start;color: rgb(34, 34, 34);background-color: rgb(255, 255, 255);font-size: small;"><span style="color: rgb(0, 0, 0);font-size: 11pt;">&nbsp; &nbsp; &nbsp; HCMC: 9th ﬂ., International Plaza Building, 343 Pham Ngu Lao, Dist. 1</span></p>
+        </div>
+        <p><span style="font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: pre-wrap; background-color: transparent; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; font-size: 11pt; font-family: Arial; color: rgb(0, 0, 0); vertical-align: baseline;">&nbsp;</span><span style="font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: pre-wrap; background-color: transparent; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; font-size: 11pt; font-family: Arial; color: rgb(255, 0, 0); font-weight: 700; vertical-align: baseline;">T</span><span style="font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: pre-wrap; background-color: transparent; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; font-size: 11pt; font-family: Arial; color: rgb(0, 0, 0); vertical-align: baseline;">&nbsp; +84 287717789 &nbsp;&nbsp;</span><span style="font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: pre-wrap; background-color: transparent; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; font-size: 11pt; font-family: Arial; color: rgb(255, 0, 0); font-weight: 700; vertical-align: baseline;">E</span><span style="font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: pre-wrap; background-color: transparent; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; font-size: 11pt; font-family: Arial; color: rgb(0, 0, 0); vertical-align: baseline;">&nbsp;</span><span style="font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: pre-wrap; background-color: transparent; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; font-size: 11pt; font-family: Arial; color: rgb(17, 85, 204); vertical-align: baseline;"><a href="mailto:contact@mindx.edu.vn" target="_blank" style="color: rgb(17, 85, 204);">contact@mindx.edu.vn</a></span><span style="font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: pre-wrap; background-color: transparent; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; font-size: 11pt; font-family: Arial; color: rgb(0, 0, 0); vertical-align: baseline;">&nbsp;&nbsp;</span><span style="font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: pre-wrap; background-color: transparent; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; font-size: 11pt; font-family: Arial; color: rgb(255, 0, 0); font-weight: 700; vertical-align: baseline;">W</span><span style="font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: pre-wrap; background-color: transparent; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; font-size: 11pt; font-family: Arial; color: rgb(0, 0, 0); font-weight: 700; vertical-align: baseline;">&nbsp;&nbsp;</span><a href="http://mindx.edu.vn/" target="_blank" style="color: rgb(17, 85, 204); font-family: Arial, Helvetica, sans-serif; font-size: small; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 11pt; font-family: Arial; background-color: transparent; vertical-align: baseline; white-space: pre-wrap;">mindx.edu.vn</span></a></p>
+    </div>
+</div>`: `
+<p>Th&acirc;n gửi <strong>${name}</strong></p>
+<p>Đ&atilde; c&oacute; lỗi trong qu&aacute; tr&igrave;nh nhập th&ocirc;ng tin của bạn, vui l&ograve;ng li&ecirc;n hệ người hướng dẫn được được giải quyết</p>
+<p>Th&ocirc;ng tin người hướng dẫn</p>
+<ul>
+    <li>Nguyễn Văn Cường</li>
+    <li>Zalo, Tele, Phone: 0822666664</li>
+    <li>Facebook :&nbsp;<a data-fr-linked="true" href="https://www.facebook.com/nguyencuong21520/">https://www.facebook.com/nguyencuong21520/</a></li>
+</ul>
+<style type="text/css">
+    p.p1 {
+        margin: 0.0px 0.0px 0.0px 0.0px;
+        line-height: 18.0px;
+        font: 15.0px 'Helvetica Neue';
+        color: #000000
+    }
+
+    span.s1 {
+        text-decoration: underline
+    }
+</style>
+<div style="text-align: start;color: rgb(34, 34, 34);font-size: small;">
+    <div>
+        <div>
+            <div>
+                <div>
+                    <div>
+                        <div>
+                            <div>
+                                <div>
+                                    <div>
+                                        <div>
+                                            <div>
+                                                <div>
+                                                    <div>
+                                                        <div>
+                                                            <div>
+                                                                <div>
+                                                                    <div>
+                                                                        <div>
+                                                                            <div>
+                                                                                <div>
+                                                                                    <p style="text-align: justify;"><br></p>
+                                                                                    <p style="text-align: justify;">--</p>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="text-align: start;color: rgb(34, 34, 34);font-size: small;">
+    <div>
+        <div>
+            <p style="text-align: start;color: rgb(34, 34, 34);background-color: rgb(255, 255, 255);font-size: small;"><span style="font-size: 14.6667px;"><strong>Teaching K18 Team</strong></span></p>
+            <p style="text-align: start;color: rgb(34, 34, 34);background-color: rgb(255, 255, 255);font-size: small;"><strong><span style="color: rgb(0, 0, 0);font-size: 11pt;">M</span></strong><span style="color: rgb(0, 0, 0);font-size: 11pt;">&nbsp; +08 226666 64 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span><strong><span style="color: rgb(0, 0, 0);font-size: 11pt;">E <span style="font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: pre-wrap; background-color: transparent; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; font-size: 11pt; font-family: Arial; color: rgb(17, 85, 204); vertical-align: baseline;">teachingk18@mindx.edu.vn</span></span></strong><span style="color: rgb(0, 0, 0);font-size: 11pt;">&nbsp;</span><span style="color: transparent;font-size: 11pt;">teac</span></p>
+            <p style="text-align: start;color: rgb(34, 34, 34);background-color: rgb(255, 255, 255);font-size: small;"><span style="color: transparent;font-size: 11pt;">--------------------------</span></p>
+            <p style="text-align: start;color: rgb(34, 34, 34);background-color: rgb(255, 255, 255);font-size: small;"><span style="color: transparent;font-size: 11pt;"><span style="border: none;"><img src="https://lh5.googleusercontent.com/UkuiNxSmurwHEqrReNmuJZJvyFHdqx5n2CcJMMhff1J-dww0itwlnwRQM_RWCvCYFWZ7hw20r96X5dJ1WilIxyCdWQr9HVeKn9YM7E3dSq28_NG-9FH86SGVVEC5qLrHLbUzV7LWz8LRb0_RVBfjvErkG0mFU3IVToZba8KrrE83MmH3WP3qxv_ByGu8uQ" width="200" height="68"></span></span></p>
+            <p style="text-align: start;color: rgb(34, 34, 34);background-color: rgb(255, 255, 255);font-size: small;"><strong><span style="color: rgb(0, 0, 0);font-size: 11pt;">Be extraordinary</span></strong></p>
+            <p style="text-align: start;color: rgb(34, 34, 34);background-color: rgb(255, 255, 255);font-size: small;"><strong><span style="color: rgb(255, 0, 0);font-size: 11pt;">HO</span></strong><span style="color: rgb(0, 0, 0);font-size: 11pt;">&nbsp;Hanoi: 5th ﬂ., 71 Nguyen Chi Thanh st., Dong Da</span></p>
+            <p style="text-align: start;color: rgb(34, 34, 34);background-color: rgb(255, 255, 255);font-size: small;"><span style="color: rgb(0, 0, 0);font-size: 11pt;">&nbsp; &nbsp; &nbsp; HCMC: 9th ﬂ., International Plaza Building, 343 Pham Ngu Lao, Dist. 1</span></p>
+        </div>
+        <p><span style="font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: pre-wrap; background-color: transparent; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; font-size: 11pt; font-family: Arial; color: rgb(0, 0, 0); vertical-align: baseline;">&nbsp;</span><span style="font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: pre-wrap; background-color: transparent; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; font-size: 11pt; font-family: Arial; color: rgb(255, 0, 0); font-weight: 700; vertical-align: baseline;">T</span><span style="font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: pre-wrap; background-color: transparent; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; font-size: 11pt; font-family: Arial; color: rgb(0, 0, 0); vertical-align: baseline;">&nbsp; +84 287717789 &nbsp;&nbsp;</span><span style="font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: pre-wrap; background-color: transparent; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; font-size: 11pt; font-family: Arial; color: rgb(255, 0, 0); font-weight: 700; vertical-align: baseline;">E</span><span style="font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: pre-wrap; background-color: transparent; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; font-size: 11pt; font-family: Arial; color: rgb(0, 0, 0); vertical-align: baseline;">&nbsp;</span><span style="font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: pre-wrap; background-color: transparent; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; font-size: 11pt; font-family: Arial; color: rgb(17, 85, 204); vertical-align: baseline;"><a href="mailto:contact@mindx.edu.vn" target="_blank" style="color: rgb(17, 85, 204);">contact@mindx.edu.vn</a></span><span style="font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: pre-wrap; background-color: transparent; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; font-size: 11pt; font-family: Arial; color: rgb(0, 0, 0); vertical-align: baseline;">&nbsp;&nbsp;</span><span style="font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: pre-wrap; background-color: transparent; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; font-size: 11pt; font-family: Arial; color: rgb(255, 0, 0); font-weight: 700; vertical-align: baseline;">W</span><span style="font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: pre-wrap; background-color: transparent; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; font-size: 11pt; font-family: Arial; color: rgb(0, 0, 0); font-weight: 700; vertical-align: baseline;">&nbsp;&nbsp;</span><a href="http://mindx.edu.vn/" target="_blank" style="color: rgb(17, 85, 204); font-family: Arial, Helvetica, sans-serif; font-size: small; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255);"><span style="font-size: 11pt; font-family: Arial; background-color: transparent; vertical-align: baseline; white-space: pre-wrap;">mindx.edu.vn</span></a></p>
+    </div>
+</div>
+`
+}
 export {
     genRandomId,
     getProjection,
@@ -206,5 +362,6 @@ export {
     getOrderWeekday,
     getScoreLevelTech,
     getScoreResourceApply,
-    getScoreEducation
+    getScoreEducation,
+    mailNotifiFillFormOnboard
 };
