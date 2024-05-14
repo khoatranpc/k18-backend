@@ -118,6 +118,8 @@ const preTeacherSchema = new mongoose.Schema(
         frontId: String,
         backId: String,
         certificate: String,
+        certificatePhotoImage: String,
+        emergencyContact: {}
     },
     {
         timestamps: true,

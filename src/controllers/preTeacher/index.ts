@@ -10,6 +10,10 @@ import { RequestMid } from "../../middlewares";
 import RecruitmentModel from "../../models/recruiment";
 import { Obj } from "../../global/interface";
 import uploadToCloud from "../../utils/cloudinary";
+import CourseModel from "../../models/course";
+import CourseLevelModel from "../../models/courseLevel";
+import { labelRole } from "../teacher/config";
+import AreaModel from "../../models/area";
 
 const preTeacherController = {
     register: async (req: Request, res: Response) => {
@@ -22,7 +26,41 @@ const preTeacherController = {
                 if (isFromSheet) {
                     data = {
                         ...req.body
+                    };
+                    const getDataCourseRegister = data.coursesRegister as Obj;
+                    const crrCourse = await CourseModel.findOne({
+                        courseName: {
+                            '$regex': getDataCourseRegister.idCourse,
+                            '$options': 'i'
+                        }
+                    });
+                    const levelRegister = await CourseLevelModel.find({
+                        courseId: crrCourse?._id,
+                        levelNumber: {
+                            '$in': (getDataCourseRegister.levelHandle as string[]).map((item) => {
+                                return item.split('v')[1]
+                            })
+                        }
+                    });
+                    data.role = (data.role as string[])?.map((item => {
+                        return (Object.keys(labelRole))?.find((role => labelRole[role as keyof typeof labelRole] === item))
+                    }));
+                    const crrAea = await AreaModel.findOne({
+                        code: {
+                            '$regex': String(data.area)?.split(' ')[1],
+                            '$options': 'i'
+                        }
+                    });
+                    if (!crrAea) {
+                        const defaultArea = await AreaModel.findOne({
+                            code: 'Online'
+                        });
+                        data.area = defaultArea?._id;
+                    } else {
+                        data.area = crrAea?._id;
                     }
+                    (data.coursesRegister as Obj).idCourse = crrCourse?._id;
+                    (data.coursesRegister as Obj).levelHandle = levelRegister?.map(item => item._id);
                 } else {
                     for (const key in req.body) {
                         data[key] = JSON.parse(req.body[key]);

@@ -161,7 +161,9 @@ const teacherSchema = new mongoose.Schema(
             type: [String],
             enum: TeachingDepartment
         },
-        certificate: String
+        certificate: String,
+        certificatePhotoImage: String,
+        emergencyContact: {}
     },
     {
         timestamps: true,
