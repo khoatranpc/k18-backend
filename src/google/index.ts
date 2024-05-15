@@ -108,7 +108,7 @@ class Google {
     }
     async eventList(calendarId?: string, q?: string) {
         return this.calendar.events.list({
-            calendarId: calendarId ?? '9ca905157a5faf745e7d6456f3a51678f9af45b8f26f7cca5f0bc59c3fbdbd9e@group.calendar.google.com',
+            calendarId: calendarId ?? 'c_57f0ca8f5c88c034944cd7ce40ff329791a884a4fef729ecb30fad215224c346@group.calendar.google.com',
             singleEvents: true,
             maxResults: 1000,
             q
@@ -117,7 +117,7 @@ class Google {
     async getEvent(eventId?: string, calendarId?: string) {
         return this.calendar.events.get({
             eventId,
-            calendarId: calendarId ?? '9ca905157a5faf745e7d6456f3a51678f9af45b8f26f7cca5f0bc59c3fbdbd9e@group.calendar.google.com',
+            calendarId: calendarId ?? 'c_57f0ca8f5c88c034944cd7ce40ff329791a884a4fef729ecb30fad215224c346@group.calendar.google.com',
         });
     }
 }
