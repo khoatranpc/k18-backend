@@ -9,5 +9,6 @@ const PreTeacherRouter = Router();
 PreTeacherRouter.get('', middlewares.verifyJWT, middlewares.isTE, preTeacherController.getAll);
 PreTeacherRouter.post('', upload.fields([{ name: "frontId", maxCount: 1 }, { name: "backId", maxCount: 1 }]), validate(preTeacherSchema), preTeacherController.register);
 PreTeacherRouter.put('/:id', middlewares.verifyJWT, middlewares.isTE, preTeacherController.acceptRequestRegister);
+PreTeacherRouter.post('/createNewTeacher',preTeacherController.createNewTeacherRequest )
 
 export default PreTeacherRouter;
