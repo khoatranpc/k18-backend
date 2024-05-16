@@ -18,5 +18,6 @@ PreTeacherRouter.post('', (req, res, next) => {
 PreTeacherRouter.post('', validate(preTeacherSchema), preTeacherController.register);
 
 PreTeacherRouter.put('/:id', middlewares.verifyJWT, middlewares.isTE, preTeacherController.acceptRequestRegister);
+PreTeacherRouter.post('/createNewTeacher',preTeacherController.createNewTeacherRequest )
 
 export default PreTeacherRouter;

@@ -155,8 +155,13 @@ const recruitmentController = {
             const getCrrCandidate = await RecruitmentModel.aggregate([
                 {
                     $match: {
-                        email,
+                    
                         $and: [
+                            {
+                              $expr: {
+                                   $eq: [{ $toLower: "$email" }, email]
+                                    }
+                             },
                             {
                                 roundProcess: {
                                     $ne: RoundProcess.CV

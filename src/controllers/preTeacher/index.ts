@@ -205,6 +205,12 @@ const preTeacherController = {
         } catch (error: any) {
             resClientData(req, res, 403, undefined, error.message);
         }
+    },
+    createNewTeacherRequest: async (req: RequestMid, res: Response)=>{
+        const {body }= req
+
+        res.json({"success": body})
+
     }
 };
 export default preTeacherController;
