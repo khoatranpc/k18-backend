@@ -73,7 +73,7 @@ const preTeacherController = {
                 const existedEmail = await PreTeacherModel.findOne({ email });
                 if (existedEmail) throw new Error('Đã tồn tại email!');
                 const findCandidate = await RecruitmentModel.findOne({
-                    email
+                    email : new RegExp(`^${email}$`, 'i')
                 });
                 if (!findCandidate) throw new Error('Không tìm thấy ứng viên!');
                 if (typeof backId !== 'string' && typeof frontId !== 'string') {
