@@ -79,7 +79,7 @@ class Google {
     getCalendars(calendarId?: string) {
         let result;
         this.calendar.calendarList.get({
-            calendarId: calendarId ?? 'primary',
+            calendarId: calendarId ?? process.env.CALENDAR_ID,
         }, (err, response) => {
             if (err) {
                 throw err;
@@ -108,7 +108,7 @@ class Google {
     }
     async eventList(calendarId?: string, q?: string) {
         return this.calendar.events.list({
-            calendarId: calendarId ?? 'c_57f0ca8f5c88c034944cd7ce40ff329791a884a4fef729ecb30fad215224c346@group.calendar.google.com',
+            calendarId: calendarId ?? process.env.CALENDAR_ID,
             singleEvents: true,
             maxResults: 1000,
             q
@@ -117,7 +117,7 @@ class Google {
     async getEvent(eventId?: string, calendarId?: string) {
         return this.calendar.events.get({
             eventId,
-            calendarId: calendarId ?? 'c_57f0ca8f5c88c034944cd7ce40ff329791a884a4fef729ecb30fad215224c346@group.calendar.google.com',
+            calendarId: calendarId ?? process.env.CALENDAR_ID,
         });
     }
 }
