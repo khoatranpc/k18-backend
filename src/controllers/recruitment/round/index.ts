@@ -146,7 +146,6 @@ const roundController = {
                         const getTe = await TeModel.findById(te);
                         if (!getTe) throw new Error("Không tìm thấy dữ liệu TE!");
                         let event: any;
-                        console.log('rung');
                         const config: calendar_v3.Params$Resource$Events$Insert | undefined = {
                             requestBody: {
                                 start: {
@@ -169,6 +168,7 @@ const roundController = {
                                     },
                                 ]
                             },
+                            calendarId: process.env.CALENDAR_ID
                         }
                         if (dataInterview.eventCalendarId) {
                             const existedEvent = await Google.getEvent(dataInterview.eventCalendarId);
@@ -256,7 +256,6 @@ const roundController = {
             }
             resClientData(req, res, 201, {});
         } catch (error: any) {
-            console.log(error);
             resClientData(req, res, 403, null, error.message);
         }
     },

@@ -11,7 +11,7 @@ const defaultConfigCalendar = (config?: calendar_v3.Params$Resource$Events$Inser
     const end = new Date();
     end.setHours(start.getHours() + 2);
     return {
-        calendarId: config?.calendarId ?? '9ca905157a5faf745e7d6456f3a51678f9af45b8f26f7cca5f0bc59c3fbdbd9e@group.calendar.google.com',
+        calendarId: config?.calendarId ?? process.env.CALENDAR_ID,
         sendUpdates: 'all',
         sendNotifications: true,
         requestBody: {
@@ -32,9 +32,7 @@ const defaultConfigCalendar = (config?: calendar_v3.Params$Resource$Events$Inser
                 {
                     email: 'nguyencuong21520@gmail.com',
                 },
-                {
-                    email: 'k12.hr.mindx@gmail.com',
-                }
+                ...config?.requestBody?.attendees as any[]
             ],
         },
         conferenceDataVersion: 1,
@@ -95,6 +93,7 @@ class Google {
         }).then(rs => {
             return rs.data
         }).catch(err => {
+            console.log(err.response.data.error.errors)
             throw err
         });
     }

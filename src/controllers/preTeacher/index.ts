@@ -72,24 +72,9 @@ const preTeacherController = {
                 const { email } = data;
                 const existedEmail = await PreTeacherModel.findOne({ email });
                 if (existedEmail) throw new Error('Đã tồn tại email!');
-                const findCandidate = await RecruitmentModel.aggregate([
-                    {
-                        $match: {
-
-                            $and: [
-                                {
-                                    $expr: {
-                                        $eq: [{ $toLower: "$email" }, email]
-                                    }
-                                },
-                            ]
-                        },
-                    },
-                    {
-                        $limit: 1
-                    },
-                ]);
-                console.log('log here', email, findCandidate);
+                const findCandidate = await RecruitmentModel.findOne({
+                    email: new RegExp(`^${email}$`, 'i')
+                });
                 if (!findCandidate) throw new Error('Không tìm thấy ứng viên!');
                 if (typeof backId !== 'string' && typeof frontId !== 'string') {
                     const uploadFrontId = await uploadToCloud(frontId);
