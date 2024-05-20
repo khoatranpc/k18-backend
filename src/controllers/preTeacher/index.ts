@@ -73,8 +73,9 @@ const preTeacherController = {
                 const existedEmail = await PreTeacherModel.findOne({ email });
                 if (existedEmail) throw new Error('Đã tồn tại email!');
                 const findCandidate = await RecruitmentModel.findOne({
-                    email : new RegExp(`^${email}$`, 'i')
+                    email: new RegExp(`^${email}$`, 'i')
                 });
+                console.log('log here', email, findCandidate);
                 if (!findCandidate) throw new Error('Không tìm thấy ứng viên!');
                 if (typeof backId !== 'string' && typeof frontId !== 'string') {
                     const uploadFrontId = await uploadToCloud(frontId);
@@ -206,10 +207,10 @@ const preTeacherController = {
             resClientData(req, res, 403, undefined, error.message);
         }
     },
-    createNewTeacherRequest: async (req: RequestMid, res: Response)=>{
-        const {body }= req
+    createNewTeacherRequest: async (req: RequestMid, res: Response) => {
+        const { body } = req
 
-        res.json({"success": body})
+        res.json({ "success": body })
 
     }
 };
