@@ -91,9 +91,8 @@ class Google {
         return this.calendar.events.insert({
             ...defaultConfigCalendar(config)
         }).then(rs => {
-            return rs.data
+            return rs?.data
         }).catch(err => {
-            console.log(err.response.data.error.errors)
             throw err
         });
     }
