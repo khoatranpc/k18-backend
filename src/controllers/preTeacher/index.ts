@@ -20,7 +20,8 @@ const preTeacherController = {
     register: async (req: Request, res: Response) => {
         let data: Obj = {};
         data = {
-            ...req.body
+            ...req.body,
+            email: String(req.body.email).toLowerCase()
         };
         try {
             const frontId = (req.files as any)?.["frontId"]?.[0] ?? req.body.frontId;
