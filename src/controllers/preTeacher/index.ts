@@ -51,7 +51,7 @@ const preTeacherController = {
                     }));
                     const crrAea = await AreaModel.findOne({
                         code: {
-                            '$regex': String(data.area)?.split(' ')[1],
+                            '$regex': String(data.area)?.split('.')[1].trim(),
                             '$options': 'i'
                         }
                     });
