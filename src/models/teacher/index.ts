@@ -16,41 +16,41 @@ const teacherSchema = new mongoose.Schema(
         email: {
             type: String,
             default: '',
-            required: true,
+            // required: true,
             unique: true,
         },
         fullName: {
             type: String,
             default: '',
-            required: true,
+            // required: true,
         },
         phoneNumber: {
             type: String,
-
-            default: '', required: true
+            default: '',
+            //  required: true
         },
         gender: {
             type: String,
             default: GENDER.NA,
-            required: true
+            // required: true
         },
         dob: {
             type: Date,
-            required: true
+            // required: true
         },
         identify: {
             type: String,
-
-            default: '', required: true
+            default: '',
+            required: true
         },
         licenseDate: {
             type: Date,
-            required: true,
+            // required: true,
         },
         licensePlace: {
             type: String,
             default: '',
-            required: true,
+            // required: true,
         },
         permanentAddress: {
             type: String,
@@ -64,13 +64,13 @@ const teacherSchema = new mongoose.Schema(
         },
         facebookLink: {
             type: String,
-
-            default: '', required: true
+            default: '',
+            // required: true
         },
         area: {
             type: mongoose.SchemaTypes.ObjectId,
             ref: Collections.AREA,
-            required: true
+            // required: true
         },
         educationInfo: {
             type: String,
@@ -109,7 +109,6 @@ const teacherSchema = new mongoose.Schema(
         },
         bankHolderName: {
             type: String,
-
             default: '',
         },
         roleIsST: {
@@ -126,7 +125,8 @@ const teacherSchema = new mongoose.Schema(
         },
         dateStartWork: {
             type: Date,
-            required: true,
+            default: new Date()
+            // required: true,
         },
         salaryPH: {
             type: [

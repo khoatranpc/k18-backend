@@ -16,89 +16,89 @@ const preTeacherSchema = new mongoose.Schema(
         },
         fullName: {
             type: String,
-            required: true
+            // required: true
         },
         phoneNumber: {
             type: String,
-            required: true
+            // required: true
         },
         gender: {
             type: String,
             default: GENDER.NA,
-            required: true
+            // required: true
         },
         dob: {
             type: Date,
-            required: true
+            // required: true
         },
         identify: {
             type: String,
-            required: true
+            // required: true
         },
         licenseDate: {
             type: Date,
-            required: true,
+            // required: true,
         },
         licensePlace: {
             type: String,
-            required: true,
+            // required: true,
         },
         permanentAddress: {
             type: String,
-            required: false
+            // required: false
         },
         taxCode: {
             type: String,
-            required: false
+            // required: false
         },
         facebookLink: {
             type: String,
-            required: true
+            // required: true
         },
         area: {
             type: mongoose.SchemaTypes.ObjectId,
             ref: Collections.AREA,
-            required: true
+            // required: true
         },
         educationInfo: {
             type: String,
-            required: true
+            // required: true
         },
         companyInfo: {
             type: String,
-            required: true
+            // required: true
         },
         background: {
             type: String,
-            required: true
+            // required: true
         },
         address: {
             type: String,
-            required: true
+            // required: true
         },
         CVfile: {
             type: String,
-            required: true
+            // required: true
         },
         bankName: {
             type: String,
-            required: true
+            // required: true
         },
         bankNumber: {
             type: String,
-            required: true
+            // required: true
         },
         bankHolderName: {
             type: String,
-            required: true
+            // required: true
         },
         role: {
             type: [String],
-            required: true,
+            // required: true,
         },
         dateStartWork: {
             type: Date,
-            required: true
+            // required: true
         },
         coursesRegister: {
             type: [{
@@ -113,7 +113,7 @@ const preTeacherSchema = new mongoose.Schema(
                     }
                 ]
             }],
-            required: true
+            // required: true
         },
         frontId: String,
         backId: String,
