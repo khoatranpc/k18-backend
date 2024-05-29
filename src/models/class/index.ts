@@ -16,6 +16,8 @@ const classSchema = new mongoose.Schema({
         type: Schema.Types.ObjectId,
         ref: Collections.COURSELEVEL
     },
+    cxo: String,
+    bu: String,
     dayRange: {
         start: {
             type: Date,

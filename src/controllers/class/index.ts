@@ -8,9 +8,10 @@ import BookTeacherModel from "../../models/bookTeacher";
 import ClassSessionModel from "../../models/classSession";
 import TeacherScheduleModel from "../../models/teacherSchedule";
 import FeedbackModel from "../../models/feedback";
+import { RequestMid } from "../../middlewares";
 
 const classController = {
-    getAll: async (req: Request, res: Response) => {
+    getAll: async (req: RequestMid, res: Response) => {
         try {
             const { fields, recordOnPage, currentPage, listId, status, forRecruitment, course, codeClass } = req.query;
             let classes;
@@ -61,7 +62,7 @@ const classController = {
                 });
                 return {
                     ...item.toObject(),
-                    recordBookTeacher: findRecord
+                        recordBookTeacher: findRecord
                 }
             })
             const dataSend = {
@@ -78,18 +79,24 @@ const classController = {
     },
     create: async (req: Request, res: Response) => {
         try {
-            const { courseLevelId, courseId, codeClass, dayRange, timeSchedule } = req.body;
+            const { courseLevelId, courseId, codeClass, dayRange, timeSchedule, bookTeacher } = req.body;
             const findExistClassCode = await ClassModel.findOne({
                 codeClass
             });
             if (findExistClassCode) throw new Error('Mã lớp này đã tồn tại!');
-            await ClassModel.create({
+            const createdClass = await ClassModel.create({
                 courseLevelId,
                 courseId,
                 codeClass,
                 dayRange,
                 timeSchedule
             });
+            await BookTeacherModel.insertMany((bookTeacher as Obj[])!.map((item) => {
+                return {
+                    ...item,
+                    classId: createdClass._id
+                }
+            }))
             resClientData(req, res, 201, {}, 'Thành công!');
         } catch (error: any) {
             resClientData(req, res, 403, undefined, error.message);

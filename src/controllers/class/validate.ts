@@ -8,7 +8,8 @@ const createClassSchema = yup.object({
         dayRange: yup.object({
             start: yup.date().required('Bạn chưa cung cấp ngày mở lớp!'),
             end: yup.date().required('Bạn chưa cung cấp ngày kết thúc lớp!'),
-        }).required('Bạn chưa cung cấp thời gian tổ chức khóa học!')
+        }).required('Bạn chưa cung cấp thời gian tổ chức khóa học!'),
+        bookTeacher: yup.array().required('Chưa có thông tin dự kiến nhóm lớp!')
     })
 });
 

@@ -15,6 +15,11 @@ const bookTeacherSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    note: String,
+    totalStudents: {
+        type: Number,
+        default: 0
+    },
     teacherRegister: {
         type: [{
             idTeacher: {
