@@ -162,16 +162,6 @@ const recruitmentController = {
                                    $eq: [{ $toLower: "$email" }, email]
                                     }
                              },
-                            {
-                                roundProcess: {
-                                    $ne: RoundProcess.CV
-                                }
-                            },
-                            {
-                                roundProcess: {
-                                    $ne: RoundProcess.INTERVIEW
-                                }
-                            },
                         ]
                     },
                 },
