@@ -152,30 +152,26 @@ const recruitmentController = {
     getCandidateByEmailForOnboard: async (req: Request, res: Response) => {
         try {
             const { email, fields } = req.query;
-            const getCrrCandidate = await RecruitmentModel.aggregate([
-                {
-                    $match: {
-                    
-                        $and: [
-                            {
-                              $expr: {
-                                   $eq: [{ $toLower: "$email" }, email]
-                                    }
-                             },
-                        ]
+            const getCrrCandidate = await RecruitmentModel.findOne({
+                email: {
+                    "$regex": email,
+                    "$options": "i"
+                },
+                $and: [
+                    {
+                        roundProcess: {
+                            $ne: RoundProcess.CV
+                        }
                     },
-                },
-                {
-                    $limit: 1
-                },
-                ...fields ? [{
-                    $project: getProjectionByString(fields as string)
-                }] : [{
-                    $project: {
-                        fullName: 1
+                    {
+                        roundProcess: {
+                            $ne: RoundProcess.INTERVIEW
+                        }
                     }
-                }]
-            ]);
+                ],
+            }, {
+                fullName: 1
+            });
             if (!getCrrCandidate) throw new Error('Không tìm thấy dữ liệu ứng viên!');
             resClientData(req, res, 200, getCrrCandidate);
         } catch (error: any) {
