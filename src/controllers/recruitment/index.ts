@@ -170,7 +170,12 @@ const recruitmentController = {
                     }
                 ],
             }, {
-                fullName: 1
+                fullName: 1,
+                fillForm: 1,
+                statusProcess: 1,
+                roundProcess: 1,
+                email: 1,
+                result: 1
             });
             if (!getCrrCandidate) throw new Error('Không tìm thấy dữ liệu ứng viên!');
             resClientData(req, res, 200, getCrrCandidate);

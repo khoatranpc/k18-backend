@@ -5,7 +5,7 @@ import TeacherModel from "../../models/teacher";
 import TeacherRegisterCourseModel from "../../models/teacherRegisterCourse";
 import { ObjectId } from "mongodb";
 import AccountModel from "../../models/account";
-import { ROLE_TEACHER, STATUS } from "../../global/enum";
+import { ROLE_TEACHER, RoundProcess, STATUS } from "../../global/enum";
 import { RequestMid } from "../../middlewares";
 import RecruitmentModel from "../../models/recruiment";
 import { Obj } from "../../global/interface";
@@ -88,6 +88,7 @@ const preTeacherController = {
                 }
                 const register = await PreTeacherModel.create(data);
                 findCandidate.fillForm = true;
+                findCandidate.roundProcess = RoundProcess.CLAUTID;
                 await findCandidate.save();
                 const mailer = new Mailer("K18", {
                     to: String(data.email),
