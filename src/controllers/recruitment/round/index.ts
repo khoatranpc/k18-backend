@@ -114,7 +114,7 @@ const roundController = {
                                 candidateId,
                                 linkMeet,
                                 time,
-                                processed: true
+                                processed: false
                             });
                         }
                     }
