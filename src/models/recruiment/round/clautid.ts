@@ -6,7 +6,8 @@ const roundClautidSchema = new mongoose.Schema({
     candidateId: {
         type: mongoose.SchemaTypes.ObjectId,
         required: true,
-        ref: Collections.RECRUITMENT
+        ref: Collections.RECRUITMENT,
+        unique: true
     },
     classIdFirst: {
         type: mongoose.SchemaTypes.ObjectId,

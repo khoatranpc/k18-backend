@@ -218,7 +218,8 @@ const roundController = {
                 case RoundProcess.CLAUTID:
                     if (result) {
                         await RoundClautidModel.findOneAndUpdate({
-                            candidateId,
+                            candidateId
+                        }, {
                             result
                         });
                         currentDataRecruitment.roundProcess = RoundProcess.TEST

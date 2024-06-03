@@ -13,25 +13,39 @@ import { RequestMid } from "../../middlewares";
 const classController = {
     getAll: async (req: RequestMid, res: Response) => {
         try {
-            const { fields, recordOnPage, currentPage, listId, status, forRecruitment, course, codeClass } = req.query;
+            const { fields, recordOnPage, currentPage, listId, status, forRecruitment, course, codeClass, date } = req.query;
             let classes;
+            let filter;
             if (listId) {
-                classes = await ClassModel.find({
+                filter = {
                     _id: {
                         $in: listId
                     }
-                }, { ...fields && getProjection(...fields as Array<string>) })
+                };
+                classes = await ClassModel.find(filter, { ...fields && getProjection(...fields as Array<string>) })
                     .populate('courseId courseLevelId timeSchedule', { ...fields && getProjection(...fields as Array<string>), _id: 1 });
             }
             else if (recordOnPage && currentPage) {
-                classes = await ClassModel.find({
-                    ...status ? {
-                        status: STATUS_CLASS.RUNNING
-                    } : {},
+                filter = {
+                    ...status ? (status === 'ALL' ? {
+                    } : { status }) : {},
                     ...course ? {
                         courseId: course
+                    } : {},
+                    ...codeClass ? {
+                        codeClass: {
+                            "$regex": codeClass,
+                            "$options": 'i'
+                        }
+                    } : {},
+                    ...date ? {
+                        "dayRange.start": {
+                            $gte: new Date(new Date(date as string).getFullYear(), new Date(date as string).getMonth(), 1), // Bắt đầu từ ngày đầu tiên của tháng
+                            $lt: new Date(new Date(date as string).getFullYear(), new Date(date as string).getMonth() + 1, 1)
+                        }
                     } : {}
-                }, { ...fields && getProjection(...fields as Array<string>), _id: 1 })
+                };
+                classes = await ClassModel.find(filter, { ...fields && getProjection(...fields as Array<string>), _id: 1 })
                     .sort({
                         createdAt: -1
                     })
@@ -39,13 +53,14 @@ const classController = {
                     .populate('courseId courseLevelId timeSchedule', { ...fields && getProjection(...fields as Array<string>), _id: 1 });
             }
             else {
-                classes = await ClassModel.find(codeClass ? { codeClass } : {}, { ...fields && getProjection(...fields as Array<string>), _id: 1 })
+                filter = codeClass ? { codeClass } : {};
+                classes = await ClassModel.find(filter, { ...fields && getProjection(...fields as Array<string>), _id: 1 })
                     .sort({
                         createdAt: -1
                     })
                     .populate('courseId courseLevelId timeSchedule', { ...fields && getProjection(...fields as Array<string>), _id: 1 });
             }
-            const totalClasses = await ClassModel.countDocuments({});
+            const totalClasses = await ClassModel.countDocuments(filter);
             const getListCurrentClassId = classes.map((item) => item._id);
             const getFieldPopulate = `teacherRegister.idTeacher${forRecruitment ? ' locationId' : ''}`
             const listBookTeacher = await BookTeacherModel.find({
@@ -62,7 +77,7 @@ const classController = {
                 });
                 return {
                     ...item.toObject(),
-                        recordBookTeacher: findRecord
+                    recordBookTeacher: findRecord
                 }
             })
             const dataSend = {

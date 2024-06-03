@@ -14,18 +14,7 @@ const recruitmentController = {
     getList: async (req: Request, res: Response) => {
         try {
             const { fields, recordOnPage, currentPage, sort, area, status, resourceHunt, valueSearch, startDate, endDate, courseApply, isGetInfoProcessCandidate } = req.query;
-            const totalRecord = await RecruitmentModel.count({
-                ...area && area !== 'ALL' ? {
-                    area: area
-                } : {},
-                ...status && status !== 'ALL' ? {
-                    statusProcess: status
-                } : {},
-                ...resourceHunt && resourceHunt !== 'ALL' ? {
-                    resourceApply: resourceHunt
-                } : {},
-            });
-            const listCandidate = await RecruitmentModel.find({
+            let filter = {
                 ...valueSearch ? {
                     '$or': [
                         {
@@ -60,7 +49,9 @@ const recruitmentController = {
                 ...courseApply && courseApply !== 'ALL' ? {
                     courseApply: courseApply
                 } : {},
-            }, { ...fields && getProjection(...fields as Array<string>) })
+            };
+            const totalRecord = await RecruitmentModel.count(filter);
+            const listCandidate = await RecruitmentModel.find(filter, { ...fields && getProjection(...fields as Array<string>) })
                 .sort({
                     createdAt: !sort ? -1 : (sort === 'ASC' ? -1 : 1)
                 })
