@@ -2,13 +2,14 @@ import { Request, Response } from "express";
 import { ObjectId } from "mongodb";
 import { getDateOfWeekday, getProjection, getWeekDay, resClientData } from "../../utils";
 import ClassModel from "../../models/class";
-import { STATUS_CLASS, WEEKDAY } from "../../global/enum";
+import { ROLE, STATUS_CLASS, WEEKDAY } from "../../global/enum";
 import { Obj } from "../../global/interface";
 import BookTeacherModel from "../../models/bookTeacher";
 import ClassSessionModel from "../../models/classSession";
 import TeacherScheduleModel from "../../models/teacherSchedule";
 import FeedbackModel from "../../models/feedback";
 import { RequestMid } from "../../middlewares";
+import TeacherRegisterCourseModel from "../../models/teacherRegisterCourse";
 
 const classController = {
     getAll: async (req: RequestMid, res: Response) => {
@@ -26,11 +27,27 @@ const classController = {
                     .populate('courseId courseLevelId timeSchedule', { ...fields && getProjection(...fields as Array<string>), _id: 1 });
             }
             else if (recordOnPage && currentPage) {
+                const role = req.acc?.role;
+                let listCourseFilter: any[] = [];
+                if (role === ROLE.TEACHER) {
+                    const record = await TeacherRegisterCourseModel.findOne({
+                        idTeacher: req.acc?.userId
+                    });
+                    const listCourseRegister = record?.coursesRegister.map(item => item.idCourse) ?? [];
+                    listCourseFilter = listCourseFilter.concat(listCourseRegister);
+                }
                 filter = {
                     ...status ? (status === 'ALL' ? {
                     } : { status }) : {},
+                    ...role === ROLE.TEACHER ? {
+                        courseId: {
+                            '$in': listCourseFilter
+                        }
+                    } : {},
                     ...course ? {
-                        courseId: course
+                        courseId: role === ROLE.TEACHER ? {
+                            '$in': listCourseFilter
+                        } : course
                     } : {},
                     ...codeClass ? {
                         codeClass: {
