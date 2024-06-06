@@ -25,7 +25,7 @@ const accountController = {
                     getPosition = findTE?.positionTe;
                     userId = findTE?._id.toString() as string;
                     break;
-                default:
+                case ROLE.TEACHER:
                     getPosition = undefined;
                     const findTeacher = await TeacherModel.findOne({ idAccount: account._id });
                     userId = findTeacher?._id.toString() as string;

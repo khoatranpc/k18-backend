@@ -38,7 +38,28 @@ const teacherRegisterCourseController = {
     updateRecordRegisterCourse: async (req: Request, res: Response) => {
         try {
             const { id } = req.params;
-            await TeacherRegisterCourseModel.findByIdAndUpdate(id, req.body);
+            const { coursesRegister, teacherId } = req.body;
+            if (id && id !== 'undefined') {
+                const crrRecord = await TeacherRegisterCourseModel.findById(id);
+                if (crrRecord) {
+                    crrRecord.coursesRegister = coursesRegister;
+                    await crrRecord.save();
+                } else {
+                    const crrTeacher = await TeacherModel.findById(teacherId);
+                    await TeacherRegisterCourseModel.create({
+                        idTeacher: teacherId,
+                        coursesRegister,
+                        teacherEmail: crrTeacher?.email
+                    });
+                }
+            } else {
+                const crrTeacher = await TeacherModel.findById(teacherId);
+                await TeacherRegisterCourseModel.create({
+                    idTeacher: teacherId,
+                    coursesRegister,
+                    teacherEmail: crrTeacher?.email
+                });
+            }
             resClientData(req, res, 201, {});
         } catch (error: any) {
             resClientData(req, res, 500, undefined, error.message);

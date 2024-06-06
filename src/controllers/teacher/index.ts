@@ -136,7 +136,6 @@ const teacherController = {
                     const uploadFile = await uploadToCloud(backId[0]);
                     data["backId"] = uploadFile.secure_url;
                 }
-                console.log(data);
                 await TeacherModel.findByIdAndUpdate(id, {
                     ...data,
                     area: new ObjectId(JSON.parse(data['area'])).toString()
@@ -158,7 +157,8 @@ const teacherController = {
                 isOffical: true
             }, {
                 _id: 1,
-                fullName: 1
+                fullName: 1,
+                email: 1
             });
             resClientData(req, res, 200, listTeacher);
         } catch (error: any) {
