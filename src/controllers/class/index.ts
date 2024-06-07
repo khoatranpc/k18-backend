@@ -150,18 +150,28 @@ const classController = {
     findOneAndUpdate: async (req: Request, res: Response) => {
         try {
             const { id } = req.params;
-            const { dayRange, codeClass, courseId, courseLevelId, timeSchedule, status } = req.body;
+            const { dayRange, codeClass, courseId, courseLevelId, timeSchedule, status, note, linkZoom, bookTeacher, cxo, bu } = req.body;
             const crrClass = await ClassModel.findById(id).populate('timeSchedule');
             if (!crrClass) throw new Error('Cập nhật thất bại!');
-
-            if (status === STATUS_CLASS.PREOPEN) {
-                if (dayRange) crrClass.dayRange = dayRange;
-                if (codeClass) crrClass.codeClass = codeClass;
-                if (status) crrClass.status = status;
-                if (courseId) crrClass.courseId = courseId;
-                if (courseLevelId) crrClass.courseLevelId = courseLevelId;
-                if (timeSchedule) crrClass.timeSchedule = timeSchedule;
+            if (dayRange) crrClass.dayRange = dayRange;
+            if (codeClass) crrClass.codeClass = codeClass;
+            if (status) crrClass.status = status;
+            if (courseId) crrClass.courseId = courseId;
+            if (courseLevelId) crrClass.courseLevelId = courseLevelId;
+            if (timeSchedule) crrClass.timeSchedule = timeSchedule;
+            if (note) crrClass.note = note;
+            if (linkZoom) crrClass.linkZoom = linkZoom;
+            if (cxo) crrClass.cxo = cxo;
+            if (bu) crrClass.bu = bu;
+            if (bookTeacher) {
+                const listUpdate: Promise<any>[] = [];
+                (bookTeacher as Obj[]).forEach((item) => {
+                    const update = BookTeacherModel.findByIdAndUpdate(item._id, item);
+                    listUpdate.push(update);
+                });
+                await Promise.all(listUpdate);
             }
+
             if (status === STATUS_CLASS.FINISH) {
                 if (status) crrClass.status = status;
                 await crrClass.save();

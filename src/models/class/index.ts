@@ -45,7 +45,11 @@ const classSchema = new mongoose.Schema({
     linkZoom: {
         type: String,
         default: ''
-    }
+    },
+    note: {
+        type: String,
+        default: ''
+    },
 }, {
     timestamps: true
 })
