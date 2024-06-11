@@ -5,6 +5,8 @@ import FeedbackModel from "../../models/feedback";
 import { getProjection, resClientData } from "../../utils";
 import ClassTeacherPointModel from "../../models/classTeacherPoint";
 import TeacherModel from "../../models/teacher";
+import ClassModel from "../../models/class";
+import { Types } from "mongoose";
 
 const feedbackResponseController = {
     sendResponseFromForm: async (req: Request, res: Response) => {
@@ -48,9 +50,9 @@ const feedbackResponseController = {
                 findTeacher.teacherPoint = (teacherPointForTeacher / findAllFeedbackResponse.length);
                 await findTeacher.save();
             }
-            resClientData(req,res, 201, {});
+            resClientData(req, res, 201, {});
         } catch (error: any) {
-            resClientData(req,res, 500, null, error.message);
+            resClientData(req, res, 500, null, error.message);
         }
     },
     getListRecordResponse: async (req: Request, res: Response) => {
@@ -68,59 +70,60 @@ const feedbackResponseController = {
                 recordOnPage,
 
                 codeClass,
-                timeCollect,
-
                 // month,
                 // year,
-                // phoneNumber,
-                // course,
-                // codeClass,
-                // timeCollectFeedback,
-                // sortBy,
+                phoneNumber,
+                time,
+                course
 
             } = req.query;
-            if (codeClass && timeCollect) {
-                const recordFeedback = await FeedbackModel.findOne({
-                    codeClass: codeClass,
-                    time: Number(timeCollect) || 1
+            let listClass: Types.ObjectId[] = [];
+            if (codeClass) {
+                const list = await ClassModel.find({
+                    codeClass: {
+                        '$regex': codeClass,
+                        '$options': 'i'
+                    },
                 });
-                if (!recordFeedback) {
-                    resClientData(req,res, 200, {
-                        list: [],
-                        totalPage: null,
-                        currentPage: null,
-                        recordOnPage: null
-                    });
-                } else {
-                    const listResponseFeedback = await FeedbackResponseModel.find({
-                        feedbackId: recordFeedback?._id,
-                    }).sort({
-                        createdAt: -1
-                    })
-                        .populate('course codeClass groupNumber feedbackId', { ...fields && getProjection(...fields as Array<string>) })
-                    resClientData(req,res, 200, {
-                        list: listResponseFeedback,
-                        totalPage: null,
-                        currentPage: null,
-                        recordOnPage: null
-                    });
-                }
-            } else {
-                const totalRecord = await FeedbackResponseModel.countDocuments({});
-                const listResponse = await FeedbackResponseModel.find({}, { ...fields && getProjection(...fields as Array<string>) }).sort({
-                    createdAt: -1
-                })
-                    .skip((Number(recordOnPage) * Number(currentPage)) - Number(recordOnPage)).limit(Number(recordOnPage))
-                    .populate('course codeClass groupNumber feedbackId', { ...fields && getProjection(...fields as Array<string>) });
-                resClientData(req,res, 200, {
-                    list: listResponse,
-                    totalPage: Math.ceil(totalRecord / Number(recordOnPage)),
-                    currentPage: Number(currentPage) || '',
-                    recordOnPage: Number(recordOnPage || '')
-                });
+                listClass = list.map((item) => item._id);
             }
+            const filterCondition = {
+                ...codeClass ? {
+                    codeClass: {
+                        '$in': listClass
+                    }
+                } : {},
+                ...time ? {
+                    timeCollect: {
+                        '$in': time
+                    }
+                } : {},
+                ...phoneNumber ? {
+                    phoneNumber: {
+                        '$regex': phoneNumber,
+                        '$options': 'i'
+                    }
+                } : {},
+                ...course ? {
+                    course: {
+                        '$in': course
+                    }
+                } : {}
+            }
+            const totalRecord = await FeedbackResponseModel.countDocuments(filterCondition);
+            const listResponse = await FeedbackResponseModel.find(filterCondition, { ...fields && getProjection(...fields as Array<string>) }).sort({
+                createdAt: -1
+            })
+                .skip((Number(recordOnPage) * Number(currentPage)) - Number(recordOnPage)).limit(Number(recordOnPage))
+                .populate('course codeClass groupNumber feedbackId', { ...fields && getProjection(...fields as Array<string>) });
+            resClientData(req, res, 200, {
+                list: listResponse,
+                totalPage: Math.ceil(totalRecord / Number(recordOnPage)),
+                currentPage: Number(currentPage) || '',
+                recordOnPage: Number(recordOnPage || '')
+            });
         } catch (error: any) {
-            resClientData(req,res, 500, null, error.message);
+            resClientData(req, res, 500, null, error.message);
         }
     },
     getListRecordResponseByTeacherId: async (req: Request, res: Response) => {
@@ -134,9 +137,9 @@ const feedbackResponseController = {
                 })
                 .skip((Number(recordOnPage) * Number(currentPage)) - Number(recordOnPage)).limit(Number(recordOnPage))
                 .populate('classId feedbackResponseId groupNumber', { ...fields && getProjection(...fields as Array<string>) });
-            resClientData(req,res, 200, listResponse);
+            resClientData(req, res, 200, listResponse);
         } catch (error: any) {
-            resClientData(req,res, 500, null, error.message);
+            resClientData(req, res, 500, null, error.message);
         }
     }
 };
