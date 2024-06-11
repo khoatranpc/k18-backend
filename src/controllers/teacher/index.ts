@@ -13,6 +13,7 @@ import TeacherRegisterCourseModel from "../../models/teacherRegisterCourse";
 import AreaModel from "../../models/area";
 import AccountModel from "../../models/account";
 import uploadToCloud from "../../utils/cloudinary";
+import TeacherPointModel from "../../models/teacherPoint";
 
 const teacherController = {
     getAll: async (req: Request, res: Response) => {
@@ -100,8 +101,22 @@ const teacherController = {
         try {
             const { id } = req.params;
             const { fields } = req.query;
-            const listTeacher = await TeacherModel.findById(id, { ...fields && getProjection(...fields as Array<string>) });
-            resClientData(req, res, 200, listTeacher);
+            const teacher = await TeacherModel.findById(id, { ...fields && getProjection(...fields as Array<string>) });
+            if (!teacher) throw new Error('Không có thông tin giáo viên!');
+            const findAllFeedbackResponse = await TeacherPointModel.find({
+                teacherId: id
+            });
+            let teacherPointForTeacher = 0;
+            findAllFeedbackResponse.forEach((item) => {
+                teacherPointForTeacher += item.point;
+            });
+            const avgTC = (teacherPointForTeacher / findAllFeedbackResponse.length);
+            if (teacher.teacherPoint !== avgTC) {
+                teacher.teacherPoint = avgTC;
+                await teacher.save();
+            }
+
+            resClientData(req, res, 200, teacher);
         } catch (error: any) {
             resClientData(req, res, 500, undefined, error.message);
         }

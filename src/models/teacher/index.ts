@@ -65,7 +65,7 @@ const teacherSchema = new mongoose.Schema(
         facebookLink: {
             type: String,
             default: '',
-            // required: true
+            required: false
         },
         area: {
             type: mongoose.SchemaTypes.ObjectId,
@@ -125,8 +125,8 @@ const teacherSchema = new mongoose.Schema(
         },
         dateStartWork: {
             type: Date,
-            default: new Date()
-            // required: true,
+            default: new Date(),
+            required: false,
         },
         salaryPH: {
             type: [
@@ -159,7 +159,8 @@ const teacherSchema = new mongoose.Schema(
         infoAllowance: String,
         teachingDepartment: {
             type: [String],
-            enum: TeachingDepartment
+            enum: TeachingDepartment,
+            required: false
         },
         certificate: String,
         certificatePhotoImage: String,
