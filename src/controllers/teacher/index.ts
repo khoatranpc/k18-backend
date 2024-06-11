@@ -106,14 +106,16 @@ const teacherController = {
             const findAllFeedbackResponse = await TeacherPointModel.find({
                 teacherId: id
             });
-            let teacherPointForTeacher = 0;
-            findAllFeedbackResponse.forEach((item) => {
-                teacherPointForTeacher += item.point;
-            });
-            const avgTC = (teacherPointForTeacher / findAllFeedbackResponse.length);
-            if (teacher.teacherPoint !== avgTC) {
-                teacher.teacherPoint = avgTC;
-                await teacher.save();
+            if (findAllFeedbackResponse.length) {
+                let teacherPointForTeacher = 0;
+                findAllFeedbackResponse.forEach((item) => {
+                    teacherPointForTeacher += item.point;
+                });
+                const avgTC = (teacherPointForTeacher / findAllFeedbackResponse.length);
+                if (teacher.teacherPoint !== avgTC) {
+                    teacher.teacherPoint = avgTC;
+                    await teacher.save();
+                }
             }
 
             resClientData(req, res, 200, teacher);

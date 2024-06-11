@@ -18,23 +18,10 @@ const feedbackResponseController = {
                 point: dataResponse.teacherPoint,
                 teacherId: dataResponse.teacherId,
             });
-            const checkExistedCalcTcPClass = await ClassTeacherPointModel.findOne({
+            await ClassTeacherPointModel.findOne({
                 feedbackId: dataResponse.feedbackId,
                 timeCollect: dataResponse.timeCollect
             });
-            // calc teacherpoint for class
-            if (checkExistedCalcTcPClass) {
-                const countResponse = await FeedbackResponseModel.find({
-                    codeClass: checkExistedCalcTcPClass.classId,
-                    timeCollect: checkExistedCalcTcPClass.timeCollect,
-                });
-                let totalPoint = 0;
-                countResponse.forEach((item) => {
-                    totalPoint += ((item.pointMT + item.pointST) / 2);
-                });
-                checkExistedCalcTcPClass.teacherPoint = (totalPoint / countResponse.length);
-                await checkExistedCalcTcPClass.save();
-            }
             resClientData(req, res, 201, {});
         } catch (error: any) {
             resClientData(req, res, 500, null, error.message);
