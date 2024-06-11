@@ -1,10 +1,8 @@
 import { Request, Response } from "express";
 import FeedbackResponseModel from "../../models/feedbackResponse";
 import TeacherPointModel from "../../models/teacherPoint";
-import FeedbackModel from "../../models/feedback";
 import { getProjection, resClientData } from "../../utils";
 import ClassTeacherPointModel from "../../models/classTeacherPoint";
-import TeacherModel from "../../models/teacher";
 import ClassModel from "../../models/class";
 import { Types } from "mongoose";
 
@@ -36,19 +34,6 @@ const feedbackResponseController = {
                 });
                 checkExistedCalcTcPClass.teacherPoint = (totalPoint / countResponse.length);
                 await checkExistedCalcTcPClass.save();
-            }
-            // clac teacherPoint for teacher
-            const findAllFeedbackResponse = await TeacherPointModel.find({
-                teacherId: dataResponse.teacherId
-            });
-            let teacherPointForTeacher = 0;
-            findAllFeedbackResponse.forEach((item) => {
-                teacherPointForTeacher += item.point;
-            });
-            const findTeacher = await TeacherModel.findById(dataResponse.teacherId);
-            if (findTeacher) {
-                findTeacher.teacherPoint = (teacherPointForTeacher / findAllFeedbackResponse.length);
-                await findTeacher.save();
             }
             resClientData(req, res, 201, {});
         } catch (error: any) {
