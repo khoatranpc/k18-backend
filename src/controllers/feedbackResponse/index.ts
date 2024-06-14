@@ -3,8 +3,7 @@ import FeedbackResponseModel from "../../models/feedbackResponse";
 import TeacherPointModel from "../../models/teacherPoint";
 import { getProjection, resClientData } from "../../utils";
 import ClassTeacherPointModel from "../../models/classTeacherPoint";
-import ClassModel from "../../models/class";
-import { Types } from "mongoose";
+import { Obj } from "../../global/interface";
 
 const feedbackResponseController = {
     sendResponseFromForm: async (req: Request, res: Response) => {
@@ -17,10 +16,6 @@ const feedbackResponseController = {
                 groupNumber: dataResponse.groupNumber,
                 point: dataResponse.teacherPoint,
                 teacherId: dataResponse.teacherId,
-            });
-            await ClassTeacherPointModel.findOne({
-                feedbackId: dataResponse.feedbackId,
-                timeCollect: dataResponse.timeCollect
             });
             resClientData(req, res, 201, {});
         } catch (error: any) {
@@ -46,21 +41,15 @@ const feedbackResponseController = {
                 // year,
                 phoneNumber,
                 time,
-                course
+                course,
+                listClass
 
             } = req.query;
-            let listClass: Types.ObjectId[] = [];
-            if (codeClass) {
-                const list = await ClassModel.find({
-                    codeClass: {
-                        '$regex': codeClass,
-                        '$options': 'i'
-                    },
-                });
-                listClass = list.map((item) => item._id);
-            }
             const filterCondition = {
                 ...codeClass ? {
+                    codeClass: codeClass
+                } : {},
+                ...listClass ? {
                     codeClass: {
                         '$in': listClass
                     }
@@ -83,11 +72,19 @@ const feedbackResponseController = {
                 } : {}
             }
             const totalRecord = await FeedbackResponseModel.countDocuments(filterCondition);
-            const listResponse = await FeedbackResponseModel.find(filterCondition, { ...fields && getProjection(...fields as Array<string>) }).sort({
-                createdAt: -1
-            })
-                .skip((Number(recordOnPage) * Number(currentPage)) - Number(recordOnPage)).limit(Number(recordOnPage))
-                .populate('course codeClass groupNumber feedbackId', { ...fields && getProjection(...fields as Array<string>) });
+            let listResponse: Obj[];
+            if (recordOnPage && currentPage) {
+                listResponse = await FeedbackResponseModel.find(filterCondition, { ...fields && getProjection(...fields as Array<string>) }).sort({
+                    createdAt: -1
+                })
+                    .skip((Number(recordOnPage) * Number(currentPage)) - Number(recordOnPage)).limit(Number(recordOnPage))
+                    .populate('course codeClass groupNumber feedbackId', { ...fields && getProjection(...fields as Array<string>) });
+            } else {
+                listResponse = await FeedbackResponseModel.find(filterCondition, { ...fields && getProjection(...fields as Array<string>) }).sort({
+                    createdAt: -1
+                })
+                    .populate('course codeClass groupNumber feedbackId', { ...fields && getProjection(...fields as Array<string>) });
+            }
             resClientData(req, res, 200, {
                 list: listResponse,
                 totalPage: Math.ceil(totalRecord / Number(recordOnPage)),

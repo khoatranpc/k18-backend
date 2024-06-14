@@ -10,6 +10,7 @@ import TeacherScheduleModel from "../../models/teacherSchedule";
 import FeedbackModel from "../../models/feedback";
 import { RequestMid } from "../../middlewares";
 import TeacherRegisterCourseModel from "../../models/teacherRegisterCourse";
+import FeedbackResponseModel from "../../models/feedbackResponse";
 
 const classController = {
     getAll: async (req: RequestMid, res: Response) => {
