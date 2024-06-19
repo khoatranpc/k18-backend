@@ -10,7 +10,6 @@ import TeacherScheduleModel from "../../models/teacherSchedule";
 import FeedbackModel from "../../models/feedback";
 import { RequestMid } from "../../middlewares";
 import TeacherRegisterCourseModel from "../../models/teacherRegisterCourse";
-import FeedbackResponseModel from "../../models/feedbackResponse";
 
 const classController = {
     getAll: async (req: RequestMid, res: Response) => {
@@ -30,20 +29,39 @@ const classController = {
             else if (recordOnPage && currentPage) {
                 const role = req.acc?.role;
                 let listCourseFilter: any[] = [];
+                let listClassTcReg: any[] = [];
                 if (role === ROLE.TEACHER) {
                     const record = await TeacherRegisterCourseModel.findOne({
                         idTeacher: req.acc?.userId
                     });
                     const listCourseRegister = record?.coursesRegister.map(item => item.idCourse) ?? [];
                     listCourseFilter = listCourseFilter.concat(listCourseRegister);
+                    const listClassTeacherRegister = await BookTeacherModel.find({
+                        'teacherRegister.idTeacher': req.acc?.userId
+                    });
+                    listClassTcReg = listClassTeacherRegister.map((item) => item.classId);
                 }
                 filter = {
                     ...status ? (status === 'ALL' ? {
                     } : { status }) : {},
                     ...role === ROLE.TEACHER ? {
-                        courseId: {
-                            '$in': listCourseFilter
-                        }
+                        '$or': [
+                            {
+                                '$and': [
+                                    { status: STATUS_CLASS.PREOPEN },
+                                    {
+                                        courseId: {
+                                            '$in': listCourseFilter
+                                        },
+                                    }
+                                ]
+                            },
+                            {
+                                '_id': {
+                                    '$in': listClassTcReg
+                                }
+                            },
+                        ]
                     } : {},
                     ...course ? {
                         courseId: role === ROLE.TEACHER ? {
@@ -138,11 +156,55 @@ const classController = {
             resClientData(req, res, 403, undefined, error.message);
         }
     },
-    findOneById: async (req: Request, res: Response) => {
+    findOneById: async (req: RequestMid, res: Response) => {
         try {
             const { id } = req.params;
             const { fields } = req.query;
-            const crrClass = await ClassModel.findById(id)
+            const role = req.acc?.role;
+            let listCourseFilter: any[] = [];
+            let listClassTcReg: any[] = [];
+            let filter: Obj = {
+                _id: id
+            };
+            if (role === ROLE.TEACHER) {
+                const record = await TeacherRegisterCourseModel.findOne({
+                    idTeacher: req.acc?.userId
+                });
+                const listCourseRegister = record?.coursesRegister.map(item => item.idCourse) ?? [];
+                listCourseFilter = listCourseFilter.concat(listCourseRegister);
+                const listClassTeacherRegister = await BookTeacherModel.find({
+                    'teacherRegister.idTeacher': req.acc?.userId
+                });
+                listClassTcReg = listClassTeacherRegister.map((item) => item.classId);
+                filter = {
+                    _id: id,
+                    '$or': [
+                        {
+                            '$and': [
+
+                                {
+                                    _id: {
+                                        '$in': listClassTcReg
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            '$and': [
+                                {
+                                    status: STATUS_CLASS.PREOPEN
+                                },
+                                {
+                                    courseId: {
+                                        '$in': listCourseFilter
+                                    }
+                                },
+                            ]
+                        }
+                    ]
+                }
+            }
+            const crrClass = await ClassModel.findOne(filter)
                 .populate('courseId courseLevelId timeSchedule', { ...fields && getProjection(...fields as Array<string>) });
 
             if (!crrClass) throw new Error('Không tồn tại lớp!');
