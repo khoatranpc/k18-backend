@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import FeedbackResponseModel from "../../models/feedbackResponse";
 import TeacherPointModel from "../../models/teacherPoint";
 import { getProjection, resClientData } from "../../utils";
-import ClassTeacherPointModel from "../../models/classTeacherPoint";
 import { Obj } from "../../global/interface";
 
 const feedbackResponseController = {
@@ -36,7 +35,6 @@ const feedbackResponseController = {
                 currentPage,
                 recordOnPage,
 
-                codeClass,
                 // month,
                 // year,
                 phoneNumber,
@@ -46,9 +44,6 @@ const feedbackResponseController = {
 
             } = req.query;
             const filterCondition = {
-                ...codeClass ? {
-                    codeClass: codeClass
-                } : {},
                 ...listClass ? {
                     codeClass: {
                         '$in': listClass

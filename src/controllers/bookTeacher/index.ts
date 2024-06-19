@@ -192,10 +192,16 @@ const bookTeacherController = {
             const { teacherId } = req.params;
             const { fields } = req.query;
             const data = await BookTeacherModel.find({
-                "teacherRegister.idTeacher": teacherId,
-                "teacherRegister.accept": true
             }, { ...fields && getProjection(...fields as Array<string>) })
-                .populate('classId locationId', { ...fields && getProjection(...fields as Array<string>) })
+                .populate('classId locationId', { ...fields && getProjection(...fields as Array<string>) }).exec().then((value) => {
+                    return value.filter((item) => {
+                        if (teacherId) {
+                            const crrTcRs = item.teacherRegister.find(rc => rc.idTeacher._id.toString() === teacherId);
+                            return crrTcRs?.accept;
+                        }
+                        return false;
+                    })
+                });
             resClientData(req, res, 200, data.reverse());
         } catch (error: any) {
             resClientData(req, res, 500, undefined, error.message);
