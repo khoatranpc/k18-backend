@@ -3,8 +3,6 @@ import FeedbackResponseModel from "../../models/feedbackResponse";
 import TeacherPointModel from "../../models/teacherPoint";
 import { getProjection, resClientData } from "../../utils";
 import ClassTeacherPointModel from "../../models/classTeacherPoint";
-import ClassModel from "../../models/class";
-import { Types } from "mongoose";
 
 const feedbackResponseController = {
     sendResponseFromForm: async (req: Request, res: Response) => {
@@ -54,26 +52,16 @@ const feedbackResponseController = {
                 currentPage,
                 recordOnPage,
 
-                codeClass,
                 // month,
                 // year,
                 phoneNumber,
                 time,
-                course
+                course,
+                listClass
 
             } = req.query;
-            let listClass: Types.ObjectId[] = [];
-            if (codeClass) {
-                const list = await ClassModel.find({
-                    codeClass: {
-                        '$regex': codeClass,
-                        '$options': 'i'
-                    },
-                });
-                listClass = list.map((item) => item._id);
-            }
             const filterCondition = {
-                ...codeClass ? {
+                ...listClass ? {
                     codeClass: {
                         '$in': listClass
                     }

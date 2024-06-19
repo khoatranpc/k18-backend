@@ -111,7 +111,7 @@ const teacherController = {
                 teacherPointForTeacher += item.point;
             });
             const avgTC = (teacherPointForTeacher / findAllFeedbackResponse.length);
-            if (teacher.teacherPoint !== avgTC) {
+            if (teacher.teacherPoint !== avgTC && avgTC) {
                 teacher.teacherPoint = avgTC;
                 await teacher.save();
             }
