@@ -98,7 +98,7 @@ const classController = {
             }
             const totalClasses = await ClassModel.countDocuments(filter);
             const getListCurrentClassId = classes.map((item) => item._id);
-            const getFieldPopulate = `teacherRegister.idTeacher${forRecruitment ? ' locationId' : ''}`
+            const getFieldPopulate = `teacherRegister.idTeacher locationId`
             const listBookTeacher = await BookTeacherModel.find({
                 classId: {
                     $in: getListCurrentClassId
@@ -106,7 +106,8 @@ const classController = {
             }, {
                 teacherRegister: 1,
                 classId: 1,
-            }).populate(getFieldPopulate, { fullName: 1, _id: 1, ...forRecruitment ? { locationCode: 1, locationDetail: 1 } : {} });
+                groupNumber: 1
+            }).populate(getFieldPopulate, { fullName: 1, _id: 1, ...forRecruitment ? { locationCode: 1, locationDetail: 1 } : {}, ...fields && getProjection(...fields as Array<string>) });
             const newRefListClass = classes.map((item) => {
                 const findRecord = listBookTeacher.filter((record) => {
                     return record.classId?.toString() === item._id.toString()

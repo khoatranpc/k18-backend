@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
+import mongoose from "mongoose";
 import BookTeacherModel from "../../models/bookTeacher";
 import TeacherModel from "../../models/teacher";
 import ClassModel from "../../models/class";
 import { ROLE, ROLE_TEACHER, STATUS_CLASS } from "../../global/enum";
 import { RequestMid } from "../../middlewares";
-import { getProjection, resClientData } from "../../utils";
-import mongoose from "mongoose";
+import { getProjection, getProjectionByString, resClientData } from "../../utils";
 import ClassSessionModel from "../../models/classSession";
 import TeacherScheduleModel from "../../models/teacherSchedule";
 import { Obj } from "../../global/interface";
@@ -18,6 +18,19 @@ const bookTeacherController = {
             resClientData(req, res, 201, createBookTeacherRequest, 'Thành công!');
         } catch (error: any) {
             resClientData(req, res, 403, undefined, error.message);
+        }
+    },
+    getListRecordBookTeacher: async (req: Request, res: Response) => {
+        try {
+            const { listClassId, fields } = req.query;
+            const getList = await BookTeacherModel.find({
+                classId: {
+                    '$in': listClassId
+                }
+            }, getProjectionByString(fields as string));
+            resClientData(req, res, 201, getList, 'Thành công!');
+        } catch (error: any) {
+            resClientData(req, res, 500, undefined, error.message);
         }
     },
     getByClassId: async (req: Request, res: Response) => {
