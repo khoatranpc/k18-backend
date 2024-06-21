@@ -24,6 +24,9 @@ const accountController = {
                     const findTE = await TeModel.findOne({ accountId: account._id });
                     getPosition = findTE?.positionTe;
                     userId = findTE?._id.toString() as string;
+                    if (findTE && !findTE.activate) {
+                        throw new Error('Bạn không thể đăng nhập, hãy liên hệ với TE để được hỗ trợ!');
+                    }
                     break;
                 case ROLE.TEACHER:
                     getPosition = undefined;
