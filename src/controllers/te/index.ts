@@ -10,9 +10,15 @@ import AccountModel from "../../models/account";
 const teController = {
     getBySingleField: async (req: RequestMid, res: Response) => {
         try {
-            const { findBy, value, fields, getAll } = req.query;
+            const { findBy, value, fields, getAll, condition } = req.query;
+            let filter = {};
+            if (condition && typeof condition === 'object') {
+                filter = {
+                    ...condition
+                }
+            }
             if (Boolean(getAll) === true) {
-                const tes = await TeModel.find({}, getProjectionByString(fields as string)).populate('courseId', getProjectionByString(fields as string));
+                const tes = await TeModel.find(filter, getProjectionByString(fields as string)).populate('courseId', getProjectionByString(fields as string));
                 resClientData(req, res, 200, tes);
             } else if (findBy) {
                 const tes = await TeModel.find({

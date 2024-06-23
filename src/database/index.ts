@@ -33,7 +33,8 @@ export enum Collections {
     OPTION = 'options',
     ROOM_QUIZZ_TEST = 'roomquizztests',
     STUDENT = 'students',
-    TEACHERREQUESTONLEAVE = 'teacherrequestonleaves'
+    TEACHERREQUESTONLEAVE = 'teacherrequestonleaves',
+    CS = 'cses'
 }
 const getUri = () => {
     const { MONGO_CLIENT, MONGO_USERNAME, MONGO_PASSWORD, MONGO_HOST, MONGO_PORT, DB_NAME } = process.env;

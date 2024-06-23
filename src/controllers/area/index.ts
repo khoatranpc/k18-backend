@@ -5,7 +5,7 @@ import AreaModel from "../../models/area";
 const areaController = {
     get: async (req: Request, res: Response) => {
         try {
-            const listArea = await AreaModel.find();
+            const listArea = await AreaModel.find(req.query);
             resClientData(req, res, 200, listArea);
         } catch (error: any) {
             resClientData(req, res, 500, error.message);
