@@ -230,11 +230,27 @@ const classController = {
             if (linkZoom) crrClass.linkZoom = linkZoom;
             if (cxo) crrClass.cxo = cxo;
             if (bu) crrClass.bu = bu;
-            if (bookTeacher) {
-                const listUpdate: Promise<any>[] = [];
-                (bookTeacher as Obj[]).forEach((item) => {
-                    const update = BookTeacherModel.findByIdAndUpdate(item._id, item);
-                    listUpdate.push(update);
+            if (bookTeacher && Array.isArray(bookTeacher) && bookTeacher.length) {
+                const listExistedRecord = await BookTeacherModel.find({
+                    _id: {
+                        '$in': bookTeacher.map(item => item._id)
+                    }
+                });
+                const listUpdate: Promise<any>[] = bookTeacher.map((item) => {
+                    const updateData = listExistedRecord.find(upd => upd._id.toString() === item._id) as any;
+                    // check existed
+                    if (updateData) {
+                        for (const key in item) {
+                            if ((item as any)[key] !== updateData[key]) {
+                                updateData[key] = (item as any)[key];
+                            }
+                        };
+                        return updateData.save();
+                    } else {
+                        // check unexisted
+                        const newRecord = new BookTeacherModel(item);
+                        return newRecord.save();
+                    }
                 });
                 await Promise.all(listUpdate);
             }

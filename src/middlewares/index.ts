@@ -89,9 +89,8 @@ const middlewares = {
                 const crrRole = req.acc;
                 if (rolePosition) {
                     if (crrRole?.position !== rolePosition) throw new Error('Bạn không thể thực hiện hành động!');
-                } else {
-                    if (!roleAccountAccept.includes(crrRole?.role as ROLE)) throw new Error('Bạn không thể thực hiện hành động!');
                 }
+                if (!roleAccountAccept.includes(crrRole?.role as ROLE)) throw new Error('Bạn không thể thực hiện hành động!');
                 next();
             } catch (error: any) {
                 resClientData(req, res, 403, undefined, error.message);

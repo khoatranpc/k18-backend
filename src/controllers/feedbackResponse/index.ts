@@ -3,6 +3,7 @@ import FeedbackResponseModel from "../../models/feedbackResponse";
 import TeacherPointModel from "../../models/teacherPoint";
 import { getProjection, resClientData } from "../../utils";
 import { Obj } from "../../global/interface";
+import ClassModel from "../../models/class";
 
 const feedbackResponseController = {
     sendResponseFromForm: async (req: Request, res: Response) => {
@@ -40,13 +41,24 @@ const feedbackResponseController = {
                 phoneNumber,
                 time,
                 course,
-                listClass
+                listClass,
+                codeClass
 
             } = req.query;
-            const filterCondition = {
-                ...listClass ? {
+            let listClassId: string[] = [];
+            if (codeClass && !listClass) {
+                const listClass = await ClassModel.find({
                     codeClass: {
-                        '$in': listClass
+                        '$regex': codeClass,
+                        '$options': 'i'
+                    }
+                });
+                listClassId = listClass.map(item => item._id.toString());
+            }
+            const filterCondition = {
+                ...(listClass || codeClass) ? {
+                    codeClass: {
+                        '$in': [...(listClass as string[] ?? []), ...listClassId]
                     }
                 } : {},
                 ...time ? {

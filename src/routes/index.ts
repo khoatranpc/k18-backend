@@ -26,6 +26,7 @@ import QuestionRouter from './question';
 import RoomQuizzTestRouter from './roomQuizzTest';
 import RequestOnleaveRouter from './requestOnLeave';
 import GoogleRouter from './google';
+import CSRouter from './cs';
 
 const RootRouter = express.Router();
 
@@ -57,6 +58,6 @@ RootRouter.use('/question', QuestionRouter);
 RootRouter.use('/room-quizz-test', RoomQuizzTestRouter);
 RootRouter.use('/request-on-leave', RequestOnleaveRouter);
 RootRouter.use('/google', GoogleRouter);
-
+RootRouter.use('/cs', CSRouter);
 
 export default RootRouter;

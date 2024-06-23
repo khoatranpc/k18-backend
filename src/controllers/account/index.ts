@@ -7,6 +7,7 @@ import TeacherModel from "../../models/teacher";
 import { ROLE } from "../../global/enum";
 import TeModel from "../../models/te";
 import Mailer from "../../utils/mailer";
+import CSmodel from "../../models/cs";
 
 const accountController = {
     login: async (req: Request, res: Response) => {
@@ -29,10 +30,15 @@ const accountController = {
                     }
                     break;
                 case ROLE.TEACHER:
-                    getPosition = undefined;
                     const findTeacher = await TeacherModel.findOne({ idAccount: account._id });
                     userId = findTeacher?._id.toString() as string;
                     break;
+                case ROLE.CS:
+                    const findCS = await CSmodel.findOne({
+                        accountId: account._id
+                    });
+                    userId = findCS?._id.toString() as string;
+                    if (findCS && !findCS.active) throw new Error('Bạn không thể đăng nhập, hãy liên hệ với TE để được hỗ trợ!');
             }
             const dataToToken = {
                 accId: account._id,
@@ -127,6 +133,9 @@ const accountController = {
                     break;
                 case ROLE.TEACHER:
                     findInfor = await TeacherModel.findOne({ idAccount: crrAccount?.id }).populate('idAccount', { activate: 0, salt: 0, password: 0 });
+                    break;
+                case ROLE.CS:
+                    findInfor = await CSmodel.findOne({ accountId: crrAccount?.id });
                     break;
                 default:
                     break;
