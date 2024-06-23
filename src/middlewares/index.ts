@@ -87,7 +87,7 @@ const middlewares = {
         return (req: RequestMid, res: Response, next: NextFunction) => {
             try {
                 const crrRole = req.acc;
-                if (rolePosition) {
+                if (rolePosition && req.acc?.role === ROLE.TE) {
                     if (crrRole?.position !== rolePosition) throw new Error('Bạn không thể thực hiện hành động!');
                 }
                 if (!roleAccountAccept.includes(crrRole?.role as ROLE)) throw new Error('Bạn không thể thực hiện hành động!');
