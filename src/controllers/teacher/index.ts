@@ -342,6 +342,49 @@ const teacherController = {
         } catch (error: any) {
             resClientData(req, res, 403, undefined, error.message);
         }
+    },
+
+    create: async (req: Request, res: Response) => {
+        try {
+            const { email, fullName, facebookLink, roles, phoneNumber, coursesRegister } = req.body;
+
+            const existingAccounts = await AccountModel.findOne({ email });
+            const { salt, hashedPassword } = encryptPassword(email);
+
+            if (existingAccounts) return resClientData(req, res, 409, null, "Email already exists.");
+            const acount = await AccountModel.create({
+                email,
+                salt,
+                password: hashedPassword,
+                role: ROLE.TEACHER,
+                activate: true,
+                _id: new ObjectId()
+            });
+            const newTeacher = await TeacherModel.create({
+                idAccount: acount._id,
+                isOffical: true,
+                email,
+                phoneNumber,
+                fullName,
+                facebookLink,
+                roleIsST: roles.includes("ST"),
+                roleIsMT: roles.includes("MT"),
+                roleIsSP: roles.includes("SP"),
+            })
+
+            const newTeacherRegisterCourse = await TeacherRegisterCourseModel.create({
+                idTeacher: newTeacher._id,
+                teacherEmail: email,
+                coursesRegister
+            })
+            resClientData(req, res, 200, { existingAccounts, newTeacher, newTeacherRegisterCourse }, "success");
+
+
+        } catch (error: any) {
+            resClientData(req, res, 404, undefined, error.message);
+
+        }
+
     }
 }
 export default teacherController;
