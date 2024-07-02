@@ -15,4 +15,5 @@ TeacherRouter.put('/:id', middlewares.verifyJWT, middlewares.acceptRole(undefine
     name: 'backId'
 }]), teacherController.findByIdAndUpdate);
 TeacherRouter.post('/import', middlewares.verifyJWT, middlewares.isTE, upload.single('csvFile'), teacherController.importCSV);
+TeacherRouter.post("/create", middlewares.verifyJWT, middlewares.isTE, teacherController.create)
 export default TeacherRouter;
