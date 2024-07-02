@@ -257,6 +257,7 @@ const roundController = {
             }
             resClientData(req, res, 201, {});
         } catch (error: any) {
+            console.log(error);
             resClientData(req, res, 403, null, error.message);
         }
     },

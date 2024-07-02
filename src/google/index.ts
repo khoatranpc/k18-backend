@@ -116,7 +116,7 @@ class Google {
         return this.calendar.events.get({
             eventId,
             calendarId: calendarId ?? process.env.CALENDAR_ID,
-        });
+        }).then((value) => value).catch(() => null);
     }
 }
 
