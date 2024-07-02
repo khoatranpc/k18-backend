@@ -374,7 +374,7 @@ const teacherController = {
 
             const newTeacherRegisterCourse = await TeacherRegisterCourseModel.create({
                 idTeacher: newTeacher._id,
-                email,
+                teacherEmail: email,
                 coursesRegister
             })
             resClientData(req, res, 200, { existingAccounts, newTeacher, newTeacherRegisterCourse }, "success");
