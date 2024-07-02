@@ -219,6 +219,15 @@ const bookTeacherController = {
         } catch (error: any) {
             resClientData(req, res, 500, undefined, error.message);
         }
+    },
+    deleteRecordBooKTeacher: async (req: Request, res: Response) => {
+        try {
+            const { id } = req.params;
+            await BookTeacherModel.findByIdAndDelete(id);
+            resClientData(req, res, 201, {});
+        } catch (error: any) {
+            resClientData(req, res, 403, undefined, error.message);
+        }
     }
 };
 

@@ -1,14 +1,14 @@
 import { Router } from "express";
 import teacherController from "../controllers/teacher";
 import middlewares from "../middlewares";
-import { PositionTe, ROLE } from "../global/enum";
+import { ROLE } from "../global/enum";
 import upload from "../utils/multer";
 
 const TeacherRouter = Router();
-TeacherRouter.get('', middlewares.verifyJWT, middlewares.acceptRole(PositionTe.LEADER, ROLE.TE, ROLE.CS), teacherController.getAll);
+TeacherRouter.get('', middlewares.verifyJWT, middlewares.acceptRole(undefined, ROLE.TE, ROLE.CS), teacherController.getAll);
 TeacherRouter.get('/find', middlewares.verifyJWT, middlewares.isTE, teacherController.findByEmail);
 TeacherRouter.get('/:id', middlewares.verifyJWT, middlewares.isTE, teacherController.getOne);
-TeacherRouter.put('/:id', middlewares.verifyJWT, middlewares.acceptRole(PositionTe.LEADER, ROLE.TEACHER), middlewares.checkEqualIdForUpdate, upload.fields([{
+TeacherRouter.put('/:id', middlewares.verifyJWT, middlewares.acceptRole(undefined, ROLE.TE, ROLE.TEACHER), middlewares.checkEqualIdForUpdate, upload.fields([{
     name: 'frontId'
 },
 {
