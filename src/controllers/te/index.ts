@@ -72,9 +72,10 @@ const teController = {
         try {
             const file = req.file;
             const { id } = req.params;
-            const data: Obj = {
-                ...req.body
-            };
+            const data: Obj = {};
+            for (const key in req.body) {
+                data[key] = JSON.parse(req.body[key]);
+            }
             delete data.accountId;
             if (file) {
                 const uploadFile = await uploadToCloud(file);
@@ -82,7 +83,7 @@ const teController = {
             }
             await TeModel.findByIdAndUpdate(id, {
                 ...data,
-                courseId: !!data.courseId ? (data.courseId as string).split(",") : []
+                ...data.courseId ? { courseId: data.courseId ?? [] } : {}
             });
             resClientData(req, res, 201, {});
         } catch (error: any) {
