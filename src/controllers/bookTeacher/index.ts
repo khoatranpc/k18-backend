@@ -33,13 +33,33 @@ const bookTeacherController = {
             resClientData(req, res, 500, undefined, error.message);
         }
     },
-    getByClassId: async (req: Request, res: Response) => {
+    getByClassId: async (req: RequestMid, res: Response) => {
         try {
             const { classId } = req.params;
             const { fields } = req.query;
+            const getSalary = req.acc?.role === ROLE.TE;
             const crrBookTeacherRequest = await BookTeacherModel.find({
                 classId
-            }, { ...fields && getProjection(...fields as Array<string>) }).populate("locationId teacherRegister.idTeacher", { ...fields && getProjection(...fields as Array<string>) });
+            }, { ...fields && getProjection(...fields as Array<string>) }).populate("locationId teacherRegister.idTeacher", { ...fields && getProjection(...fields as Array<string>) }).exec().then(rs => {
+                return rs.map(item => {
+                    const getItem = item.toObject();
+                    return {
+                        ...getItem,
+                        teacherRegister: getItem.teacherRegister.map(tc => {
+                            const getNewDataTc: Obj = {
+                                ...tc.idTeacher,
+                            }
+                            if (!getSalary) delete getNewDataTc.salaryPH;
+                            return {
+                                ...tc,
+                                idTeacher: {
+                                    ...getNewDataTc,
+                                }
+                            }
+                        })
+                    }
+                })
+            });
             if (!crrBookTeacherRequest) throw new Error('Không tìm thấy yêu cầu!');
             resClientData(req, res, 200, crrBookTeacherRequest, 'Thành công!');
         } catch (error: any) {

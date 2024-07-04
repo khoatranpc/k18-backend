@@ -89,7 +89,15 @@ const classController = {
                     .populate('courseId courseLevelId timeSchedule', { ...fields && getProjection(...fields as Array<string>), _id: 1 });
             }
             else {
-                filter = codeClass ? { codeClass } : {};
+                filter = {
+                    ...codeClass ? { codeClass } : {},
+                    ...date ? {
+                        "dayRange.start": {
+                            $gte: new Date(new Date(date as string).getFullYear(), new Date(date as string).getMonth(), 1), // Bắt đầu từ ngày đầu tiên của tháng
+                            $lt: new Date(new Date(date as string).getFullYear(), new Date(date as string).getMonth() + 1, 1)
+                        }
+                    } : {}
+                };
                 classes = await ClassModel.find(filter, { ...fields && getProjection(...fields as Array<string>), _id: 1 })
                     .sort({
                         createdAt: -1
