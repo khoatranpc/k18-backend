@@ -132,3 +132,8 @@ export enum TeachingDepartment {
     K18 = 'K18',
     K12 = 'K12'
 }
+
+export enum PositionCs {
+    LEADER = 'LEADER',
+    EXECUTIVE = 'EXECUTIVE'
+}
