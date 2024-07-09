@@ -20,6 +20,7 @@ const bookTeacherSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    zalo: String,
     teacherRegister: {
         type: [{
             idTeacher: {

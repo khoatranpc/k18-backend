@@ -225,7 +225,7 @@ const classController = {
     findOneAndUpdate: async (req: Request, res: Response) => {
         try {
             const { id } = req.params;
-            const { dayRange, codeClass, courseId, courseLevelId, timeSchedule, status, note, linkZoom, bookTeacher, cxo, bu } = req.body;
+            const { dayRange, codeClass, courseId, courseLevelId, timeSchedule, status, note, linkZoom, bookTeacher, cxo, bu, cxoId, buId } = req.body;
             const crrClass = await ClassModel.findById(id).populate('timeSchedule');
             if (!crrClass) throw new Error('Cập nhật thất bại!');
             if (dayRange) crrClass.dayRange = dayRange;
@@ -238,6 +238,8 @@ const classController = {
             if (linkZoom) crrClass.linkZoom = linkZoom;
             if (cxo) crrClass.cxo = cxo;
             if (bu) crrClass.bu = bu;
+            if (cxoId) crrClass.cxoId = cxoId;
+            if (buId) crrClass.buId = buId;
             if (bookTeacher && Array.isArray(bookTeacher) && bookTeacher.length) {
                 const listExistedRecord = await BookTeacherModel.find({
                     _id: {

@@ -18,6 +18,14 @@ const classSchema = new mongoose.Schema({
     },
     cxo: String,
     bu: String,
+    cxoId: {
+        type: Schema.Types.ObjectId,
+        ref: Collections.CS
+    },
+    buId: {
+        type: Schema.Types.ObjectId,
+        ref: Collections.LOCATION
+    },
     dayRange: {
         start: {
             type: Date,
