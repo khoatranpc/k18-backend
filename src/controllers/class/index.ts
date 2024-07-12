@@ -148,7 +148,7 @@ const classController = {
     },
     create: async (req: Request, res: Response) => {
         try {
-            const { courseLevelId, courseId, codeClass, dayRange, timeSchedule, bookTeacher, linkZoom, cxo, bu } = req.body;
+            const { courseLevelId, courseId, codeClass, dayRange, timeSchedule, bookTeacher, linkZoom, cxo, bu, cxoId, buId } = req.body;
             const findExistClassCode = await ClassModel.findOne({
                 codeClass
             });
@@ -161,7 +161,9 @@ const classController = {
                 timeSchedule,
                 linkZoom,
                 cxo,
-                bu
+                bu,
+                cxoId,
+                buId
             });
             await BookTeacherModel.insertMany((bookTeacher as Obj[])!.map((item) => {
                 return {
