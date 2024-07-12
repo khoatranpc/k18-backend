@@ -14,7 +14,7 @@ import TeacherRegisterCourseModel from "../../models/teacherRegisterCourse";
 const classController = {
     getAll: async (req: RequestMid, res: Response) => {
         try {
-            const { fields, recordOnPage, currentPage, listId, status, forRecruitment, course, codeClass, date } = req.query;
+            const { fields, recordOnPage, currentPage, listId, status, forRecruitment, course, codeClass, date, isDelete } = req.query;
             let classes;
             let filter;
             if (listId) {
@@ -42,6 +42,9 @@ const classController = {
                     listClassTcReg = listClassTeacherRegister.map((item) => item.classId);
                 }
                 filter = {
+                    ...isDelete ? {
+                        isDelete: isDelete
+                    } : {},
                     ...status ? (status === 'ALL' ? {
                     } : { status }) : {},
                     ...role === ROLE.TEACHER ? {
@@ -225,9 +228,15 @@ const classController = {
     findOneAndUpdate: async (req: Request, res: Response) => {
         try {
             const { id } = req.params;
-            const { dayRange, codeClass, courseId, courseLevelId, timeSchedule, status, note, linkZoom, bookTeacher, cxo, bu, cxoId, buId } = req.body;
+            const { dayRange, codeClass, courseId, courseLevelId, timeSchedule, status, note, linkZoom, bookTeacher, cxo, bu, cxoId, buId, isDelete } = req.body;
             const crrClass = await ClassModel.findById(id).populate('timeSchedule');
             if (!crrClass) throw new Error('Cập nhật thất bại!');
+            if (typeof Boolean(isDelete) === 'boolean' && Boolean(isDelete)) {
+                crrClass.isDelete = true;
+                await crrClass.save();
+                resClientData(req, res, 201, {}, 'Thành công!');
+                return;
+            }
             if (dayRange) crrClass.dayRange = dayRange;
             if (codeClass) crrClass.codeClass = codeClass;
             if (status) crrClass.status = status;
