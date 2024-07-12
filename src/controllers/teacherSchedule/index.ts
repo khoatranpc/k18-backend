@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import TeacherScheduleModel from "../../models/teacherSchedule";
 import { getProjection, resClientData } from "../../utils";
+import { Obj } from "../../global/interface";
 
 const teacherScheduleController = {
     getOneByidTeacher: async (req: Request, res: Response) => {
@@ -29,8 +30,9 @@ const teacherScheduleController = {
                                     }
                                 }
                             }).exec().then((rs) => {
-                                return rs.filter((item) => item.classSessionId !== null).sort((a, b) => ((a.classSessionId as any).sessionNumber) - ((b.classSessionId as any).sessionNumber));
-                            })
+                                return rs.filter((item) => (item.classSessionId !== null && !((item.classSessionId as unknown as Obj)?.classId as Obj)?.isDelete)).sort((a, b) => ((a.classSessionId as any).sessionNumber) - ((b.classSessionId as any).sessionNumber));
+                            });
+                        resClientData(req, res, 200, tcSchedule);
                     }
                     break;
                 case 'MONTH':
@@ -66,7 +68,7 @@ const teacherScheduleController = {
                             },
                         })
                         .exec().then((rs) => {
-                            return rs.filter((item) => item.classSessionId !== null).sort((a, b) => ((a.classSessionId as any).sessionNumber) - ((b.classSessionId as any).sessionNumber));
+                            return rs.filter((item) => (item.classSessionId !== null && !((item.classSessionId as unknown as Obj)?.classId as Obj)?.isDelete)).sort((a, b) => ((a.classSessionId as any).sessionNumber) - ((b.classSessionId as any).sessionNumber));
                         })
 
                     resClientData(req, res, 200, listRecordSchedule);
@@ -82,8 +84,9 @@ const teacherScheduleController = {
                                 path: 'classId locationId weekdayTimeScheduleId',
                                 select: fields,
                             },
+                        }).exec().then((rs) => {
+                            return rs.filter((item) => (item.classSessionId !== null && !((item.classSessionId as unknown as Obj)?.classId as Obj)?.isDelete)).sort((a, b) => ((a.classSessionId as any).sessionNumber) - ((b.classSessionId as any).sessionNumber));
                         });
-
                     resClientData(req, res, 200, teacherSchedule);
                     break;
             }

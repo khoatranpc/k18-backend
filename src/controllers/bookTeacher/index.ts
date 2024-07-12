@@ -22,7 +22,7 @@ const bookTeacherController = {
     },
     getListRecordBookTeacher: async (req: Request, res: Response) => {
         try {
-            const { listClassId, fields } = req.query;
+            const { listClassId, fields, classIsDelete } = req.query;
             const getList = await BookTeacherModel.find({
                 classId: {
                     '$in': listClassId
@@ -36,7 +36,7 @@ const bookTeacherController = {
     getByClassId: async (req: RequestMid, res: Response) => {
         try {
             const { classId } = req.params;
-            const { fields } = req.query;
+            const { fields, classIsDelete } = req.query;
             const getSalary = req.acc?.role === ROLE.TE;
             const crrBookTeacherRequest = await BookTeacherModel.find({
                 classId
@@ -223,14 +223,14 @@ const bookTeacherController = {
     getByTeacherRegister: async (req: Request, res: Response) => {
         try {
             const { teacherId } = req.params;
-            const { fields } = req.query;
+            const { fields, classIsDelete } = req.query;
             const data = await BookTeacherModel.find({
             }, { ...fields && getProjection(...fields as Array<string>) })
                 .populate('classId locationId', { ...fields && getProjection(...fields as Array<string>) }).exec().then((value) => {
                     return value.filter((item) => {
                         if (teacherId) {
                             const crrTcRs = item.teacherRegister.find(rc => rc.idTeacher._id.toString() === teacherId);
-                            return crrTcRs?.accept;
+                            return crrTcRs?.accept && Boolean(!!(item.classId as unknown as Obj)?.isDelete) === Boolean(classIsDelete);
                         }
                         return false;
                     })
