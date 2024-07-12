@@ -239,6 +239,7 @@ const classController = {
             if (!crrClass) throw new Error('Cập nhật thất bại!');
             if (typeof Boolean(isDelete) === 'boolean' && Boolean(isDelete)) {
                 crrClass.isDelete = true;
+                crrClass.status = STATUS_CLASS.FINISH;
                 await crrClass.save();
                 resClientData(req, res, 201, {}, 'Thành công!');
                 return;
