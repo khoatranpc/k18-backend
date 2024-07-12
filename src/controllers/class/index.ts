@@ -21,7 +21,10 @@ const classController = {
                 filter = {
                     _id: {
                         $in: listId
-                    }
+                    },
+                    ...isDelete ? {
+                        isDelete: isDelete
+                    } : {},
                 };
                 classes = await ClassModel.find(filter, { ...fields && getProjection(...fields as Array<string>) })
                     .populate('courseId courseLevelId timeSchedule', { ...fields && getProjection(...fields as Array<string>), _id: 1 });
@@ -94,6 +97,9 @@ const classController = {
             else {
                 filter = {
                     ...codeClass ? { codeClass } : {},
+                    ...isDelete ? {
+                        isDelete: isDelete
+                    } : {},
                     ...date ? {
                         "dayRange.start": {
                             $gte: new Date(new Date(date as string).getFullYear(), new Date(date as string).getMonth(), 1), // Bắt đầu từ ngày đầu tiên của tháng
