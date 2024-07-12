@@ -239,8 +239,8 @@ const classController = {
             const { dayRange, codeClass, courseId, courseLevelId, timeSchedule, status, note, linkZoom, bookTeacher, cxo, bu, cxoId, buId, isDelete } = req.body;
             const crrClass = await ClassModel.findById(id).populate('timeSchedule');
             if (!crrClass) throw new Error('Cập nhật thất bại!');
-            if (typeof Boolean(isDelete) === 'boolean' && Boolean(isDelete)) {
-                crrClass.isDelete = true;
+            if (typeof Boolean(isDelete) === 'boolean') {
+                crrClass.isDelete = Boolean(isDelete);
                 crrClass.status = STATUS_CLASS.FINISH;
                 await crrClass.save();
                 resClientData(req, res, 201, {}, 'Thành công!');
