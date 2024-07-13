@@ -164,7 +164,8 @@ const teacherSchema = new mongoose.Schema(
         },
         certificate: String,
         certificatePhotoImage: String,
-        emergencyContact: {}
+        emergencyContact: {},
+        profileLink: String
     },
     {
         timestamps: true,
