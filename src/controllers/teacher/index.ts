@@ -163,7 +163,8 @@ const teacherController = {
     },
     findByEmail: async (req: Request, res: Response) => {
         try {
-            const { email } = req.query;
+            const { email, limit } = req.query;
+            const getLimit: number = Number(limit) ? Number(limit) : 10;
             const listTeacher = await TeacherModel.find({
                 email: {
                     "$regex": email as string,
@@ -174,7 +175,7 @@ const teacherController = {
                 _id: 1,
                 fullName: 1,
                 email: 1
-            });
+            }).limit(getLimit);
             resClientData(req, res, 200, listTeacher);
         } catch (error: any) {
             resClientData(req, res, 404, undefined, error.message);
