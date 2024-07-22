@@ -26,7 +26,7 @@ const teacherController = {
                         $in: listTeacherId
                     }
                 }, { ...fields && getProjection(...fields as Array<string>) }).sort({
-                    createdAt: 1
+                    createdAt: -1
                 });
             }
             else if (recordOnPage && currentPage) {
@@ -49,7 +49,7 @@ const teacherController = {
                     } : {}
                 }, { ...fields && getProjection(...fields as Array<string>) })
                     .skip((Number(recordOnPage) * Number(currentPage)) - Number(recordOnPage)).limit(Number(recordOnPage)).sort({
-                        createdAt: 1
+                        createdAt: -1
                     })
             } else {
                 listTeacher = await TeacherModel.find({
@@ -70,7 +70,7 @@ const teacherController = {
                         ]
                     } : {}
                 }, { ...fields && getProjection(...fields as Array<string>) }).sort({
-                    createdAt: 1
+                    createdAt: -1
                 });
             }
             const listTeacherLength = await TeacherModel.countDocuments({
@@ -91,7 +91,7 @@ const teacherController = {
                     ]
                 } : {}
             }).sort({
-                createdAt: 1
+                createdAt: -1
             });
             const dataSend = {
                 listTeacher: listTeacher,
