@@ -47,10 +47,10 @@ const teacherController = {
                             }
                         ]
                     } : {}
-                }, { ...fields && getProjection(...fields as Array<string>) })
-                    .skip((Number(recordOnPage) * Number(currentPage)) - Number(recordOnPage)).limit(Number(recordOnPage)).sort({
-                        createdAt: -1
-                    })
+                }, { ...fields && getProjection(...fields as Array<string>) }).sort({
+                    createdAt: -1
+                })
+                    .skip((Number(recordOnPage) * Number(currentPage)) - Number(recordOnPage)).limit(Number(recordOnPage))
             } else {
                 listTeacher = await TeacherModel.find({
                     ...valueSearch ? {
