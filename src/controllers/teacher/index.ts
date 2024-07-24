@@ -174,10 +174,21 @@ const teacherController = {
             const { email, limit } = req.query;
             const getLimit: number = Number(limit) ? Number(limit) : 10;
             const listTeacher = await TeacherModel.find({
-                email: {
-                    "$regex": email as string,
-                    "$options": "i"
-                },
+                '$or': [
+                    {
+                        email: {
+                            "$regex": email as string,
+                            "$options": "i"
+                        },
+                    },
+                    {
+                        fullName: {
+                            "$regex": email as string,
+                            "$options": "i"
+                        }
+                    }
+                ],
+
                 isOffical: true
             }, {
                 _id: 1,
