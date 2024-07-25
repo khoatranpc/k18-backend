@@ -125,7 +125,11 @@ const feedbackController = {
                 dateStartWork: 0,
                 createdAt: 0,
                 updatedAt: 0,
-                salaryPH: 0
+                salaryPH: 0,
+                teacherPoint: 0,
+                frontId: 0,
+                infoAllowance: 0,
+                permanentAddress: 0
             }).exec().then((rs) => {
                 return rs.filter((item) => {
                     return item.teacherRegister.find((rc) => rc.accept === true && rc.roleRegister !== ROLE_TEACHER.SP);
