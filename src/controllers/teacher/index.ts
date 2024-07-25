@@ -188,8 +188,6 @@ const teacherController = {
                         }
                     }
                 ],
-
-                isOffical: true
             }, {
                 _id: 1,
                 fullName: 1,
