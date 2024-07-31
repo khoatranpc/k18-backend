@@ -10,12 +10,12 @@ const feedbackController = {
     getRecordByMonth: async (req: Request, res: Response) => {
         try {
             const { date, fields, codeClassText, time, enabled, done } = req.query;
-            const startDate = new Date(Number((date as Obj)?.year as string), Number((date as Obj)?.month as string) - 1, 1);
-            const endDate = new Date(Number((date as Obj)?.year as string), Number((date as Obj)?.month as string), 0);
+            const year = (date as Obj).year; // Năm bạn muốn lọc
+            const month = (date as Obj).month; // Tháng bạn muốn lọc (1-12)
+            const regexMonthYear = new RegExp(`^${year}-${Number(month) < 10 ? '0' : ''}${month}`);
             const getList = await FeedbackModel.find({
                 date: {
-                    $lte: endDate,
-                    $gte: startDate
+                    $regex: regexMonthYear
                 },
                 enabled: {
                     $in: enabled
