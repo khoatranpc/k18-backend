@@ -23,7 +23,7 @@ const feedbackController = {
                 time: {
                     $in: time
                 },
-                done,
+                done: JSON.parse(done as string),
                 ...codeClassText ? {
                     codeClassText: {
                         '$regex': codeClassText,
