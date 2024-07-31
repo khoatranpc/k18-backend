@@ -16,7 +16,7 @@ const feedbackController = {
             const endDate = new Date(year, month + 1, 0); // Ngày cuối cùng của tháng
             const getList = await FeedbackModel.find({
                 date: {
-                    $lte: endDate,
+                    $lt: endDate,
                     $gte: startDate
                 },
                 enabled: {
