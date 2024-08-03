@@ -170,7 +170,8 @@ const preTeacherController = {
                 if (createTeacherInfo) {
                     const newTeacherRegisterCourse = {
                         idTeacher: newInfoTeacher._id,
-                        coursesRegister: findRequest.coursesRegister
+                        coursesRegister: findRequest.coursesRegister,
+                        teacherEmail: newInfoTeacher.email
                     };
                     findRequest.status = STATUS.AT;
                     await findRequest.save();

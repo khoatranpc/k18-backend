@@ -10,20 +10,22 @@ const feedbackController = {
     getRecordByMonth: async (req: Request, res: Response) => {
         try {
             const { date, fields, codeClassText, time, enabled, done } = req.query;
-            const startDate = new Date(Number((date as Obj)?.year as string), Number((date as Obj)?.month as string) - 1, 1);
-            const endDate = new Date(Number((date as Obj)?.year as string), Number((date as Obj)?.month as string), 0);
+            const year = Number((date as Obj)?.year as string);
+            const month = Number((date as Obj)?.month as string) - 1;
+            const startDate = new Date(year, month, 1); // Ngày đầu tiên của tháng
+            const endDate = new Date(year, month + 1, 0); // Ngày cuối cùng của tháng
             const getList = await FeedbackModel.find({
-                date: {
-                    $lte: endDate,
-                    $gte: startDate
-                },
+                // date: {
+                //     $lt: endDate,
+                //     $gte: startDate
+                // },
                 enabled: {
                     $in: enabled
                 },
                 time: {
                     $in: time
                 },
-                done: done,
+                done: JSON.parse(done as string),
                 ...codeClassText ? {
                     codeClassText: {
                         '$regex': codeClassText,
@@ -125,7 +127,11 @@ const feedbackController = {
                 dateStartWork: 0,
                 createdAt: 0,
                 updatedAt: 0,
-                salaryPH: 0
+                salaryPH: 0,
+                teacherPoint: 0,
+                frontId: 0,
+                infoAllowance: 0,
+                permanentAddress: 0
             }).exec().then((rs) => {
                 return rs.filter((item) => {
                     return item.teacherRegister.find((rc) => rc.accept === true && rc.roleRegister !== ROLE_TEACHER.SP);

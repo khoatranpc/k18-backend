@@ -25,7 +25,9 @@ const teacherController = {
                     _id: {
                         $in: listTeacherId
                     }
-                }, { ...fields && getProjection(...fields as Array<string>) });
+                }, { ...fields && getProjection(...fields as Array<string>) }).sort({
+                    createdAt: -1
+                });
             }
             else if (recordOnPage && currentPage) {
                 listTeacher = await TeacherModel.find({
@@ -45,7 +47,9 @@ const teacherController = {
                             }
                         ]
                     } : {}
-                }, { ...fields && getProjection(...fields as Array<string>) })
+                }, { ...fields && getProjection(...fields as Array<string>) }).sort({
+                    createdAt: -1
+                })
                     .skip((Number(recordOnPage) * Number(currentPage)) - Number(recordOnPage)).limit(Number(recordOnPage))
             } else {
                 listTeacher = await TeacherModel.find({
@@ -65,7 +69,9 @@ const teacherController = {
                             }
                         ]
                     } : {}
-                }, { ...fields && getProjection(...fields as Array<string>) });
+                }, { ...fields && getProjection(...fields as Array<string>) }).sort({
+                    createdAt: -1
+                });
             }
             const listTeacherLength = await TeacherModel.countDocuments({
                 ...valueSearch ? {
@@ -84,6 +90,8 @@ const teacherController = {
                         }
                     ]
                 } : {}
+            }).sort({
+                createdAt: -1
             });
             const dataSend = {
                 listTeacher: listTeacher,
@@ -166,11 +174,20 @@ const teacherController = {
             const { email, limit } = req.query;
             const getLimit: number = Number(limit) ? Number(limit) : 10;
             const listTeacher = await TeacherModel.find({
-                email: {
-                    "$regex": email as string,
-                    "$options": "i"
-                },
-                isOffical: true
+                '$or': [
+                    {
+                        email: {
+                            "$regex": email as string,
+                            "$options": "i"
+                        },
+                    },
+                    {
+                        fullName: {
+                            "$regex": email as string,
+                            "$options": "i"
+                        }
+                    }
+                ],
             }, {
                 _id: 1,
                 fullName: 1,
