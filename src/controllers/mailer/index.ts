@@ -51,7 +51,7 @@ const mailerController = {
     },
     sendMailCandidate: async (req: Request, res: Response) => {
         try {
-            const { templateMail, courseName, candidateName, candidateEmail, te } = req.body;
+            const { templateMail, courseName, candidateName, candidateEmail, teInfo } = req.body;
             const crrCandidate = await RecruitmentModel.findOne({
                 email: {
                     '$regex': candidateEmail,
@@ -65,8 +65,16 @@ const mailerController = {
             if (!crrTemplateMail) throw new Error('Không tìm thấy mẫu mail!');
             switch (templateMail) {
                 case TemplateMail.NOCONNECT:
-                    const splitHtml = String(crrTemplateMail.html).split('{{COURSE}}');
-                    const html = splitHtml.join(courseName);
+                    const splitHtml = String(crrTemplateMail.html);
+                    const html = String(splitHtml).replace("{{NAME}}", candidateName as string)
+                        .replace(
+                            "{{COURSE}}",
+                            `${courseName as string}`
+                        )
+                        .replace(
+                            "{{TE}}",
+                            `<a href="${teInfo?.facebook}" style="color:#1155cc;">${teInfo?.teName}</a>   - ${teInfo?.phoneNumber}`
+                        )
                     const mailer = new Mailer('K18', {
                         to: candidateEmail,
                         subject: crrTemplateMail.title,
@@ -80,8 +88,16 @@ const mailerController = {
                     });
                     break;
                 case TemplateMail.PENDING:
-                    const splitHtmlPending = String(crrTemplateMail.html).split('{{COURSE}}');
-                    const htmlPending = splitHtmlPending.join(courseName);
+                    const pendingEmailTemplate = String(crrTemplateMail.html);
+                    const htmlPending = String(pendingEmailTemplate).replace("{{NAME}}", candidateName as string)
+                        .replace(
+                            "{{COURSE}}",
+                            `${courseName as string}`
+                        )
+                        .replace(
+                            "{{TE}}",
+                            `<a href="${teInfo?.facebook}" style="color:#1155cc;">${teInfo?.teName}</a>  - ${teInfo?.phoneNumber}`
+                        )
                     const mailerPending = new Mailer('K18', {
                         to: candidateEmail,
                         subject: crrTemplateMail.title,
