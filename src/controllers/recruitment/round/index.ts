@@ -86,7 +86,7 @@ const roundController = {
     findByIdAndUpdate: async (req: Request, res: Response) => {
         try {
             const { id } = req.params;
-            const { result, linkMeet, time, doc, round, candidateId, te, mailInterviewSent, mailResultSent, isSetInterview } = req.body;
+            const { result, linkMeet, time, doc, round, candidateId, te, mailInterviewSent, mailResultSent, isSetInterview, teA } = req.body;
             if (result === false || result == 'false') {
                 await RecruitmentModel.findByIdAndUpdate(candidateId, {
                     statusProcess: StatusProcessing.DONE,
@@ -131,18 +131,31 @@ const roundController = {
                         endTime.setSeconds(0);
                         const getMailTemplateInterview = await MailTemplateModel.findOne({ template: TemplateMail.INVITEINTERVIEW });
                         if (!getMailTemplateInterview) throw new Error('Không tồn tại mẫu email!');
+                        const getTeA = await TeModel.findById(teA);
+                        if (!getTeA) throw new Error("Không tìm thấy dữ liệu TE Phụ Trách!");
                         const mapInfoMail = {
                             NAME: currentDataRecruitment.fullName,
                             EMAIL: currentDataRecruitment.email,
                             POSITION: (currentDataRecruitment.courseApply as unknown as Obj)?.courseName as string ?? '',
                             CVLink: currentDataRecruitment.linkCv,
-                            TIME: formatDateTime(new Date(time))
+                            TIME: formatDateTime(new Date(time)),
+                            TEA: {
+                                teName: getTeA?.teName || "Dương Văn Mẩn",
+                                facebook:
+                                    getTeA?.facebook || "https://www.facebook.com/mvann02",
+                                phoneNumber: getTeA?.phoneNumber || "0707918019",
+                                email: getTeA?.personalEmail || "dvanman12@gmail.com",
+
+                            },
                         };
+
                         let getContentMail = getMailTemplateInterview?.html;
                         getContentMail = getContentMail.replace("NAME", mapInfoMail['NAME']);
                         getContentMail = getContentMail.replace("POSITION", mapInfoMail['POSITION']);
                         getContentMail = getContentMail.replace("TIME", mapInfoMail['TIME']);
                         getContentMail = getContentMail.replace("LINK", `<a href='${mapInfoMail['CVLink']}'><b>Link</b></a>`);
+                        getContentMail = getContentMail.replace("TEA", `<a href='${mapInfoMail['TEA'].facebook}'><b>${mapInfoMail['TEA'].teName}</b></a> - ${mapInfoMail['TEA'].phoneNumber}`);
+
                         const getTe = await TeModel.findById(te);
                         if (!getTe) throw new Error("Không tìm thấy dữ liệu TE!");
                         let event: any;
@@ -166,6 +179,9 @@ const roundController = {
                                     {
                                         email: getTe.personalEmail
                                     },
+                                    {
+                                        email: mapInfoMail["TEA"].email
+                                    }
                                 ]
                             },
                             calendarId: process.env.CALENDAR_ID
