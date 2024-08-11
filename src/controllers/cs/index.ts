@@ -3,6 +3,8 @@ import { encryptPassword, resClientData } from "../../utils";
 import CSmodel from "../../models/cs";
 import AccountModel from "../../models/account";
 import { ROLE } from "../../global/enum";
+import uploadToCloud from "../../utils/cloudinary";
+import { Obj } from "../../global/interface";
 
 const csController = {
     createCs: async (req: Request, res: Response) => {
@@ -20,8 +22,16 @@ const csController = {
                 ...account,
                 activate: true
             });
+            const file = req.file;
+            const data: Obj = {
+                ...req.body
+            };
+            if (file) {
+                const uploadFile = await uploadToCloud(file);
+                data["image"] = uploadFile.secure_url;
+            }
             const createdCs = await CSmodel.create({
-                ...req.body,
+                ...data,
                 accountId: createdAccount._id
             });
             resClientData(req, res, 201, createdCs, "Tạo thông tin thành công!");
@@ -31,7 +41,7 @@ const csController = {
     },
     getAll: async (req: Request, res: Response) => {
         try {
-            const listCs = await CSmodel.find({}).populate('area');
+            const listCs = await CSmodel.find(req.query).populate('area');
             resClientData(req, res, 200, listCs);
         } catch (error: any) {
             resClientData(req, res, 500, null, error.message);
@@ -41,6 +51,14 @@ const csController = {
         try {
             const { password } = req.body;
             const { id } = req.params;
+            const file = req.file;
+            const data: Obj = {
+                ...req.body
+            };
+            if (file) {
+                const uploadFile = await uploadToCloud(file);
+                data["image"] = uploadFile.secure_url;
+            }
             if (password) {
                 const { salt, hashedPassword } = encryptPassword(req.body.password);
                 await AccountModel.findByIdAndUpdate(req.body.accountId, {
@@ -48,7 +66,7 @@ const csController = {
                     password: hashedPassword
                 });
             }
-            await CSmodel.findByIdAndUpdate(id, req.body, {
+            await CSmodel.findByIdAndUpdate(id, data, {
                 new: true
             });
             resClientData(req, res, 201, {}, 'Cập nhật thành công!');

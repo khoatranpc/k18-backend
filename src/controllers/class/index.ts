@@ -14,14 +14,17 @@ import TeacherRegisterCourseModel from "../../models/teacherRegisterCourse";
 const classController = {
     getAll: async (req: RequestMid, res: Response) => {
         try {
-            const { fields, recordOnPage, currentPage, listId, status, forRecruitment, course, codeClass, date } = req.query;
+            const { fields, recordOnPage, currentPage, listId, status, forRecruitment, course, codeClass, date, isDelete } = req.query;
             let classes;
             let filter;
             if (listId) {
                 filter = {
                     _id: {
                         $in: listId
-                    }
+                    },
+                    ...isDelete ? {
+                        isDelete: isDelete
+                    } : {},
                 };
                 classes = await ClassModel.find(filter, { ...fields && getProjection(...fields as Array<string>) })
                     .populate('courseId courseLevelId timeSchedule', { ...fields && getProjection(...fields as Array<string>), _id: 1 });
@@ -42,6 +45,9 @@ const classController = {
                     listClassTcReg = listClassTeacherRegister.map((item) => item.classId);
                 }
                 filter = {
+                    ...isDelete ? {
+                        isDelete: isDelete
+                    } : {},
                     ...status ? (status === 'ALL' ? {
                     } : { status }) : {},
                     ...role === ROLE.TEACHER ? {
@@ -89,7 +95,18 @@ const classController = {
                     .populate('courseId courseLevelId timeSchedule', { ...fields && getProjection(...fields as Array<string>), _id: 1 });
             }
             else {
-                filter = codeClass ? { codeClass } : {};
+                filter = {
+                    ...codeClass ? { codeClass } : {},
+                    ...isDelete ? {
+                        isDelete: isDelete
+                    } : {},
+                    ...date ? {
+                        "dayRange.start": {
+                            $gte: new Date(new Date(date as string).getFullYear(), new Date(date as string).getMonth(), 1), // Bắt đầu từ ngày đầu tiên của tháng
+                            $lt: new Date(new Date(date as string).getFullYear(), new Date(date as string).getMonth() + 1, 1)
+                        }
+                    } : {}
+                };
                 classes = await ClassModel.find(filter, { ...fields && getProjection(...fields as Array<string>), _id: 1 })
                     .sort({
                         createdAt: -1
@@ -131,7 +148,7 @@ const classController = {
     },
     create: async (req: Request, res: Response) => {
         try {
-            const { courseLevelId, courseId, codeClass, dayRange, timeSchedule, bookTeacher, linkZoom, cxo, bu } = req.body;
+            const { courseLevelId, courseId, codeClass, dayRange, timeSchedule, bookTeacher, linkZoom, cxo, bu, cxoId, buId } = req.body;
             const findExistClassCode = await ClassModel.findOne({
                 codeClass
             });
@@ -144,7 +161,9 @@ const classController = {
                 timeSchedule,
                 linkZoom,
                 cxo,
-                bu
+                bu,
+                cxoId,
+                buId
             });
             await BookTeacherModel.insertMany((bookTeacher as Obj[])!.map((item) => {
                 return {
@@ -217,9 +236,16 @@ const classController = {
     findOneAndUpdate: async (req: Request, res: Response) => {
         try {
             const { id } = req.params;
-            const { dayRange, codeClass, courseId, courseLevelId, timeSchedule, status, note, linkZoom, bookTeacher, cxo, bu } = req.body;
+            const { dayRange, codeClass, courseId, courseLevelId, timeSchedule, status, note, linkZoom, bookTeacher, cxo, bu, cxoId, buId, isDelete } = req.body;
             const crrClass = await ClassModel.findById(id).populate('timeSchedule');
             if (!crrClass) throw new Error('Cập nhật thất bại!');
+            if (isDelete !== undefined && isDelete !== null) {
+                crrClass.isDelete = !!isDelete;
+                crrClass.status = STATUS_CLASS.FINISH;
+                await crrClass.save();
+                resClientData(req, res, 201, {}, 'Thành công!');
+                return;
+            }
             if (dayRange) crrClass.dayRange = dayRange;
             if (codeClass) crrClass.codeClass = codeClass;
             if (status) crrClass.status = status;
@@ -230,6 +256,8 @@ const classController = {
             if (linkZoom) crrClass.linkZoom = linkZoom;
             if (cxo) crrClass.cxo = cxo;
             if (bu) crrClass.bu = bu;
+            if (cxoId) crrClass.cxoId = cxoId;
+            if (buId) crrClass.buId = buId;
             if (bookTeacher && Array.isArray(bookTeacher) && bookTeacher.length) {
                 const listExistedRecord = await BookTeacherModel.find({
                     _id: {

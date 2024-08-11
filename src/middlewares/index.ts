@@ -16,6 +16,7 @@ export interface RequestMid extends Request {
 const middlewares = {
     verifyJWT: (req: RequestMid, res: Response, next: NextFunction) => {
         try {
+
             const authHeader = req.headers.authorization;
             if (!authHeader) throw new Error('UnAuthorization!');
             const token = authHeader.split(' ')[1];
@@ -86,6 +87,8 @@ const middlewares = {
     acceptRole: (rolePosition?: PositionTe, ...roleAccountAccept: ROLE[]) => {
         return (req: RequestMid, res: Response, next: NextFunction) => {
             try {
+
+
                 const crrRole = req.acc;
                 if (rolePosition && req.acc?.role === ROLE.TE) {
                     if (crrRole?.position !== rolePosition) throw new Error('Bạn không thể thực hiện hành động!');

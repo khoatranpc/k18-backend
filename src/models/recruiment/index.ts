@@ -139,6 +139,14 @@ const recruimentSchema = new mongoose.Schema({
     },
     failCVDate: {
         type: Date
+    },
+    sendMailNoConnect: {
+        type: Boolean,
+        default: false
+    },
+    sendMailPending: {
+        type: Boolean,
+        default: false
     }
 },
     {

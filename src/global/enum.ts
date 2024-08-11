@@ -103,7 +103,8 @@ export enum TemplateMail {
     PASSINTERVIEW = 'PASSINTERVIEW',
     NOCONNECT = 'NOCONNECT',
     INVITEINTERVIEW = 'INVITEINTERVIEW',
-    NOTI_RECEIVED_CV = 'NOTI_RECEIVED_CV'
+    NOTI_RECEIVED_CV = 'NOTI_RECEIVED_CV',
+    PENDING = 'PENDING'
 }
 export enum Area {
     HN = 'HN',
@@ -131,4 +132,9 @@ export enum TypeQuestion {
 export enum TeachingDepartment {
     K18 = 'K18',
     K12 = 'K12'
+}
+
+export enum PositionCs {
+    LEADER = 'LEADER',
+    EXECUTIVE = 'EXECUTIVE'
 }

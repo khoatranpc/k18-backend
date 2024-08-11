@@ -41,7 +41,7 @@ const teacherSchema = new mongoose.Schema(
         identify: {
             type: String,
             default: '',
-            required: true
+            // required: true
         },
         licenseDate: {
             type: Date,
@@ -164,7 +164,8 @@ const teacherSchema = new mongoose.Schema(
         },
         certificate: String,
         certificatePhotoImage: String,
-        emergencyContact: {}
+        emergencyContact: {},
+        profileLink: String
     },
     {
         timestamps: true,

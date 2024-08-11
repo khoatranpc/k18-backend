@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { Collections } from "../../database";
+import { PositionCs } from "../../global/enum";
 
 const csSchema = new mongoose.Schema({
     name: {
@@ -7,6 +8,7 @@ const csSchema = new mongoose.Schema({
         required: true,
     },
     phoneNumber: String,
+    image: String,
     email: {
         type: String,
         required: true,
@@ -23,6 +25,11 @@ const csSchema = new mongoose.Schema({
     active: {
         type: Boolean,
         default: true
+    },
+    position: {
+        type: String,
+        enum: PositionCs,
+        default: PositionCs.EXECUTIVE
     }
 }, {
     timestamps: true
