@@ -96,7 +96,12 @@ const classController = {
             }
             else {
                 filter = {
-                    ...codeClass ? { codeClass } : {},
+                    ...codeClass ? {
+                        codeClass: {
+                            "$regex": codeClass,
+                            "$options": 'i'
+                        }
+                    } : {},
                     ...isDelete ? {
                         isDelete: isDelete
                     } : {},
