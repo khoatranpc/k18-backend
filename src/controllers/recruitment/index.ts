@@ -13,7 +13,7 @@ import RoundInterviewModel from "../../models/recruiment/round/interview";
 const recruitmentController = {
     getList: async (req: Request, res: Response) => {
         try {
-            const { fields, recordOnPage, currentPage, sort, area, status, resourceHunt, valueSearch, startDate, endDate, courseApply, isGetInfoProcessCandidate } = req.query;
+            const { fields, recordOnPage, currentPage, sort, area, status, resourceHunt, valueSearch, startDate, endDate, courseApply, isGetInfoProcessCandidate, roundProcess } = req.query;
             let filter = {
                 ...valueSearch ? {
                     '$or': [
@@ -48,6 +48,9 @@ const recruitmentController = {
                 } : {},
                 ...courseApply && courseApply !== 'ALL' ? {
                     courseApply: courseApply
+                } : {},
+                ...roundProcess && roundProcess !== 'ALL' ? {
+                    roundProcess: roundProcess
                 } : {},
             };
             const totalRecord = await RecruitmentModel.count(filter);

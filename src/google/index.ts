@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 import { OAuth2Client } from 'google-auth-library';
 import { ROLE } from '../global/enum';
+import crypto from 'crypto';
 
 const googleOptions = JSON.parse(process.env.ENV === 'DEV' ? process.env.CONFIG_GOOGLE as any : process.env.CONFIG_GOOGLE_PROD as any).web as any;
 
