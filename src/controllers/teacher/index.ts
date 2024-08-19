@@ -187,11 +187,18 @@ const teacherController = {
                             "$options": "i"
                         }
                     }
+                    , {
+                        phoneNumber: {
+                            "$regex": email as string,
+                            "$options": "i"
+                        }
+                    }
                 ],
             }, {
                 _id: 1,
                 fullName: 1,
-                email: 1
+                email: 1,
+                phoneNumber: 1,
             }).limit(getLimit);
             resClientData(req, res, 200, listTeacher);
         } catch (error: any) {
