@@ -5,6 +5,7 @@ import { Obj } from "../../global/interface";
 import BookTeacherModel from "../../models/bookTeacher";
 import { ROLE_TEACHER } from "../../global/enum";
 import ClassTeacherPointModel from "../../models/classTeacherPoint";
+import { FinalResult, TeacherRegister } from "../../global/feedbackType";
 
 const feedbackController = {
     getRecordByMonth: async (req: Request, res: Response) => {
@@ -141,6 +142,85 @@ const feedbackController = {
         } catch (error: any) {
             resClientData(req, res, 500, null, error.message);
         }
-    }
+    },
+    getClassActiveFeedback: async (req: Request, res: Response) => {
+        try {
+            const feedbackResults: any = await FeedbackModel.find({
+                done: false,
+                enabled: true
+            }).populate({
+                path: 'codeClass',
+                select: 'bu cxo dayRange codeClass courseId courseLevelId status',
+                populate: [
+                    {
+                        path: 'courseId',
+                        select: 'courseName'
+                    },
+                    {
+                        path: 'courseLevelId',
+                        select: 'levelCode levelNumber'
+                    }
+                ]
+            }).exec();
+
+            const finalResults = await Promise.all(feedbackResults.map(async (feedback: any) => {
+                const bookTeachers = await BookTeacherModel.find({
+                    classId: feedback?.codeClass?._id
+                }).select('teacherRegister.idTeacher teacherRegister.roleRegister locationId')
+                    .populate({
+                        path: 'teacherRegister.idTeacher',
+                        select: 'fullName'
+                    })
+                    .populate({
+                        path: 'locationId',
+                        select: 'locationName locationCode'
+                    })
+                    .exec();
+
+                const teacherRegisterList: TeacherRegister[] = bookTeachers.flatMap((item: any) =>
+                    item.teacherRegister.map((teacher: any) => ({
+                        _id: teacher.idTeacher._id,
+                        fullName: teacher.idTeacher?.fullName,
+                        roleRegister: teacher.roleRegister,
+                        location: item.locationId ? {
+                            _id: item.locationId._id,
+                            locationName: item.locationId?.locationName,
+                            locationCode: item.locationId?.locationCode
+                        } : null
+                    }))
+                );
+
+                return {
+                    courseName: feedback?.codeClass?.courseId?.courseName,
+                    codeClassId: feedback?.codeClass?._id,
+                    className: feedback?.codeClass?.codeClass,
+                    courseLevel: {
+                        levelCode: feedback?.codeClass?.courseLevelId?.levelCode,
+                        levelNumber: feedback?.codeClass?.courseLevelId?.levelNumber
+                    },
+                    time: feedback.time,
+                    bu: feedback?.codeClass?.bu,
+                    cxo: feedback?.codeClass?.cxo,
+                    dayRange: feedback?.codeClass?.dayRange,
+                    status: feedback?.codeClass?.status,
+                    teacherRegister: teacherRegisterList
+                };
+            }));
+
+            const groupedResults = finalResults.reduce((acc: Record<string, FinalResult[]>, item) => {
+                if (!acc[item.courseName]) {
+                    acc[item.courseName] = [];
+                }
+                acc[item.courseName].push(item);
+                return acc;
+            }, {});
+
+
+            resClientData(req, res, 200, groupedResults);
+        } catch (error: any) {
+            resClientData(req, res, 500, null, error.message);
+        }
+    },
 };
 export default feedbackController;
+
