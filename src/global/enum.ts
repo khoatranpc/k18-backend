@@ -99,12 +99,13 @@ export enum PositionTe {
 }
 export enum TemplateMail {
     FAILCV = 'FAILCV',
+    PASSCV = 'PASSCV',
     FAILINTERVIEW = 'FAILINTERVIEW',
     PASSINTERVIEW = 'PASSINTERVIEW',
     NOCONNECT = 'NOCONNECT',
     INVITEINTERVIEW = 'INVITEINTERVIEW',
     NOTI_RECEIVED_CV = 'NOTI_RECEIVED_CV',
-    PENDING = 'PENDING'
+    PENDING = 'PENDING',
 }
 export enum Area {
     HN = 'HN',
