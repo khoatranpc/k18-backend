@@ -35,6 +35,10 @@ const courseSchema = new mongoose.Schema({
         type: String,
         default: '',
         required: true
+    },
+    subject: {
+        type: Schema.Types.ObjectId,
+        ref: Collections.SUBJECT
     }
 }, {
     timestamps: true

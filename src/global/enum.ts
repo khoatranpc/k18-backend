@@ -121,6 +121,13 @@ export enum Region {
     ONL = 'ONL'
 }
 
+export const getRegion: Record<Region, string> = {
+    MB: "Miền Bắc",
+    MN: "Miền Nam",
+    MT: "Miền Trung",
+    ONL: "Online"
+};
+
 export enum RoomSocket {
     COMMON = 'COMMON'
 }

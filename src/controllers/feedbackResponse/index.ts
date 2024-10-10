@@ -4,15 +4,87 @@ import TeacherPointModel from "../../models/teacherPoint";
 import { getProjection, resClientData } from "../../utils";
 import { Obj } from "../../global/interface";
 import ClassModel from "../../models/class";
+import googleSheet from "../../google/googleSheet";
+import { getRegion, Region } from "../../global/enum";
 
 const feedbackResponseController = {
     sendResponseFromForm: async (req: Request, res: Response) => {
         try {
             const dataResponse = req.body;
-            const insertResponse = await FeedbackResponseModel.create(dataResponse);
+            const insertResponse = await (await FeedbackResponseModel.create(dataResponse)).populate([
+                {
+                    path: 'codeClass',
+                    populate: [
+                        {
+                            path: 'buId',
+                            populate: 'area'
+                        },
+                        {
+                            path: 'cxoId'
+                        }
+                    ]
+                },
+                {
+                    path: 'course',
+                    populate: {
+                        path: 'subject'
+                    }
+                },
+                {
+                    path: 'groupNumber',
+                    populate: [
+                        {
+                            path: 'locationId'
+                        }
+                    ]
+                }
+            ]);
+            const createRowSheet = [
+                //  thời gian feedfack
+                new Date().toLocaleString(),
+                // họ tên
+                dataResponse.studentName ?? "",
+                // email
+                dataResponse.phoneNumber ?? "",
+                // lần lấy feedback
+                (dataResponse.timeCollect ? (dataResponse.timeCollect === 1 ? "Buổi 4" : "Buổi 9") : ''),
+                // học phần
+                ((insertResponse).course as any)?.subject?.name ?? '',
+                // mã lớp
+                (insertResponse.codeClass as any)?.codeClass ?? '',
+                // miền 
+                (insertResponse.codeClass as any)?.buId?.area?.region ? getRegion[(insertResponse.codeClass as any)?.buId?.area?.region as Region] : '',
+                // Quản lý lớp
+                (insertResponse.codeClass as any)?.cxoId?.name ?? '',
+                //  nhóm học tập
+                `${(insertResponse.groupNumber as any)?.locationId?.locationCode ? `Nhóm ${(insertResponse.groupNumber as any)?.groupNumber ?? ''} ${(insertResponse.groupNumber as any)?.locationId?.locationCode}` : ''}`,
+                // Điểm CS
+                dataResponse.pointCxo ?? 0,
+                // nhận xét CS
+                dataResponse.noteCxo ?? '',
+                // Điểm CSVC
+                dataResponse.pointOb ?? 0,
+                // nhận xét CSVC
+                dataResponse.noteOb ?? '',
+                // Điểm giảng viên
+                dataResponse.pointST ?? 0,
+                // nhận xét giảng viên
+                dataResponse.noteST ?? '',
+                // Điểm mentor
+                dataResponse.pointMT ?? 0,
+                // nhận xét mentor
+                dataResponse.noteMT ?? '',
+                // Điểm chương trình đào tạo
+                dataResponse.pointSyl ?? 0,
+                // nhận xét chương trình đào tạo
+                dataResponse.noteSyl ?? '',
+                // chia sẻ thêm
+                dataResponse.docDetail ?? ''
+            ];
+            await googleSheet(createRowSheet);
             await TeacherPointModel.create({
                 classId: dataResponse.codeClass,
-                feedbackResponseId: insertResponse._id,
+                feedbackResponseId: (insertResponse)._id,
                 groupNumber: dataResponse.groupNumber,
                 point: dataResponse.teacherPoint,
                 teacherId: dataResponse.teacherId,

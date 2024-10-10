@@ -57,7 +57,12 @@ const feedbackResponseSchema = new mongoose.Schema({
         type: mongoose.SchemaTypes.ObjectId,
         ref: Collections.FEEDBACK,
         required: true
-    }
+    },
+    noteCxo: String,
+    noteMT: String,
+    noteOb: String,
+    noteST: String,
+    noteSyl: String,
 }, {
     timestamps: true
 });
