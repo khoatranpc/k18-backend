@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import FeedbackResponseModel from "../../models/feedbackResponse";
 import TeacherPointModel from "../../models/teacherPoint";
-import { getProjection, resClientData } from "../../utils";
+import { formatDateTimeNew, getProjection, resClientData } from "../../utils";
 import { Obj } from "../../global/interface";
 import ClassModel from "../../models/class";
 import googleSheet from "../../google/googleSheet";
@@ -41,7 +41,7 @@ const feedbackResponseController = {
             ]);
             const createRowSheet = [
                 //  thời gian feedfack
-                new Date().toLocaleString(),
+                formatDateTimeNew(new Date()),
                 // họ tên
                 dataResponse.studentName ?? "",
                 // email

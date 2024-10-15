@@ -47,7 +47,7 @@ const feedbackResponseSchema = new mongoose.Schema({
     },
     docDetail: {
         type: String,
-        required: true
+        required: false
     },
     timeCollect: {
         type: Number,

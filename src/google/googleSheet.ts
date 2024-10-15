@@ -2,10 +2,7 @@ import { google } from "googleapis";
 import { Obj } from "../global/interface";
 
 
-const auth = new google.auth.GoogleAuth({
-    keyFile: 'googlesheetteachingk18.json',
-    scopes: 'https://www.googleapis.com/auth/spreadsheets'
-});
+
 
 function calculateRange(startColumn: string, startRow: number, values: string[][]) {
     const numRows = values.length;
@@ -17,6 +14,10 @@ function calculateRange(startColumn: string, startRow: number, values: string[][
 }
 
 const googleSheet = async (feedback: string[]) => {
+    const auth = new google.auth.GoogleAuth({
+        keyFile: 'googlesheetteachingk18.json',
+        scopes: 'https://www.googleapis.com/auth/spreadsheets'
+    });
     const client = await auth.getClient();
     const googleSheets = google.sheets({
         version: "v4",

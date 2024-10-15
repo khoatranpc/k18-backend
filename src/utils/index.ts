@@ -190,9 +190,29 @@ const formatDateTime = (date: Date) => {
 
     return formattedDateTime;
 }
+export const formatDateTimeNew = (date: Date) => {
+    // Lấy thông tin giờ, phút và giây
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const seconds = date.getSeconds();
+
+    // Lấy thông tin ngày, tháng và năm
+    const day = date.getDate();
+    const month = date.getMonth() + 1; // Tháng trong JavaScript bắt đầu từ 0
+    const year = date.getFullYear();
+
+    // Chuyển đổi số liệu thành chuỗi
+    const formattedTime = `${hours}:${minutes < 10 ? "0" + minutes : minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
+    const formattedDate = `${day}/${month}/${year}`;
+
+    // Kết hợp ngày và giờ thành định dạng cuối cùng
+    const formattedDateTime = `${formattedDate} ${formattedTime}`;
+
+    return formattedDateTime;
+};
 
 const mailNotifiFillFormOnboard = (name: string, success?: boolean) => {
-    return success?`
+    return success ? `
     <p>Th&acirc;n gửi <strong>${name}</strong></p>
 <p>Th&ocirc;ng tin của bạn đ&atilde; được ghi nhận <strong>th&agrave;nh c&ocirc;ng</strong></p>
 <p>Bạn vui l&ograve;ng truy cập <a href="https://client.tms-k18.id.vn/candidate">https://client.tms-k18.id.vn/candidate</a> để tiếp tục</p>
